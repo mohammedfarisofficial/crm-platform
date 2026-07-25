@@ -1,17 +1,19 @@
 {
-  "name": "app",
+  "name": "platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bunx next dev -p 3001",
-    "build": "bunx next build",
-    "start": "bunx next start -p 3001",
+    "dev": "bunx next dev -p 4040 --webpack",
+    "build": "bunx next build --webpack",
+    "start": "bunx next start -p 4040",
     "lint": "bunx eslint"
   },
   "dependencies": {
+    "@module-federation/nextjs-mf": "^8.8.71",
     "next": "16.2.10",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "webpack": "^5.109.0"
   },
   "devDependencies": {
     "@crm/config": "workspace:*",

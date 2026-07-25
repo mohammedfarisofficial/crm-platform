@@ -1,11 +1,11 @@
 {
-  "name": "legacy",
+  "name": "federated",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bunx next dev -p 5050 --webpack",
+    "dev": "bunx next dev -p 7070 --webpack",
     "build": "bunx next build --webpack",
-    "start": "bunx serve out -p 5050",
+    "start": "bunx next start -p 7070",
     "lint": "bunx eslint"
   },
   "dependencies": {

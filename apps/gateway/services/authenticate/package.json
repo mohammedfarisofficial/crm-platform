@@ -1,5 +1,5 @@
 {
-  "name": "gateway",
+  "name": "authenticate",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,8 +9,7 @@
     "lint": "bunx eslint src"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "http-proxy-middleware": "^4.2.0"
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

@@ -5,13 +5,10 @@ const nextConfig: NextConfig = {
     if (!options.isServer) {
       config.plugins.push(
         new options.webpack.container.ModuleFederationPlugin({
-          name: 'legacyApp',
+          name: 'federatedApp',
           filename: 'static/chunks/remoteEntry.js',
           exposes: {
-            './SampleComponent': './src/components/SampleComponent.tsx',
-          },
-          remotes: {
-            federatedApp: 'federatedApp@http://localhost:7070/_next/static/chunks/remoteEntry.js',
+            './Button': './src/components/Button.tsx',
           },
           shared: {
             react: {
