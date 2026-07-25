@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "build": "bunx turbo run build",
-    "dev": "bunx turbo run dev",
-    "start": "bunx turbo run start",
+    "dev": "bunx turbo run dev --ui=tui",
+    "start": "bunx turbo run start --ui=tui",
     "lint": "bunx turbo run lint",
     "format": "bunx prettier --write \"**/*.{ts,tsx,md}\""
   },
