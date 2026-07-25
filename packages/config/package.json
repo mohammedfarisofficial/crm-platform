@@ -2,11 +2,7 @@
   "name": "@crm/config",
   "version": "0.1.0",
   "private": true,
-  "main": "index.js",
-  "dependencies": {
-    "eslint": "latest",
-    "eslint-config-next": "latest",
-    "eslint-config-prettier": "latest",
-    "eslint-plugin-unicorn": "latest"
+  "exports": {
+    "./tailwind.css": "./tailwind.css"
   }
 }
