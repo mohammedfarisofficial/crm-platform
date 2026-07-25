@@ -3,6 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./tailwind.css": "./tailwind.css"
+    "./tailwind.css": "./src/tailwind.css"
   }
 }

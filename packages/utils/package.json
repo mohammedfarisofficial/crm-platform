@@ -1,0 +1,10 @@
+{
+  "name": "@crm/utils",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./constants": "./src/constants/endpoints.ts",
+    "./functions": "./src/functions/index.ts",
+    ".": "./src/index.ts"
+  }
+}
