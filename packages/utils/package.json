@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "exports": {
-    "./constants": "./src/constants/endpoints.ts",
+    "./constants/endpoints": "./src/constants/endpoints.ts",
+    "./constants/urls": "./src/constants/urls.ts",
     "./functions": "./src/functions/index.ts",
     ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2"
   }
 }

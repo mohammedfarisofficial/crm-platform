@@ -1,2 +1,2 @@
 export * from "./constants/endpoints";
-export * from "./functions/index";
+export * from "./constants/urls";

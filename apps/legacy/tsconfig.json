@@ -19,7 +19,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@crm/utils": ["../../packages/utils/src/index.ts"],
+      "@crm/utils/constants": ["../../packages/utils/src/index.ts"],
+      "@crm/utils/constants/urls": ["../../packages/utils/src/constants/urls.ts"],
+      "@crm/utils/constants/endpoints": ["../../packages/utils/src/constants/endpoints.ts"],
+      "@crm/utils/functions": ["../../packages/utils/src/functions/index.ts"]
     }
   },
   "include": [

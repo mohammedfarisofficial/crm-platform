@@ -1,0 +1,8 @@
+export const URLS = {
+    LEGACY_BASE_URL: process.env.NEXT_PUBLIC_LEGACY_BASE_URL ?? process.env.LEGACY_BASE_URL ?? "",
+    PLATFORM_BASE_URL: process.env.NEXT_PUBLIC_PLATFORM_BASE_URL ?? process.env.PLATFORM_BASE_URL ?? "",
+    
+    GATEWAY_BASE_URL: process.env.NEXT_PUBLIC_GATEWAY_BASE_URL ?? process.env.GATEWAY_BASE_URL ?? "",
+    AUTHENTICATION_SERVICE_URL: process.env.AUTHENTICATION_SERVICE_URL ?? "",
+    USERS_SERVICE_URL: process.env.USERS_SERVICE_URL ?? "",
+} as const;

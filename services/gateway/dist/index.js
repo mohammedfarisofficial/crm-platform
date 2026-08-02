@@ -26104,6 +26104,1423 @@ var require_micromatch = __commonJS((exports, module) => {
   module.exports = micromatch;
 });
 
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/address-error.js
+var require_address_error = __commonJS((exports) => {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.AddressError = undefined;
+
+  class AddressError extends Error {
+    constructor(message, parseMessage) {
+      super(message);
+      this.name = "AddressError";
+      this.parseMessage = parseMessage;
+    }
+  }
+  exports.AddressError = AddressError;
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/common.js
+var require_common2 = __commonJS((exports) => {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.isInSubnet = isInSubnet;
+  exports.isHostInSubnet = isHostInSubnet;
+  exports.isCorrect = isCorrect;
+  exports.prefixLengthFromMask = prefixLengthFromMask;
+  exports.assertByteArray = assertByteArray;
+  exports.numberToPaddedHex = numberToPaddedHex;
+  exports.stringToPaddedHex = stringToPaddedHex;
+  exports.testBit = testBit;
+  var address_error_1 = require_address_error();
+  function isInSubnet(address) {
+    if (this.subnetMask < address.subnetMask) {
+      return false;
+    }
+    return isHostInSubnet.call(this, address);
+  }
+  function isHostInSubnet(address) {
+    return this.mask(address.subnetMask) === address.mask();
+  }
+  function isCorrect(defaultBits) {
+    return function isCorrectForm() {
+      if (this.addressMinusSuffix !== this.correctForm()) {
+        return false;
+      }
+      if (this.subnetMask === defaultBits && !this.parsedSubnet) {
+        return true;
+      }
+      return this.parsedSubnet === String(this.subnetMask);
+    };
+  }
+  function prefixLengthFromMask(value, totalBits) {
+    const binary = value.toString(2).padStart(totalBits, "0");
+    if (binary.length > totalBits) {
+      throw new address_error_1.AddressError("Invalid subnet mask.");
+    }
+    const firstZero = binary.indexOf("0");
+    if (firstZero === -1) {
+      return totalBits;
+    }
+    if (binary.slice(firstZero).includes("1")) {
+      throw new address_error_1.AddressError("Invalid subnet mask.");
+    }
+    return firstZero;
+  }
+  function assertByteArray(bytes, byteCount, family, minimum) {
+    if (bytes.length !== byteCount) {
+      throw new address_error_1.AddressError(`${family} addresses require exactly ${byteCount} bytes`);
+    }
+    for (let i = 0;i < bytes.length; i++) {
+      if (!Number.isInteger(bytes[i]) || bytes[i] < minimum || bytes[i] > 255) {
+        throw new address_error_1.AddressError(`All bytes must be integers between ${minimum} and 255`);
+      }
+    }
+  }
+  function numberToPaddedHex(number) {
+    return number.toString(16).padStart(2, "0");
+  }
+  function stringToPaddedHex(numberString) {
+    return numberToPaddedHex(parseInt(numberString, 10));
+  }
+  function testBit(binaryValue, position) {
+    const { length } = binaryValue;
+    if (position > length) {
+      return false;
+    }
+    const positionInString = length - position;
+    return binaryValue.substring(positionInString, positionInString + 1) === "1";
+  }
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/v4/constants.js
+var require_constants3 = __commonJS((exports) => {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.RE_SUBNET_STRING = exports.RE_ADDRESS = exports.GROUPS = exports.BITS = undefined;
+  exports.BITS = 32;
+  exports.GROUPS = 4;
+  exports.RE_ADDRESS = /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/g;
+  exports.RE_SUBNET_STRING = /\/\d{1,2}$/;
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/ipv4.js
+var require_ipv4 = __commonJS((exports) => {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() {
+        return m[k];
+      } };
+    }
+    Object.defineProperty(o, k2, desc);
+  } : function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    o[k2] = m[k];
+  });
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+  } : function(o, v) {
+    o["default"] = v;
+  });
+  var __importStar = exports && exports.__importStar || function(mod) {
+    if (mod && mod.__esModule)
+      return mod;
+    var result = {};
+    if (mod != null) {
+      for (var k in mod)
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+          __createBinding(result, mod, k);
+    }
+    __setModuleDefault(result, mod);
+    return result;
+  };
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.Address4 = undefined;
+  var common = __importStar(require_common2());
+  var constants = __importStar(require_constants3());
+  var address_error_1 = require_address_error();
+  var isCorrect4 = common.isCorrect(constants.BITS);
+
+  class Address4 {
+    constructor(address) {
+      this.addressMinusSuffix = "";
+      this.groups = constants.GROUPS;
+      this.parsedAddress = [];
+      this.parsedSubnet = "";
+      this.subnet = "/32";
+      this.subnetMask = 32;
+      this.v4 = true;
+      this.isCorrect = isCorrect4;
+      this.isInSubnet = common.isInSubnet;
+      this.isHostInSubnet = common.isHostInSubnet;
+      this.address = address;
+      const subnet = constants.RE_SUBNET_STRING.exec(address);
+      if (subnet) {
+        this.parsedSubnet = subnet[0].replace("/", "");
+        this.subnetMask = parseInt(this.parsedSubnet, 10);
+        this.subnet = `/${this.subnetMask}`;
+        if (this.subnetMask < 0 || this.subnetMask > constants.BITS) {
+          throw new address_error_1.AddressError("Invalid subnet mask.");
+        }
+        address = address.replace(constants.RE_SUBNET_STRING, "");
+      }
+      this.addressMinusSuffix = address;
+      this.parsedAddress = this.parse(address);
+    }
+    static isValid(address) {
+      try {
+        new Address4(address);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    parse(address) {
+      const groups = address.split(".");
+      if (groups.some((group) => /^0\d/.test(group))) {
+        throw new address_error_1.AddressError("IPv4 addresses can't have leading zeroes.");
+      }
+      if (!address.match(constants.RE_ADDRESS)) {
+        throw new address_error_1.AddressError("Invalid IPv4 address.");
+      }
+      return groups;
+    }
+    correctForm() {
+      return this.parsedAddress.map((part) => parseInt(part, 10)).join(".");
+    }
+    static fromAddressAndMask(address, mask) {
+      const bits = common.prefixLengthFromMask(new Address4(mask).bigInt(), constants.BITS);
+      return new Address4(`${address}/${bits}`);
+    }
+    static fromAddressAndWildcardMask(address, wildcardMask) {
+      const wildcard = new Address4(wildcardMask).bigInt();
+      const allOnes = (BigInt(1) << BigInt(constants.BITS)) - BigInt(1);
+      const mask = wildcard ^ allOnes;
+      const bits = common.prefixLengthFromMask(mask, constants.BITS);
+      return new Address4(`${address}/${bits}`);
+    }
+    static fromWildcard(input) {
+      const groups = input.split(".");
+      if (groups.length !== constants.GROUPS) {
+        throw new address_error_1.AddressError("Wildcard pattern must have 4 octets");
+      }
+      let firstWildcard = -1;
+      for (let i = 0;i < groups.length; i++) {
+        if (groups[i] === "*") {
+          if (firstWildcard === -1) {
+            firstWildcard = i;
+          }
+        } else if (firstWildcard !== -1) {
+          throw new address_error_1.AddressError("Wildcard `*` must only appear in trailing octets (e.g. `192.168.0.*`)");
+        }
+      }
+      const trailing = firstWildcard === -1 ? 0 : groups.length - firstWildcard;
+      const replaced = groups.map((g) => g === "*" ? "0" : g);
+      const subnetBits = constants.BITS - trailing * 8;
+      return new Address4(`${replaced.join(".")}/${subnetBits}`);
+    }
+    static fromHex(hex) {
+      const stripped = hex.replace(/:/g, "");
+      if (!/^[0-9a-fA-F]{8}$/.test(stripped)) {
+        throw new address_error_1.AddressError("IPv4 hex must be exactly 8 hex digits");
+      }
+      const groups = [];
+      for (let i = 0;i < 8; i += 2) {
+        groups.push(parseInt(stripped.slice(i, i + 2), 16));
+      }
+      return new Address4(groups.join("."));
+    }
+    static fromInteger(integer) {
+      if (!Number.isInteger(integer) || integer < 0 || integer > 4294967295) {
+        throw new address_error_1.AddressError("IPv4 integer must be in the range 0 to 2**32 - 1");
+      }
+      return Address4.fromHex(integer.toString(16).padStart(8, "0"));
+    }
+    static fromArpa(arpaFormAddress) {
+      const leader = arpaFormAddress.replace(/(\.in-addr\.arpa)?\.$/, "");
+      const address = leader.split(".").reverse().join(".");
+      return new Address4(address);
+    }
+    toHex() {
+      return this.parsedAddress.map((part) => common.stringToPaddedHex(part)).join(":");
+    }
+    toArray() {
+      return this.parsedAddress.map((part) => parseInt(part, 10));
+    }
+    toGroup6() {
+      const output = [];
+      let i;
+      for (i = 0;i < constants.GROUPS; i += 2) {
+        output.push(`${common.stringToPaddedHex(this.parsedAddress[i])}${common.stringToPaddedHex(this.parsedAddress[i + 1])}`);
+      }
+      return output.join(":");
+    }
+    bigInt() {
+      return BigInt(`0x${this.parsedAddress.map((n) => common.stringToPaddedHex(n)).join("")}`);
+    }
+    _startAddress() {
+      return BigInt(`0b${this.mask() + "0".repeat(constants.BITS - this.subnetMask)}`);
+    }
+    startAddress() {
+      return Address4.fromBigInt(this._startAddress());
+    }
+    startAddressExclusive() {
+      const adjust = BigInt("1");
+      return Address4.fromBigInt(this._startAddress() + adjust);
+    }
+    _endAddress() {
+      return BigInt(`0b${this.mask() + "1".repeat(constants.BITS - this.subnetMask)}`);
+    }
+    endAddress() {
+      return Address4.fromBigInt(this._endAddress());
+    }
+    endAddressExclusive() {
+      const adjust = BigInt("1");
+      return Address4.fromBigInt(this._endAddress() - adjust);
+    }
+    subnetMaskAddress() {
+      return Address4.fromBigInt(BigInt(`0b${"1".repeat(this.subnetMask)}${"0".repeat(constants.BITS - this.subnetMask)}`));
+    }
+    wildcardMask() {
+      return Address4.fromBigInt(BigInt(`0b${"0".repeat(this.subnetMask)}${"1".repeat(constants.BITS - this.subnetMask)}`));
+    }
+    networkForm() {
+      return `${this.startAddress().correctForm()}/${this.subnetMask}`;
+    }
+    static fromBigInt(bigInt) {
+      if (bigInt < BigInt(0) || bigInt > BigInt(4294967295)) {
+        throw new address_error_1.AddressError("IPv4 BigInt must be in the range 0 to 2**32 - 1");
+      }
+      return Address4.fromHex(bigInt.toString(16).padStart(8, "0"));
+    }
+    static fromByteArray(bytes) {
+      common.assertByteArray(bytes, 4, "IPv4", 0);
+      return this.fromUnsignedByteArray(bytes);
+    }
+    static fromUnsignedByteArray(bytes) {
+      if (bytes.length !== 4) {
+        throw new address_error_1.AddressError("IPv4 addresses require exactly 4 bytes");
+      }
+      const address = bytes.join(".");
+      return new Address4(address);
+    }
+    mask(mask) {
+      if (mask === undefined) {
+        mask = this.subnetMask;
+      }
+      return this.getBitsBase2(0, mask);
+    }
+    getBitsBase2(start, end) {
+      return this.binaryZeroPad().slice(start, end);
+    }
+    reverseForm(options) {
+      if (!options) {
+        options = {};
+      }
+      const reversed = this.correctForm().split(".").reverse().join(".");
+      if (options.omitSuffix) {
+        return reversed;
+      }
+      return `${reversed}.in-addr.arpa.`;
+    }
+    isMulticast() {
+      return this.isHostInSubnet(MULTICAST_V4);
+    }
+    isPrivate() {
+      return PRIVATE_V4.some((subnet) => this.isHostInSubnet(subnet));
+    }
+    isLoopback() {
+      return this.isHostInSubnet(LOOPBACK_V4);
+    }
+    isLinkLocal() {
+      return this.isHostInSubnet(LINK_LOCAL_V4);
+    }
+    isUnspecified() {
+      return this.isHostInSubnet(UNSPECIFIED_V4);
+    }
+    isBroadcast() {
+      return this.isHostInSubnet(BROADCAST_V4);
+    }
+    isCGNAT() {
+      return this.isHostInSubnet(CGNAT_V4);
+    }
+    binaryZeroPad() {
+      if (this._binaryZeroPad === undefined) {
+        this._binaryZeroPad = this.bigInt().toString(2).padStart(constants.BITS, "0");
+      }
+      return this._binaryZeroPad;
+    }
+    groupForV6() {
+      const segments = this.parsedAddress;
+      return this.correctForm().replace(constants.RE_ADDRESS, `<span class="hover-group group-v4 group-6">${segments.slice(0, 2).join(".")}</span>.<span class="hover-group group-v4 group-7">${segments.slice(2, 4).join(".")}</span>`);
+    }
+  }
+  exports.Address4 = Address4;
+  var MULTICAST_V4 = new Address4("224.0.0.0/4");
+  var PRIVATE_V4 = [
+    new Address4("10.0.0.0/8"),
+    new Address4("172.16.0.0/12"),
+    new Address4("192.168.0.0/16")
+  ];
+  var LOOPBACK_V4 = new Address4("127.0.0.0/8");
+  var LINK_LOCAL_V4 = new Address4("169.254.0.0/16");
+  var UNSPECIFIED_V4 = new Address4("0.0.0.0/32");
+  var BROADCAST_V4 = new Address4("255.255.255.255/32");
+  var CGNAT_V4 = new Address4("100.64.0.0/10");
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/v6/constants.js
+var require_constants4 = __commonJS((exports) => {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.RE_URL_WITH_PORT = exports.RE_URL = exports.RE_ZONE_STRING = exports.RE_SUBNET_STRING = exports.RE_BAD_ADDRESS = exports.RE_BAD_CHARACTERS = exports.TYPES = exports.SCOPES = exports.GROUPS = exports.BITS = undefined;
+  exports.BITS = 128;
+  exports.GROUPS = 8;
+  exports.SCOPES = {
+    0: "Reserved",
+    1: "Interface local",
+    2: "Link local",
+    4: "Admin local",
+    5: "Site local",
+    8: "Organization local",
+    14: "Global",
+    15: "Reserved"
+  };
+  exports.TYPES = {
+    "ff01::1/128": "Multicast (All nodes on this interface)",
+    "ff01::2/128": "Multicast (All routers on this interface)",
+    "ff02::1/128": "Multicast (All nodes on this link)",
+    "ff02::2/128": "Multicast (All routers on this link)",
+    "ff05::2/128": "Multicast (All routers in this site)",
+    "ff02::5/128": "Multicast (OSPFv3 AllSPF routers)",
+    "ff02::6/128": "Multicast (OSPFv3 AllDR routers)",
+    "ff02::9/128": "Multicast (RIP routers)",
+    "ff02::a/128": "Multicast (EIGRP routers)",
+    "ff02::d/128": "Multicast (PIM routers)",
+    "ff02::16/128": "Multicast (MLDv2 reports)",
+    "ff01::fb/128": "Multicast (mDNSv6)",
+    "ff02::fb/128": "Multicast (mDNSv6)",
+    "ff05::fb/128": "Multicast (mDNSv6)",
+    "ff02::1:2/128": "Multicast (All DHCP servers and relay agents on this link)",
+    "ff05::1:2/128": "Multicast (All DHCP servers and relay agents in this site)",
+    "ff02::1:3/128": "Multicast (All DHCP servers on this link)",
+    "ff05::1:3/128": "Multicast (All DHCP servers in this site)",
+    "::/128": "Unspecified",
+    "::1/128": "Loopback",
+    "::ffff:0:0/96": "IPv4-mapped",
+    "ff00::/8": "Multicast",
+    "fe80::/10": "Link-local unicast",
+    "fc00::/7": "Unique local",
+    "2002::/16": "6to4",
+    "2001:db8::/32": "Documentation",
+    "64:ff9b::/96": "NAT64 (well-known)",
+    "64:ff9b:1::/48": "NAT64 (local-use)"
+  };
+  exports.RE_BAD_CHARACTERS = /([^0-9a-f:/%])/gi;
+  exports.RE_BAD_ADDRESS = /([0-9a-f]{5,}|:{3,}|[^:]:$|^:[^:]|\/$)/gi;
+  exports.RE_SUBNET_STRING = /\/\d{1,3}(?=%|$)/;
+  exports.RE_ZONE_STRING = /%.*$/;
+  exports.RE_URL = /^(?:\[([0-9a-f:.]+)\]|([0-9a-f:.]+))(?:[/?#].*)?$/i;
+  exports.RE_URL_WITH_PORT = /^\[([0-9a-f:.]+)\]:([0-9]{1,5})(?:[/?#].*)?$/i;
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/v6/helpers.js
+var require_helpers = __commonJS((exports) => {
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.escapeHtml = escapeHtml;
+  exports.spanAllZeroes = spanAllZeroes;
+  exports.spanAll = spanAll;
+  exports.spanLeadingZeroes = spanLeadingZeroes;
+  exports.simpleGroup = simpleGroup;
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+  function spanAllZeroes(s) {
+    return escapeHtml(s).replace(/(0+)/g, '<span class="zero">$1</span>');
+  }
+  function spanAll(s, offset = 0) {
+    const letters = s.split("");
+    return letters.map((n, i) => `<span class="digit value-${escapeHtml(n)} position-${i + offset}">${spanAllZeroes(n)}</span>`).join("");
+  }
+  function spanLeadingZeroesSimple(group) {
+    return escapeHtml(group).replace(/^(0+)/, '<span class="zero">$1</span>');
+  }
+  function spanLeadingZeroes(address) {
+    const groups = address.split(":");
+    return groups.map((g) => spanLeadingZeroesSimple(g)).join(":");
+  }
+  function simpleGroup(addressString, offset = 0) {
+    const groups = addressString.split(":");
+    return groups.map((g, i) => {
+      if (/group-v4/.test(g)) {
+        return g;
+      }
+      return `<span class="hover-group group-${i + offset}">${spanLeadingZeroesSimple(g)}</span>`;
+    });
+  }
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/v6/regular-expressions.js
+var require_regular_expressions = __commonJS((exports) => {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() {
+        return m[k];
+      } };
+    }
+    Object.defineProperty(o, k2, desc);
+  } : function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    o[k2] = m[k];
+  });
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+  } : function(o, v) {
+    o["default"] = v;
+  });
+  var __importStar = exports && exports.__importStar || function(mod) {
+    if (mod && mod.__esModule)
+      return mod;
+    var result = {};
+    if (mod != null) {
+      for (var k in mod)
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+          __createBinding(result, mod, k);
+    }
+    __setModuleDefault(result, mod);
+    return result;
+  };
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.ADDRESS_BOUNDARY = undefined;
+  exports.groupPossibilities = groupPossibilities;
+  exports.padGroup = padGroup;
+  exports.simpleRegularExpression = simpleRegularExpression;
+  exports.possibleElisions = possibleElisions;
+  var v6 = __importStar(require_constants4());
+  function groupPossibilities(possibilities) {
+    return `(${possibilities.join("|")})`;
+  }
+  function padGroup(group) {
+    if (group.length < 4) {
+      return `0{0,${4 - group.length}}${group}`;
+    }
+    return group;
+  }
+  exports.ADDRESS_BOUNDARY = "[^A-Fa-f0-9:]";
+  function simpleRegularExpression(groups) {
+    const zeroIndexes = [];
+    groups.forEach((group, i) => {
+      const groupInteger = parseInt(group, 16);
+      if (groupInteger === 0) {
+        zeroIndexes.push(i);
+      }
+    });
+    const possibilities = zeroIndexes.map((zeroIndex) => groups.map((group, i) => {
+      if (i === zeroIndex) {
+        const elision = i === 0 || i === v6.GROUPS - 1 ? ":" : "";
+        return groupPossibilities([padGroup(group), elision]);
+      }
+      return padGroup(group);
+    }).join(":"));
+    possibilities.push(groups.map(padGroup).join(":"));
+    return groupPossibilities(possibilities);
+  }
+  function possibleElisions(elidedGroups, moreLeft, moreRight) {
+    const left = moreLeft ? "" : ":";
+    const right = moreRight ? "" : ":";
+    const possibilities = [];
+    if (!moreLeft && !moreRight) {
+      possibilities.push("::");
+    }
+    if (moreLeft && moreRight) {
+      possibilities.push("");
+    }
+    if (moreRight && !moreLeft || !moreRight && moreLeft) {
+      possibilities.push(":");
+    }
+    possibilities.push(`${left}(:0{1,4}){1,${elidedGroups - 1}}`);
+    possibilities.push(`(0{1,4}:){1,${elidedGroups - 1}}${right}`);
+    possibilities.push(`(0{1,4}:){${elidedGroups - 1}}0{1,4}`);
+    for (let groups = 1;groups < elidedGroups - 1; groups++) {
+      for (let position = 1;position < elidedGroups - groups; position++) {
+        possibilities.push(`(0{1,4}:){${position}}:(0{1,4}:){${elidedGroups - position - groups - 1}}0{1,4}`);
+      }
+    }
+    return groupPossibilities(possibilities);
+  }
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/ipv6.js
+var require_ipv6 = __commonJS((exports) => {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() {
+        return m[k];
+      } };
+    }
+    Object.defineProperty(o, k2, desc);
+  } : function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    o[k2] = m[k];
+  });
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+  } : function(o, v) {
+    o["default"] = v;
+  });
+  var __importStar = exports && exports.__importStar || function(mod) {
+    if (mod && mod.__esModule)
+      return mod;
+    var result = {};
+    if (mod != null) {
+      for (var k in mod)
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+          __createBinding(result, mod, k);
+    }
+    __setModuleDefault(result, mod);
+    return result;
+  };
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.Address6 = undefined;
+  var common = __importStar(require_common2());
+  var constants4 = __importStar(require_constants3());
+  var constants6 = __importStar(require_constants4());
+  var helpers = __importStar(require_helpers());
+  var ipv4_1 = require_ipv4();
+  var regular_expressions_1 = require_regular_expressions();
+  var address_error_1 = require_address_error();
+  var common_1 = require_common2();
+  var isCorrect6 = common.isCorrect(constants6.BITS);
+  function assert(condition) {
+    if (!condition) {
+      throw new Error("Assertion failed.");
+    }
+  }
+  function addCommas(number) {
+    const r = /(\d+)(\d{3})/;
+    while (r.test(number)) {
+      number = number.replace(r, "$1,$2");
+    }
+    return number;
+  }
+  function spanLeadingZeroes4(n) {
+    n = n.replace(/^(0{1,})([1-9]+)$/, '<span class="parse-error">$1</span>$2');
+    n = n.replace(/^(0{1,})(0)$/, '<span class="parse-error">$1</span>$2');
+    return n;
+  }
+  function compact(address, slice) {
+    const s1 = [];
+    const s2 = [];
+    let i;
+    for (i = 0;i < address.length; i++) {
+      if (i < slice[0]) {
+        s1.push(address[i]);
+      } else if (i > slice[1]) {
+        s2.push(address[i]);
+      }
+    }
+    return s1.concat(["compact"]).concat(s2);
+  }
+  function paddedHex(octet) {
+    return parseInt(octet, 16).toString(16).padStart(4, "0");
+  }
+  function unsignByte(b) {
+    return b & 255;
+  }
+
+  class Address6 {
+    constructor(address, optionalGroups) {
+      this.addressMinusSuffix = "";
+      this.parsedSubnet = "";
+      this.subnet = "/128";
+      this.subnetMask = 128;
+      this.v4 = false;
+      this.zone = "";
+      this.isInSubnet = common.isInSubnet;
+      this.isHostInSubnet = common.isHostInSubnet;
+      this.isCorrect = isCorrect6;
+      if (optionalGroups === undefined) {
+        this.groups = constants6.GROUPS;
+      } else {
+        this.groups = optionalGroups;
+      }
+      this.address = address;
+      const subnet = constants6.RE_SUBNET_STRING.exec(address);
+      if (subnet) {
+        this.parsedSubnet = subnet[0].replace("/", "");
+        this.subnetMask = parseInt(this.parsedSubnet, 10);
+        this.subnet = `/${this.subnetMask}`;
+        if (Number.isNaN(this.subnetMask) || this.subnetMask < 0 || this.subnetMask > constants6.BITS) {
+          throw new address_error_1.AddressError("Invalid subnet mask.");
+        }
+        address = address.replace(constants6.RE_SUBNET_STRING, "");
+      }
+      if (/\//.test(address)) {
+        throw new address_error_1.AddressError("Invalid subnet mask.");
+      }
+      const zone = constants6.RE_ZONE_STRING.exec(address);
+      if (zone) {
+        this.zone = zone[0];
+        address = address.replace(constants6.RE_ZONE_STRING, "");
+      }
+      this.addressMinusSuffix = address;
+      this.parsedAddress = this.parse(this.addressMinusSuffix);
+    }
+    static isValid(address) {
+      try {
+        new Address6(address);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    static fromBigInt(bigInt) {
+      if (bigInt < BigInt(0) || bigInt > (BigInt(1) << BigInt(constants6.BITS)) - BigInt(1)) {
+        throw new address_error_1.AddressError("IPv6 BigInt must be in the range 0 to 2**128 - 1");
+      }
+      const hex = bigInt.toString(16).padStart(32, "0");
+      const groups = [];
+      for (let i = 0;i < constants6.GROUPS; i++) {
+        groups.push(hex.slice(i * 4, (i + 1) * 4));
+      }
+      return new Address6(groups.join(":"));
+    }
+    static fromURL(url) {
+      var _a;
+      let host;
+      let port = null;
+      let result;
+      const stripped = url.replace(/^[a-z][a-z0-9+.-]*:\/\//i, "");
+      if (stripped.indexOf("[") !== -1 && stripped.indexOf("]:") !== -1) {
+        result = constants6.RE_URL_WITH_PORT.exec(stripped);
+        if (result === null) {
+          return {
+            error: "failed to parse address with port",
+            address: null,
+            port: null
+          };
+        }
+        host = result[1];
+        port = result[2];
+      } else {
+        result = constants6.RE_URL.exec(stripped);
+        if (result === null) {
+          return {
+            error: "failed to parse address from URL",
+            address: null,
+            port: null
+          };
+        }
+        host = (_a = result[1]) !== null && _a !== undefined ? _a : result[2];
+      }
+      if (port) {
+        port = parseInt(port, 10);
+        if (port < 0 || port > 65535) {
+          port = null;
+        }
+      } else {
+        port = null;
+      }
+      return {
+        address: new Address6(host),
+        port
+      };
+    }
+    static fromAddressAndMask(address, mask) {
+      const bits = common.prefixLengthFromMask(new Address6(mask).bigInt(), constants6.BITS);
+      return new Address6(`${address}/${bits}`);
+    }
+    static fromAddressAndWildcardMask(address, wildcardMask) {
+      const wildcard = new Address6(wildcardMask).bigInt();
+      const allOnes = (BigInt(1) << BigInt(constants6.BITS)) - BigInt(1);
+      const mask = wildcard ^ allOnes;
+      const bits = common.prefixLengthFromMask(mask, constants6.BITS);
+      return new Address6(`${address}/${bits}`);
+    }
+    static fromWildcard(input) {
+      if (input.includes("%") || input.includes("/")) {
+        throw new address_error_1.AddressError("Wildcard pattern must not include a zone or CIDR suffix");
+      }
+      const halves = input.split("::");
+      if (halves.length > 2) {
+        throw new address_error_1.AddressError("Wildcard pattern cannot contain more than one '::'");
+      }
+      let groups;
+      if (halves.length === 2) {
+        const left = halves[0] === "" ? [] : halves[0].split(":");
+        const right = halves[1] === "" ? [] : halves[1].split(":");
+        const remaining = constants6.GROUPS - left.length - right.length;
+        if (remaining < 1) {
+          throw new address_error_1.AddressError("Wildcard pattern with '::' has too many groups");
+        }
+        groups = [...left, ...new Array(remaining).fill("0"), ...right];
+      } else {
+        groups = input.split(":");
+      }
+      if (groups.length !== constants6.GROUPS) {
+        throw new address_error_1.AddressError("Wildcard pattern must have 8 groups");
+      }
+      let firstWildcard = -1;
+      for (let i = 0;i < groups.length; i++) {
+        if (groups[i] === "*") {
+          if (firstWildcard === -1) {
+            firstWildcard = i;
+          }
+        } else if (firstWildcard !== -1) {
+          throw new address_error_1.AddressError("Wildcard `*` must only appear in trailing groups (e.g. `2001:db8:*:*:*:*:*:*`)");
+        }
+      }
+      const trailing = firstWildcard === -1 ? 0 : groups.length - firstWildcard;
+      const replaced = groups.map((g) => g === "*" ? "0" : g);
+      const subnetBits = constants6.BITS - trailing * 16;
+      return new Address6(`${replaced.join(":")}/${subnetBits}`);
+    }
+    static fromAddress4(address) {
+      const address4 = new ipv4_1.Address4(address);
+      const mask6 = constants6.BITS - (constants4.BITS - address4.subnetMask);
+      return new Address6(`::ffff:${address4.correctForm()}/${mask6}`);
+    }
+    static fromArpa(arpaFormAddress) {
+      let address = arpaFormAddress.replace(/(\.ip6\.arpa)?\.$/, "");
+      const semicolonAmount = 7;
+      if (address.length !== 63) {
+        throw new address_error_1.AddressError("Invalid 'ip6.arpa' form.");
+      }
+      const parts = address.split(".").reverse();
+      for (let i = semicolonAmount;i > 0; i--) {
+        const insertIndex = i * 4;
+        parts.splice(insertIndex, 0, ":");
+      }
+      address = parts.join("");
+      return new Address6(address);
+    }
+    microsoftTranscription() {
+      return `${this.correctForm().replace(/:/g, "-")}.ipv6-literal.net`;
+    }
+    mask(mask = this.subnetMask) {
+      return this.getBitsBase2(0, mask);
+    }
+    possibleSubnets(subnetSize = 128) {
+      const availableBits = constants6.BITS - this.subnetMask;
+      const subnetBits = Math.abs(subnetSize - constants6.BITS);
+      const subnetPowers = availableBits - subnetBits;
+      if (subnetPowers < 0) {
+        return "0";
+      }
+      return addCommas((BigInt("2") ** BigInt(subnetPowers)).toString(10));
+    }
+    _startAddress() {
+      return BigInt(`0b${this.mask() + "0".repeat(constants6.BITS - this.subnetMask)}`);
+    }
+    startAddress() {
+      return Address6.fromBigInt(this._startAddress());
+    }
+    startAddressExclusive() {
+      const adjust = BigInt("1");
+      return Address6.fromBigInt(this._startAddress() + adjust);
+    }
+    _endAddress() {
+      return BigInt(`0b${this.mask() + "1".repeat(constants6.BITS - this.subnetMask)}`);
+    }
+    endAddress() {
+      return Address6.fromBigInt(this._endAddress());
+    }
+    endAddressExclusive() {
+      const adjust = BigInt("1");
+      return Address6.fromBigInt(this._endAddress() - adjust);
+    }
+    subnetMaskAddress() {
+      return Address6.fromBigInt(BigInt(`0b${"1".repeat(this.subnetMask)}${"0".repeat(constants6.BITS - this.subnetMask)}`));
+    }
+    wildcardMask() {
+      return Address6.fromBigInt(BigInt(`0b${"0".repeat(this.subnetMask)}${"1".repeat(constants6.BITS - this.subnetMask)}`));
+    }
+    networkForm() {
+      return `${this.startAddress().correctForm()}/${this.subnetMask}`;
+    }
+    getScope() {
+      const type = this.getType();
+      if (type === "Multicast" || type.startsWith("Multicast ")) {
+        const scope = constants6.SCOPES[parseInt(this.getBits(12, 16).toString(10), 10)];
+        return scope || "Unknown";
+      }
+      if (type === "Link-local unicast" || type === "Loopback") {
+        return "Link local";
+      }
+      if (type === "Unspecified") {
+        return "Unknown";
+      }
+      return "Global";
+    }
+    getType() {
+      for (let i = 0;i < TYPE_SUBNETS.length; i++) {
+        const entry = TYPE_SUBNETS[i];
+        if (this.isHostInSubnet(entry[0])) {
+          return entry[1];
+        }
+      }
+      return "Global unicast";
+    }
+    getBits(start, end) {
+      return BigInt(`0b${this.getBitsBase2(start, end)}`);
+    }
+    getBitsBase2(start, end) {
+      return this.binaryZeroPad().slice(start, end);
+    }
+    getBitsBase16(start, end) {
+      const length = end - start;
+      if (length % 4 !== 0) {
+        throw new Error("Length of bits to retrieve must be divisible by four");
+      }
+      return this.getBits(start, end).toString(16).padStart(length / 4, "0");
+    }
+    getBitsPastSubnet() {
+      return this.getBitsBase2(this.subnetMask, constants6.BITS);
+    }
+    reverseForm(options) {
+      if (!options) {
+        options = {};
+      }
+      const characters = Math.floor(this.subnetMask / 4);
+      const reversed = this.canonicalForm().replace(/:/g, "").split("").slice(0, characters).reverse().join(".");
+      if (characters > 0) {
+        if (options.omitSuffix) {
+          return reversed;
+        }
+        return `${reversed}.ip6.arpa.`;
+      }
+      if (options.omitSuffix) {
+        return "";
+      }
+      return "ip6.arpa.";
+    }
+    correctForm() {
+      let i;
+      let groups = [];
+      let zeroCounter = 0;
+      const zeroes = [];
+      for (i = 0;i < this.parsedAddress.length; i++) {
+        const value = parseInt(this.parsedAddress[i], 16);
+        if (value === 0) {
+          zeroCounter++;
+        }
+        if (value !== 0 && zeroCounter > 0) {
+          if (zeroCounter > 1) {
+            zeroes.push([i - zeroCounter, i - 1]);
+          }
+          zeroCounter = 0;
+        }
+      }
+      if (zeroCounter > 1) {
+        zeroes.push([this.parsedAddress.length - zeroCounter, this.parsedAddress.length - 1]);
+      }
+      const zeroLengths = zeroes.map((n) => n[1] - n[0] + 1);
+      if (zeroes.length > 0) {
+        const index = zeroLengths.indexOf(Math.max(...zeroLengths));
+        groups = compact(this.parsedAddress, zeroes[index]);
+      } else {
+        groups = this.parsedAddress;
+      }
+      for (i = 0;i < groups.length; i++) {
+        if (groups[i] !== "compact") {
+          groups[i] = parseInt(groups[i], 16).toString(16);
+        }
+      }
+      let correct = groups.join(":");
+      correct = correct.replace(/^compact$/, "::");
+      correct = correct.replace(/(^compact)|(compact$)/, ":");
+      correct = correct.replace(/compact/, "");
+      return correct;
+    }
+    binaryZeroPad() {
+      if (this._binaryZeroPad === undefined) {
+        this._binaryZeroPad = this.bigInt().toString(2).padStart(constants6.BITS, "0");
+      }
+      return this._binaryZeroPad;
+    }
+    parse4in6(address) {
+      if (address.indexOf(".") === -1) {
+        return address;
+      }
+      const groups = address.split(":");
+      const lastGroup = groups.slice(-1)[0];
+      const v4Octets = lastGroup.split(".");
+      if (v4Octets.length === constants4.GROUPS && v4Octets.every((octet) => /^\d{1,3}$/.test(octet))) {
+        if (v4Octets.some((octet) => /^0\d/.test(octet))) {
+          const highlighted = v4Octets.map(spanLeadingZeroes4).join(".");
+          const prefix = groups.slice(0, -1).map(helpers.escapeHtml).join(":");
+          const separator = groups.length > 1 ? ":" : "";
+          throw new address_error_1.AddressError("IPv4 addresses can't have leading zeroes.", `${prefix}${separator}${highlighted}`);
+        }
+      }
+      const address4 = lastGroup.match(constants4.RE_ADDRESS);
+      if (address4) {
+        this.parsedAddress4 = address4[0];
+        const v4Suffix = this.subnetMask >= 96 ? `/${this.subnetMask - 96}` : "";
+        this.address4 = new ipv4_1.Address4(`${this.parsedAddress4}${v4Suffix}`);
+        this.v4 = true;
+        groups[groups.length - 1] = this.address4.toGroup6();
+        address = groups.join(":");
+      }
+      return address;
+    }
+    parse(address) {
+      address = this.parse4in6(address);
+      const badCharacters = address.match(constants6.RE_BAD_CHARACTERS);
+      if (badCharacters) {
+        throw new address_error_1.AddressError(`Bad character${badCharacters.length > 1 ? "s" : ""} detected in address: ${badCharacters.join("")}`, address.replace(constants6.RE_BAD_CHARACTERS, '<span class="parse-error">$1</span>'));
+      }
+      const badAddress = address.match(constants6.RE_BAD_ADDRESS);
+      if (badAddress) {
+        throw new address_error_1.AddressError(`Address failed regex: ${badAddress.join("")}`, address.replace(constants6.RE_BAD_ADDRESS, '<span class="parse-error">$1</span>'));
+      }
+      let groups = [];
+      const halves = address.split("::");
+      if (halves.length === 2) {
+        let first = halves[0].split(":");
+        let last = halves[1].split(":");
+        if (first.length === 1 && first[0] === "") {
+          first = [];
+        }
+        if (last.length === 1 && last[0] === "") {
+          last = [];
+        }
+        const remaining = this.groups - (first.length + last.length);
+        if (!remaining) {
+          throw new address_error_1.AddressError("Error parsing groups");
+        }
+        this.elidedGroups = remaining;
+        this.elisionBegin = first.length;
+        this.elisionEnd = first.length + this.elidedGroups;
+        groups = groups.concat(first);
+        for (let i = 0;i < remaining; i++) {
+          groups.push("0");
+        }
+        groups = groups.concat(last);
+      } else if (halves.length === 1) {
+        groups = address.split(":");
+        this.elidedGroups = 0;
+      } else {
+        throw new address_error_1.AddressError("Too many :: groups found");
+      }
+      groups = groups.map((group) => parseInt(group, 16).toString(16));
+      if (groups.length !== this.groups) {
+        throw new address_error_1.AddressError("Incorrect number of groups found");
+      }
+      return groups;
+    }
+    canonicalForm() {
+      return this.parsedAddress.map(paddedHex).join(":");
+    }
+    decimal() {
+      return this.parsedAddress.map((n) => parseInt(n, 16).toString(10).padStart(5, "0")).join(":");
+    }
+    bigInt() {
+      return BigInt(`0x${this.parsedAddress.map(paddedHex).join("")}`);
+    }
+    to4() {
+      const binary = this.binaryZeroPad().split("");
+      const hex = BigInt(`0b${binary.slice(96, 128).join("")}`).toString(16).padStart(8, "0");
+      if (this.subnetMask >= 96) {
+        const v4Mask = this.subnetMask - 96;
+        const groups = [];
+        for (let i = 0;i < 8; i += 2) {
+          groups.push(parseInt(hex.slice(i, i + 2), 16));
+        }
+        return new ipv4_1.Address4(`${groups.join(".")}/${v4Mask}`);
+      }
+      return ipv4_1.Address4.fromHex(hex);
+    }
+    to4in6() {
+      const address4 = this.to4();
+      const address6 = new Address6(this.parsedAddress.slice(0, 6).join(":"), 6);
+      const correct = address6.correctForm();
+      let infix = "";
+      if (!/:$/.test(correct)) {
+        infix = ":";
+      }
+      return correct + infix + address4.correctForm();
+    }
+    inspectTeredo() {
+      const prefix = this.getBitsBase16(0, 32);
+      const bitsForUdpPort = this.getBits(80, 96);
+      const udpPort = (bitsForUdpPort ^ BigInt("0xffff")).toString();
+      const server4 = ipv4_1.Address4.fromHex(this.getBitsBase16(32, 64));
+      const bitsForClient4 = this.getBits(96, 128);
+      const client4 = ipv4_1.Address4.fromHex((bitsForClient4 ^ BigInt("0xffffffff")).toString(16).padStart(8, "0"));
+      const flagsBase2 = this.getBitsBase2(64, 80);
+      const coneNat = (0, common_1.testBit)(flagsBase2, 15);
+      const reserved = (0, common_1.testBit)(flagsBase2, 14);
+      const groupIndividual = (0, common_1.testBit)(flagsBase2, 8);
+      const universalLocal = (0, common_1.testBit)(flagsBase2, 9);
+      const nonce = BigInt(`0b${flagsBase2.slice(2, 6) + flagsBase2.slice(8, 16)}`).toString(10);
+      return {
+        prefix: `${prefix.slice(0, 4)}:${prefix.slice(4, 8)}`,
+        server4: server4.address,
+        client4: client4.address,
+        flags: flagsBase2,
+        coneNat,
+        microsoft: {
+          reserved,
+          universalLocal,
+          groupIndividual,
+          nonce
+        },
+        udpPort
+      };
+    }
+    inspect6to4() {
+      const prefix = this.getBitsBase16(0, 16);
+      const gateway = ipv4_1.Address4.fromHex(this.getBitsBase16(16, 48));
+      return {
+        prefix: prefix.slice(0, 4),
+        gateway: gateway.address
+      };
+    }
+    to6to4() {
+      if (!this.is4()) {
+        return null;
+      }
+      const addr6to4 = [
+        "2002",
+        this.getBitsBase16(96, 112),
+        this.getBitsBase16(112, 128),
+        "",
+        "/16"
+      ].join(":");
+      return new Address6(addr6to4);
+    }
+    static fromAddress4Nat64(address, prefix = "64:ff9b::/96") {
+      const v4 = new ipv4_1.Address4(address);
+      const prefix6 = new Address6(prefix);
+      const pl = prefix6.subnetMask;
+      if (pl !== 32 && pl !== 40 && pl !== 48 && pl !== 56 && pl !== 64 && pl !== 96) {
+        throw new address_error_1.AddressError("NAT64 prefix length must be 32, 40, 48, 56, 64, or 96");
+      }
+      const prefixBits = prefix6.binaryZeroPad();
+      const v4Bits = v4.binaryZeroPad();
+      let bits;
+      if (pl === 96) {
+        bits = prefixBits.slice(0, 96) + v4Bits;
+      } else {
+        const beforeU = 64 - pl;
+        bits = [
+          prefixBits.slice(0, pl),
+          v4Bits.slice(0, beforeU),
+          "00000000",
+          v4Bits.slice(beforeU),
+          "0".repeat(128 - 72 - (32 - beforeU))
+        ].join("");
+      }
+      const hex = BigInt(`0b${bits}`).toString(16).padStart(32, "0");
+      const groups = [];
+      for (let i = 0;i < 8; i++) {
+        groups.push(hex.slice(i * 4, (i + 1) * 4));
+      }
+      return new Address6(groups.join(":"));
+    }
+    toAddress4Nat64(prefix = "64:ff9b::/96") {
+      const prefix6 = new Address6(prefix);
+      const pl = prefix6.subnetMask;
+      if (pl !== 32 && pl !== 40 && pl !== 48 && pl !== 56 && pl !== 64 && pl !== 96) {
+        throw new address_error_1.AddressError("NAT64 prefix length must be 32, 40, 48, 56, 64, or 96");
+      }
+      if (!this.isHostInSubnet(prefix6)) {
+        return null;
+      }
+      const bits = this.binaryZeroPad();
+      let v4Bits;
+      if (pl === 96) {
+        v4Bits = bits.slice(96, 128);
+      } else {
+        const beforeU = 64 - pl;
+        v4Bits = bits.slice(pl, pl + beforeU) + bits.slice(72, 72 + (32 - beforeU));
+      }
+      const octets = [];
+      for (let i = 0;i < 4; i++) {
+        octets.push(parseInt(v4Bits.slice(i * 8, (i + 1) * 8), 2).toString());
+      }
+      return new ipv4_1.Address4(octets.join("."));
+    }
+    toByteArray() {
+      const value = this.bigInt().toString(16).padStart(constants6.BITS / 4, "0");
+      const bytes = [];
+      for (let i = 0, length = value.length;i < length; i += 2) {
+        bytes.push(parseInt(value.substring(i, i + 2), 16));
+      }
+      return bytes;
+    }
+    toUnsignedByteArray() {
+      return this.toByteArray().map(unsignByte);
+    }
+    static fromByteArray(bytes) {
+      common.assertByteArray(bytes, 16, "IPv6", -128);
+      return this.fromUnsignedByteArray(bytes.map(unsignByte));
+    }
+    static fromUnsignedByteArray(bytes) {
+      common.assertByteArray(bytes, 16, "IPv6", 0);
+      const BYTE_MAX = BigInt("256");
+      let result = BigInt("0");
+      let multiplier = BigInt("1");
+      for (let i = bytes.length - 1;i >= 0; i--) {
+        result += multiplier * BigInt(bytes[i].toString(10));
+        multiplier *= BYTE_MAX;
+      }
+      return Address6.fromBigInt(result);
+    }
+    isCanonical() {
+      return this.addressMinusSuffix === this.canonicalForm();
+    }
+    isLinkLocal() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isLinkLocal();
+      }
+      if (this.getBitsBase2(0, 64) === "1111111010000000000000000000000000000000000000000000000000000000") {
+        return true;
+      }
+      return false;
+    }
+    isMulticast() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isMulticast();
+      }
+      const type = this.getType();
+      return type === "Multicast" || type.startsWith("Multicast ");
+    }
+    is4() {
+      return this.v4;
+    }
+    isMapped4() {
+      return this.isHostInSubnet(IPV4_MAPPED_SUBNET);
+    }
+    embeddedIPv4() {
+      if (this.isMapped4() || this.isHostInSubnet(NAT64_WELL_KNOWN_SUBNET)) {
+        return this.to4();
+      }
+      return null;
+    }
+    isTeredo() {
+      return this.isHostInSubnet(TEREDO_SUBNET);
+    }
+    is6to4() {
+      return this.isHostInSubnet(SIX_TO_FOUR_SUBNET);
+    }
+    isLoopback() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isLoopback();
+      }
+      return this.getType() === "Loopback";
+    }
+    isULA() {
+      return this.isHostInSubnet(ULA_SUBNET);
+    }
+    isPrivate() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isPrivate();
+      }
+      return this.isULA();
+    }
+    isCGNAT() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isCGNAT();
+      }
+      return false;
+    }
+    isBroadcast() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isBroadcast();
+      }
+      return false;
+    }
+    isUnspecified() {
+      const embedded = this.embeddedIPv4();
+      if (embedded) {
+        return embedded.isUnspecified();
+      }
+      return this.getType() === "Unspecified";
+    }
+    isDocumentation() {
+      return this.isHostInSubnet(DOCUMENTATION_SUBNET);
+    }
+    href(optionalPort) {
+      if (optionalPort === undefined) {
+        optionalPort = "";
+      } else {
+        optionalPort = `:${optionalPort}`;
+      }
+      return `http://[${this.correctForm()}]${optionalPort}/`;
+    }
+    link(options) {
+      if (!options) {
+        options = {};
+      }
+      if (options.className === undefined) {
+        options.className = "";
+      }
+      if (options.prefix === undefined) {
+        options.prefix = "/#address=";
+      }
+      if (options.v4 === undefined) {
+        options.v4 = false;
+      }
+      let formFunction = this.correctForm;
+      if (options.v4) {
+        formFunction = this.to4in6;
+      }
+      const form = formFunction.call(this);
+      const safeHref = helpers.escapeHtml(`${options.prefix}${form}`);
+      const safeForm = helpers.escapeHtml(form);
+      if (options.className) {
+        const safeClass = helpers.escapeHtml(options.className);
+        return `<a href="${safeHref}" class="${safeClass}">${safeForm}</a>`;
+      }
+      return `<a href="${safeHref}">${safeForm}</a>`;
+    }
+    group() {
+      if (this.elidedGroups === 0) {
+        return helpers.simpleGroup(this.addressMinusSuffix).join(":");
+      }
+      assert(typeof this.elidedGroups === "number");
+      assert(typeof this.elisionBegin === "number");
+      const output = [];
+      const [left, right] = this.addressMinusSuffix.split("::");
+      if (left.length) {
+        output.push(...helpers.simpleGroup(left));
+      } else {
+        output.push("");
+      }
+      const classes = ["hover-group"];
+      for (let i = this.elisionBegin;i < this.elisionBegin + this.elidedGroups; i++) {
+        classes.push(`group-${i}`);
+      }
+      output.push(`<span class="${classes.join(" ")}"></span>`);
+      if (right.length) {
+        output.push(...helpers.simpleGroup(right, this.elisionEnd));
+      } else {
+        output.push("");
+      }
+      if (this.is4()) {
+        assert(this.address4 instanceof ipv4_1.Address4);
+        output.pop();
+        output.push(this.address4.groupForV6());
+      }
+      return output.join(":");
+    }
+    regularExpressionString(substringSearch = false) {
+      let output = [];
+      const address6 = new Address6(this.correctForm());
+      if (address6.elidedGroups === 0) {
+        output.push((0, regular_expressions_1.simpleRegularExpression)(address6.parsedAddress));
+      } else if (address6.elidedGroups === constants6.GROUPS) {
+        output.push((0, regular_expressions_1.possibleElisions)(constants6.GROUPS));
+      } else {
+        const halves = address6.address.split("::");
+        if (halves[0].length) {
+          output.push((0, regular_expressions_1.simpleRegularExpression)(halves[0].split(":")));
+        }
+        assert(typeof address6.elidedGroups === "number");
+        output.push((0, regular_expressions_1.possibleElisions)(address6.elidedGroups, halves[0].length !== 0, halves[1].length !== 0));
+        if (halves[1].length) {
+          output.push((0, regular_expressions_1.simpleRegularExpression)(halves[1].split(":")));
+        }
+        output = [output.join(":")];
+      }
+      if (!substringSearch) {
+        output = [
+          "(?=^|",
+          regular_expressions_1.ADDRESS_BOUNDARY,
+          "|[^\\w\\:])(",
+          ...output,
+          ")(?=[^\\w\\:]|",
+          regular_expressions_1.ADDRESS_BOUNDARY,
+          "|$)"
+        ];
+      }
+      return output.join("");
+    }
+    regularExpression(substringSearch = false) {
+      return new RegExp(this.regularExpressionString(substringSearch), "i");
+    }
+  }
+  exports.Address6 = Address6;
+  var TYPE_SUBNETS = Object.keys(constants6.TYPES).map((subnet) => [
+    new Address6(subnet),
+    constants6.TYPES[subnet]
+  ]);
+  var TEREDO_SUBNET = new Address6("2001::/32");
+  var SIX_TO_FOUR_SUBNET = new Address6("2002::/16");
+  var ULA_SUBNET = new Address6("fc00::/7");
+  var DOCUMENTATION_SUBNET = new Address6("2001:db8::/32");
+  var IPV4_MAPPED_SUBNET = new Address6("::ffff:0:0/96");
+  var NAT64_WELL_KNOWN_SUBNET = new Address6("64:ff9b::/96");
+});
+
+// ../../node_modules/.bun/ip-address@10.4.0/node_modules/ip-address/dist/ip-address.js
+var require_ip_address = __commonJS((exports) => {
+  var __createBinding = exports && exports.__createBinding || (Object.create ? function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() {
+        return m[k];
+      } };
+    }
+    Object.defineProperty(o, k2, desc);
+  } : function(o, m, k, k2) {
+    if (k2 === undefined)
+      k2 = k;
+    o[k2] = m[k];
+  });
+  var __setModuleDefault = exports && exports.__setModuleDefault || (Object.create ? function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+  } : function(o, v) {
+    o["default"] = v;
+  });
+  var __importStar = exports && exports.__importStar || function(mod) {
+    if (mod && mod.__esModule)
+      return mod;
+    var result = {};
+    if (mod != null) {
+      for (var k in mod)
+        if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+          __createBinding(result, mod, k);
+    }
+    __setModuleDefault(result, mod);
+    return result;
+  };
+  Object.defineProperty(exports, "__esModule", { value: true });
+  exports.v6 = exports.AddressError = exports.Address6 = exports.Address4 = undefined;
+  var ipv4_1 = require_ipv4();
+  Object.defineProperty(exports, "Address4", { enumerable: true, get: function() {
+    return ipv4_1.Address4;
+  } });
+  var ipv6_1 = require_ipv6();
+  Object.defineProperty(exports, "Address6", { enumerable: true, get: function() {
+    return ipv6_1.Address6;
+  } });
+  var address_error_1 = require_address_error();
+  Object.defineProperty(exports, "AddressError", { enumerable: true, get: function() {
+    return address_error_1.AddressError;
+  } });
+  var helpers = __importStar(require_helpers());
+  exports.v6 = { helpers };
+});
+
 // src/index.ts
 var import_express = __toESM(require_express(), 1);
 
@@ -27392,34 +28809,801 @@ function createProxyMiddleware(options) {
 }
 // ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/handlers/response-interceptor.js
 var debug6 = Debug.extend("response-interceptor");
+// ../../node_modules/.bun/express-rate-limit@8.6.1+6eaaa7b2fde6cac9/node_modules/express-rate-limit/dist/index.mjs
+var import_ip_address = __toESM(require_ip_address(), 1);
+var import_debug9 = __toESM(require_src2(), 1);
+import { isIPv6 } from "net";
+import { isIPv6 as isIPv62 } from "net";
+import { Buffer as Buffer2 } from "buffer";
+import { createHash } from "crypto";
+import { isIP } from "net";
+function ipKeyGenerator(ip, ipv6Subnet = 56) {
+  if (isIPv6(ip)) {
+    const address = new import_ip_address.Address6(ip);
+    if (address.is4())
+      return address.to4().correctForm();
+    if (ipv6Subnet) {
+      const subnet = new import_ip_address.Address6(`${ip}/${ipv6Subnet}`);
+      return subnet.networkForm();
+    }
+  }
+  return ip;
+}
+var MemoryStore = class {
+  constructor(validations2) {
+    this.validations = validations2;
+    this.previous = /* @__PURE__ */ new Map;
+    this.current = /* @__PURE__ */ new Map;
+    this.localKeys = true;
+  }
+  init(options) {
+    this.windowMs = options.windowMs;
+    this.validations?.windowMs(this.windowMs);
+    if (this.interval)
+      clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      this.clearExpired();
+    }, this.windowMs);
+    this.interval.unref?.();
+  }
+  async get(key) {
+    return this.current.get(key) ?? this.previous.get(key);
+  }
+  async increment(key) {
+    const client = this.getClient(key);
+    const now = Date.now();
+    if (client.resetTime.getTime() <= now) {
+      this.resetClient(client, now);
+    }
+    client.totalHits++;
+    return client;
+  }
+  async decrement(key) {
+    const client = this.getClient(key);
+    if (client.totalHits > 0)
+      client.totalHits--;
+  }
+  async resetKey(key) {
+    this.current.delete(key);
+    this.previous.delete(key);
+  }
+  async resetAll() {
+    this.current.clear();
+    this.previous.clear();
+  }
+  shutdown() {
+    clearInterval(this.interval);
+    this.resetAll();
+  }
+  resetClient(client, now = Date.now()) {
+    client.totalHits = 0;
+    client.resetTime.setTime(now + this.windowMs);
+    return client;
+  }
+  getClient(key) {
+    if (this.current.has(key))
+      return this.current.get(key);
+    let client;
+    if (this.previous.has(key)) {
+      client = this.previous.get(key);
+      this.previous.delete(key);
+    } else {
+      client = { totalHits: 0, resetTime: /* @__PURE__ */ new Date };
+      this.resetClient(client);
+    }
+    this.current.set(key, client);
+    return client;
+  }
+  clearExpired() {
+    this.previous = this.current;
+    this.current = /* @__PURE__ */ new Map;
+  }
+};
+var ConsoleLogger = {
+  warn(...args) {
+    console.warn(...args.reverse());
+  },
+  error(...args) {
+    console.error(...args.reverse());
+  }
+};
+var SUPPORTED_DRAFT_VERSIONS = [
+  "draft-6",
+  "draft-7",
+  "draft-8"
+];
+var getResetSeconds = (windowMs, resetTime) => {
+  let resetSeconds;
+  if (resetTime) {
+    const deltaSeconds = Math.ceil((resetTime.getTime() - Date.now()) / 1000);
+    resetSeconds = Math.max(0, deltaSeconds);
+  } else {
+    resetSeconds = Math.ceil(windowMs / 1000);
+  }
+  return resetSeconds;
+};
+var getPartitionKey = (key) => {
+  const hash = createHash("sha256");
+  hash.update(key);
+  const partitionKey = hash.digest("hex").slice(0, 12);
+  return Buffer2.from(partitionKey).toString("base64");
+};
+var setLegacyHeaders = (response, info) => {
+  if (response.headersSent)
+    return;
+  response.setHeader("X-RateLimit-Limit", info.limit.toString());
+  response.setHeader("X-RateLimit-Remaining", info.remaining.toString());
+  if (info.resetTime instanceof Date) {
+    response.setHeader("Date", (/* @__PURE__ */ new Date()).toUTCString());
+    response.setHeader("X-RateLimit-Reset", Math.ceil(info.resetTime.getTime() / 1000).toString());
+  }
+};
+var setDraft6Headers = (response, info, windowMs) => {
+  if (response.headersSent)
+    return;
+  const windowSeconds = Math.ceil(windowMs / 1000);
+  const resetSeconds = getResetSeconds(windowMs, info.resetTime);
+  response.setHeader("RateLimit-Policy", `${info.limit};w=${windowSeconds}`);
+  response.setHeader("RateLimit-Limit", info.limit.toString());
+  response.setHeader("RateLimit-Remaining", info.remaining.toString());
+  if (typeof resetSeconds === "number")
+    response.setHeader("RateLimit-Reset", resetSeconds.toString());
+};
+var setDraft7Headers = (response, info, windowMs) => {
+  if (response.headersSent)
+    return;
+  const windowSeconds = Math.ceil(windowMs / 1000);
+  const resetSeconds = getResetSeconds(windowMs, info.resetTime);
+  response.setHeader("RateLimit-Policy", `${info.limit};w=${windowSeconds}`);
+  response.setHeader("RateLimit", `limit=${info.limit}, remaining=${info.remaining}, reset=${resetSeconds}`);
+};
+var setDraft8Headers = (response, info, windowMs, name, key) => {
+  if (response.headersSent)
+    return;
+  const windowSeconds = Math.ceil(windowMs / 1000);
+  const resetSeconds = getResetSeconds(windowMs, info.resetTime);
+  const partitionKey = getPartitionKey(key);
+  const header = `r=${info.remaining}; t=${resetSeconds}`;
+  const policy = `q=${info.limit}; w=${windowSeconds}; pk=:${partitionKey}:`;
+  response.append("RateLimit", `"${name}"; ${header}`);
+  response.append("RateLimit-Policy", `"${name}"; ${policy}`);
+};
+var setRetryAfterHeader = (response, info, windowMs) => {
+  if (response.headersSent)
+    return;
+  const resetSeconds = getResetSeconds(windowMs, info.resetTime);
+  response.setHeader("Retry-After", resetSeconds.toString());
+};
+var omitUndefinedProperties = (passedOptions) => {
+  const omittedOptions = {};
+  for (const k of Object.keys(passedOptions)) {
+    const key = k;
+    if (passedOptions[key] !== undefined) {
+      omittedOptions[key] = passedOptions[key];
+    }
+  }
+  return omittedOptions;
+};
+var ValidationError = class extends Error {
+  constructor(code, message) {
+    const url = `https://express-rate-limit.github.io/${code}/`;
+    super(`${message} See ${url} for more information.`);
+    this.name = this.constructor.name;
+    this.code = code;
+    this.help = url;
+  }
+};
+var ChangeWarning = class extends ValidationError {
+};
+var usedStores = /* @__PURE__ */ new Set;
+var singleCountKeys = /* @__PURE__ */ new WeakMap;
+var validations = {
+  enabled: {
+    default: true
+  },
+  disable() {
+    for (const k of Object.keys(this.enabled))
+      this.enabled[k] = false;
+  },
+  ip(ip) {
+    if (ip === undefined) {
+      throw new ValidationError("ERR_ERL_UNDEFINED_IP_ADDRESS", `An undefined 'request.ip' was detected. This might indicate a misconfiguration or the connection being destroyed prematurely.`);
+    }
+    if (!isIP(ip)) {
+      throw new ValidationError("ERR_ERL_INVALID_IP_ADDRESS", `An invalid 'request.ip' (${ip}) was detected. Consider passing a custom 'keyGenerator' function to the rate limiter.`);
+    }
+  },
+  trustProxy(request2) {
+    if (request2.app.get("trust proxy") === true) {
+      throw new ValidationError("ERR_ERL_PERMISSIVE_TRUST_PROXY", `The Express 'trust proxy' setting is true, which allows anyone to trivially bypass IP-based rate limiting.`);
+    }
+  },
+  xForwardedForHeader(request2) {
+    if (request2.headers["x-forwarded-for"] && request2.app.get("trust proxy") === false) {
+      throw new ValidationError("ERR_ERL_UNEXPECTED_X_FORWARDED_FOR", `The 'X-Forwarded-For' header is set but the Express 'trust proxy' setting is false (default). This could indicate a misconfiguration which would prevent express-rate-limit from accurately identifying users.`);
+    }
+  },
+  forwardedHeader(request2) {
+    if (request2.headers.forwarded && request2.ip === request2.socket?.remoteAddress) {
+      throw new ValidationError("ERR_ERL_FORWARDED_HEADER", `The 'Forwarded' header (standardized X-Forwarded-For) is set but currently being ignored. Add a custom keyGenerator to use a value from this header.`);
+    }
+  },
+  positiveHits(hits) {
+    if (typeof hits !== "number" || hits < 1 || hits !== Math.round(hits)) {
+      throw new ValidationError("ERR_ERL_INVALID_HITS", `The totalHits value returned from the store must be a positive integer, got ${hits}`);
+    }
+  },
+  unsharedStore(store) {
+    if (usedStores.has(store)) {
+      const maybeUniquePrefix = store?.localKeys ? "" : " (with a unique prefix)";
+      throw new ValidationError("ERR_ERL_STORE_REUSE", `A Store instance must not be shared across multiple rate limiters. Create a new instance of ${store.constructor.name}${maybeUniquePrefix} for each limiter instead.`);
+    }
+    usedStores.add(store);
+  },
+  singleCount(request2, store, key) {
+    let storeKeys = singleCountKeys.get(request2);
+    if (!storeKeys) {
+      storeKeys = /* @__PURE__ */ new Map;
+      singleCountKeys.set(request2, storeKeys);
+    }
+    const storeKey = store.localKeys ? store : store.constructor.name;
+    let keys = storeKeys.get(storeKey);
+    if (!keys) {
+      keys = [];
+      storeKeys.set(storeKey, keys);
+    }
+    const prefixedKey = `${store.prefix ?? ""}${key}`;
+    if (keys.includes(prefixedKey)) {
+      throw new ValidationError("ERR_ERL_DOUBLE_COUNT", `The hit count for ${key} was incremented more than once for a single request.`);
+    }
+    keys.push(prefixedKey);
+  },
+  limit(limit) {
+    if (limit === 0) {
+      throw new ChangeWarning("WRN_ERL_MAX_ZERO", "Setting limit or max to 0 disables rate limiting in express-rate-limit v6 and older, but will cause all requests to be blocked in v7");
+    }
+  },
+  draftPolliHeaders(draft_polli_ratelimit_headers) {
+    if (draft_polli_ratelimit_headers) {
+      throw new ChangeWarning("WRN_ERL_DEPRECATED_DRAFT_POLLI_HEADERS", `The draft_polli_ratelimit_headers configuration option is deprecated and has been removed in express-rate-limit v7, please set standardHeaders: 'draft-6' instead.`);
+    }
+  },
+  onLimitReached(onLimitReached) {
+    if (onLimitReached) {
+      throw new ChangeWarning("WRN_ERL_DEPRECATED_ON_LIMIT_REACHED", "The onLimitReached configuration option is deprecated and has been removed in express-rate-limit v7.");
+    }
+  },
+  headersDraftVersion(version) {
+    if (typeof version !== "string" || !SUPPORTED_DRAFT_VERSIONS.includes(version)) {
+      const versionString = SUPPORTED_DRAFT_VERSIONS.join(", ");
+      throw new ValidationError("ERR_ERL_HEADERS_UNSUPPORTED_DRAFT_VERSION", `standardHeaders: only the following versions of the IETF draft specification are supported: ${versionString}.`);
+    }
+  },
+  headersResetTime(resetTime) {
+    if (!resetTime) {
+      throw new ValidationError("ERR_ERL_HEADERS_NO_RESET", `standardHeaders:  'draft-7' requires a 'resetTime', but the store did not provide one. The 'windowMs' value will be used instead, which may cause clients to wait longer than necessary.`);
+    }
+  },
+  knownOptions(passedOptions) {
+    if (!passedOptions)
+      return;
+    const optionsMap = {
+      windowMs: true,
+      limit: true,
+      message: true,
+      statusCode: true,
+      legacyHeaders: true,
+      standardHeaders: true,
+      identifier: true,
+      requestPropertyName: true,
+      skipFailedRequests: true,
+      skipSuccessfulRequests: true,
+      keyGenerator: true,
+      ipv6Subnet: true,
+      handler: true,
+      skip: true,
+      requestWasSuccessful: true,
+      store: true,
+      validate: true,
+      headers: true,
+      max: true,
+      passOnStoreError: true,
+      logger: true
+    };
+    const validOptions = Object.keys(optionsMap).concat("draft_polli_ratelimit_headers", "delayAfter", "delayMs", "maxDelayMs");
+    for (const key of Object.keys(passedOptions)) {
+      if (!validOptions.includes(key)) {
+        throw new ValidationError("ERR_ERL_UNKNOWN_OPTION", `Unexpected configuration option: ${key}`);
+      }
+    }
+  },
+  validationsConfig() {
+    const supportedValidations = Object.keys(this).filter((k) => !["enabled", "disable"].includes(k));
+    supportedValidations.push("default");
+    for (const key of Object.keys(this.enabled)) {
+      if (!supportedValidations.includes(key)) {
+        throw new ValidationError("ERR_ERL_UNKNOWN_VALIDATION", `options.validate.${key} is not recognized. Supported validate options are: ${supportedValidations.join(", ")}.`);
+      }
+    }
+  },
+  creationStack(store) {
+    const { stack } = new Error("express-rate-limit validation check (set options.validate.creationStack=false to disable)");
+    if (stack?.includes("Layer.handle [as handle_request]") || stack?.includes("Layer.handleRequest")) {
+      if (!store.localKeys) {
+        throw new ValidationError("ERR_ERL_CREATED_IN_REQUEST_HANDLER", "express-rate-limit instance should *usually* be created at app initialization, not when responding to a request.");
+      }
+      throw new ValidationError("ERR_ERL_CREATED_IN_REQUEST_HANDLER", "express-rate-limit instance should be created at app initialization, not when responding to a request.");
+    }
+  },
+  ipv6Subnet(ipv6Subnet) {
+    if (ipv6Subnet === false) {
+      return;
+    }
+    if (!Number.isInteger(ipv6Subnet) || ipv6Subnet < 32 || ipv6Subnet > 64) {
+      throw new ValidationError("ERR_ERL_IPV6_SUBNET", `Unexpected ipv6Subnet value: ${ipv6Subnet}. Expected an integer between 32 and 64 (usually 48-64).`);
+    }
+  },
+  ipv6SubnetOrKeyGenerator(options) {
+    if (options.ipv6Subnet !== undefined && options.keyGenerator) {
+      throw new ValidationError("ERR_ERL_IPV6SUBNET_OR_KEYGENERATOR", `Incompatible options: the 'ipv6Subnet' option is ignored when a custom 'keyGenerator' function is also set.`);
+    }
+  },
+  keyGeneratorIpFallback(keyGenerator) {
+    if (!keyGenerator) {
+      return;
+    }
+    const src = keyGenerator.toString();
+    if ((src.includes("req.ip") || src.includes("request.ip")) && !src.includes("ipKeyGenerator")) {
+      throw new ValidationError("ERR_ERL_KEY_GEN_IPV6", "Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits.");
+    }
+  },
+  windowMs(windowMs) {
+    const SET_TIMEOUT_MAX = 2 ** 31 - 1;
+    if (typeof windowMs !== "number" || Number.isNaN(windowMs) || windowMs < 1 || windowMs > SET_TIMEOUT_MAX) {
+      throw new ValidationError("ERR_ERL_WINDOW_MS", `Invalid windowMs value: ${windowMs}${typeof windowMs !== "number" ? ` (${typeof windowMs})` : ""}, must be a number between 1 and ${SET_TIMEOUT_MAX} when using the default MemoryStore`);
+    }
+  }
+};
+function validateLogger(logger) {
+  if (typeof logger !== "object" || typeof logger.error !== "function" || typeof logger.warn !== "function") {
+    throw new TypeError("Provided logger does not implement the Logger interface");
+  }
+}
+var getValidations = (_enabled, logger) => {
+  validateLogger(logger);
+  let enabled;
+  if (typeof _enabled === "boolean") {
+    enabled = {
+      default: _enabled
+    };
+  } else {
+    enabled = {
+      default: true,
+      ..._enabled
+    };
+  }
+  const wrappedValidations = { enabled };
+  for (const [name, validation] of Object.entries(validations)) {
+    if (typeof validation === "function")
+      wrappedValidations[name] = (...args) => {
+        if (!(enabled[name] ?? enabled.default)) {
+          return;
+        }
+        enabled[name] = false;
+        try {
+          validation.apply(wrappedValidations, args);
+        } catch (error) {
+          if (error instanceof ChangeWarning)
+            logger.warn(error);
+          else
+            logger.error(error);
+        }
+      };
+  }
+  const inspect = /* @__PURE__ */ Symbol.for("nodejs.util.inspect.custom");
+  if (inspect)
+    wrappedValidations[inspect] = () => wrappedValidations.enabled;
+  return wrappedValidations;
+};
+var isLegacyStore = (store) => typeof store.incr === "function" && typeof store.increment !== "function";
+var promisifyStore = (passedStore) => {
+  if (!isLegacyStore(passedStore)) {
+    return passedStore;
+  }
+  const legacyStore = passedStore;
+
+  class PromisifiedStore {
+    async increment(key) {
+      return new Promise((resolve, reject) => {
+        legacyStore.incr(key, (error, totalHits, resetTime) => {
+          if (error)
+            reject(error);
+          resolve({ totalHits, resetTime });
+        });
+      });
+    }
+    async decrement(key) {
+      return legacyStore.decrement(key);
+    }
+    async resetKey(key) {
+      return legacyStore.resetKey(key);
+    }
+    async resetAll() {
+      if (typeof legacyStore.resetAll === "function")
+        return legacyStore.resetAll();
+    }
+  }
+  return new PromisifiedStore;
+};
+var getOptionsFromConfig = (config) => {
+  const { validations: validations2, ...directlyPassableEntries } = config;
+  return {
+    ...directlyPassableEntries,
+    validate: validations2.enabled
+  };
+};
+var parseOptions = (passedOptions) => {
+  const notUndefinedOptions = omitUndefinedProperties(passedOptions);
+  const logger = passedOptions.logger ?? ConsoleLogger;
+  const validations2 = getValidations(notUndefinedOptions?.validate ?? true, logger);
+  validations2.validationsConfig();
+  validations2.knownOptions(passedOptions);
+  validations2.draftPolliHeaders(notUndefinedOptions.draft_polli_ratelimit_headers);
+  validations2.onLimitReached(notUndefinedOptions.onLimitReached);
+  if (notUndefinedOptions.ipv6Subnet !== undefined && typeof notUndefinedOptions.ipv6Subnet !== "function") {
+    validations2.ipv6Subnet(notUndefinedOptions.ipv6Subnet);
+  }
+  validations2.keyGeneratorIpFallback(notUndefinedOptions.keyGenerator);
+  validations2.ipv6SubnetOrKeyGenerator(notUndefinedOptions);
+  let standardHeaders = notUndefinedOptions.standardHeaders ?? false;
+  if (standardHeaders === true)
+    standardHeaders = "draft-6";
+  const config = {
+    windowMs: 60 * 1000,
+    limit: passedOptions.max ?? 5,
+    message: "Too many requests, please try again later.",
+    statusCode: 429,
+    legacyHeaders: passedOptions.headers ?? true,
+    identifier(request2, _response) {
+      let duration = "";
+      const property = config.requestPropertyName;
+      const { limit } = request2[property];
+      const seconds = config.windowMs / 1000;
+      const minutes = config.windowMs / (1000 * 60);
+      const hours = config.windowMs / (1000 * 60 * 60);
+      const days = config.windowMs / (1000 * 60 * 60 * 24);
+      if (seconds < 60)
+        duration = `${seconds}sec`;
+      else if (minutes < 60)
+        duration = `${minutes}min`;
+      else if (hours < 24)
+        duration = `${hours}hr${hours > 1 ? "s" : ""}`;
+      else
+        duration = `${days}day${days > 1 ? "s" : ""}`;
+      return `${limit}-in-${duration}`;
+    },
+    requestPropertyName: "rateLimit",
+    skipFailedRequests: false,
+    skipSuccessfulRequests: false,
+    requestWasSuccessful: (_request, response) => response.statusCode < 400,
+    skip: (_request, _response) => false,
+    async keyGenerator(request2, response) {
+      validations2.ip(request2.ip);
+      validations2.trustProxy(request2);
+      validations2.xForwardedForHeader(request2);
+      validations2.forwardedHeader(request2);
+      const ip = request2.ip;
+      let subnet = 56;
+      if (isIPv62(ip)) {
+        subnet = typeof config.ipv6Subnet === "function" ? await config.ipv6Subnet(request2, response) : config.ipv6Subnet;
+        if (typeof config.ipv6Subnet === "function")
+          validations2.ipv6Subnet(subnet);
+      }
+      return ipKeyGenerator(ip, subnet);
+    },
+    ipv6Subnet: 56,
+    async handler(request2, response, _next, _optionsUsed) {
+      response.status(config.statusCode);
+      const message = typeof config.message === "function" ? await config.message(request2, response) : config.message;
+      if (!response.writableEnded)
+        response.send(message);
+    },
+    passOnStoreError: false,
+    ...notUndefinedOptions,
+    standardHeaders,
+    store: promisifyStore(notUndefinedOptions.store ?? new MemoryStore(validations2)),
+    validations: validations2,
+    logger
+  };
+  if (typeof config.store.increment !== "function" || typeof config.store.decrement !== "function" || typeof config.store.resetKey !== "function" || config.store.resetAll !== undefined && typeof config.store.resetAll !== "function" || config.store.init !== undefined && typeof config.store.init !== "function") {
+    throw new TypeError("An invalid store was passed. Please ensure that the store is a class that implements the `Store` interface.");
+  }
+  return config;
+};
+var handleAsyncErrors = (fn) => async (request2, response, next) => {
+  try {
+    await Promise.resolve(fn(request2, response, next)).catch(next);
+  } catch (error) {
+    next(error);
+  }
+};
+var rateLimit = (passedOptions) => {
+  const config = parseOptions(passedOptions ?? {});
+  const options = getOptionsFromConfig(config);
+  const debug7 = import_debug9.default("express-rate-limit");
+  debug7("creating new rate limiter with %o", config.store.constructor.name);
+  for (const [key, val] of Object.entries(config))
+    debug7("set %s to %o", key, val);
+  config.validations.creationStack(config.store);
+  config.validations.unsharedStore(config.store);
+  if (typeof config.store.init === "function") {
+    debug7("executing init for store");
+    try {
+      const storeInit = config.store.init(options);
+      if (storeInit instanceof Promise) {
+        storeInit.catch((error) => config.logger.error(error, "express-rate-limit: async error during store initialization."));
+      }
+    } catch (error) {
+      config.logger.error(error, "express-rate-limit: error during store initialization.");
+    }
+  }
+  const middleware = handleAsyncErrors(async (request2, response, next) => {
+    const closePromise = config.skipFailedRequests && new Promise((resolve) => response.once("close", resolve));
+    const finishPromise = (config.skipFailedRequests || config.skipSuccessfulRequests) && new Promise((resolve) => response.once("finish", resolve));
+    const errorPromise = config.skipFailedRequests && new Promise((resolve) => response.once("error", resolve));
+    debug7("requested %o", request2.originalUrl);
+    debug7("request from ip %o", request2.ip);
+    const skip = await config.skip(request2, response);
+    if (skip) {
+      debug7("skipping request");
+      next();
+      return;
+    }
+    const augmentedRequest = request2;
+    const key = await config.keyGenerator(request2, response);
+    debug7("computed key %o", key);
+    debug7("incrementing count");
+    let totalHits = 0;
+    let resetTime;
+    try {
+      const incrementResult = await config.store.increment(key);
+      totalHits = incrementResult.totalHits;
+      resetTime = incrementResult.resetTime;
+    } catch (error) {
+      if (config.passOnStoreError) {
+        config.logger.error(error, "express-rate-limit: error from store, allowing request without rate-limiting.");
+        next();
+        return;
+      }
+      throw error;
+    }
+    config.validations.positiveHits(totalHits);
+    config.validations.singleCount(request2, config.store, key);
+    const retrieveLimit = typeof config.limit === "function" ? config.limit(request2, response) : config.limit;
+    const limit = await retrieveLimit;
+    config.validations.limit(limit);
+    const info = {
+      limit,
+      used: totalHits,
+      remaining: Math.max(limit - totalHits, 0),
+      resetTime,
+      key
+    };
+    for (const [key2, val] of Object.entries(info))
+      debug7("set request.%s.%s to be %o", config.requestPropertyName, key2, val);
+    Object.defineProperty(info, "current", {
+      configurable: false,
+      enumerable: false,
+      value: totalHits
+    });
+    augmentedRequest[config.requestPropertyName] = info;
+    if (config.legacyHeaders && !response.headersSent) {
+      debug7("set legacy headers");
+      setLegacyHeaders(response, info);
+    }
+    if (config.standardHeaders && !response.headersSent) {
+      switch (config.standardHeaders) {
+        case "draft-6": {
+          debug7("set ietf draft 6 headers");
+          setDraft6Headers(response, info, config.windowMs);
+          break;
+        }
+        case "draft-7": {
+          debug7("set ietf draft 7 headers");
+          config.validations.headersResetTime(info.resetTime);
+          setDraft7Headers(response, info, config.windowMs);
+          break;
+        }
+        case "draft-8": {
+          const retrieveName = typeof config.identifier === "function" ? config.identifier(request2, response) : config.identifier;
+          const name = await retrieveName;
+          debug7("set ietf draft 8 headers");
+          debug7("set name to %o", name);
+          config.validations.headersResetTime(info.resetTime);
+          setDraft8Headers(response, info, config.windowMs, name, key);
+          break;
+        }
+        default: {
+          config.validations.headersDraftVersion(config.standardHeaders);
+          break;
+        }
+      }
+    }
+    if (config.skipFailedRequests || config.skipSuccessfulRequests) {
+      let decremented = false;
+      const decrementKey = async () => {
+        if (!decremented) {
+          if (resetTime && Date.now() >= resetTime.getTime()) {
+            return;
+          }
+          debug7("decrementing count");
+          await config.store.decrement(key);
+          decremented = true;
+        }
+      };
+      if (config.skipFailedRequests) {
+        if (finishPromise) {
+          finishPromise.then(async () => {
+            const success = await config.requestWasSuccessful(request2, response);
+            debug7("computed requestWasSuccessful as %o", success);
+            if (!success)
+              await decrementKey();
+          });
+        }
+        if (closePromise) {
+          closePromise.then(async () => {
+            if (!response.writableEnded)
+              await decrementKey();
+          });
+        }
+        if (errorPromise) {
+          errorPromise.then(async () => {
+            await decrementKey();
+          });
+        }
+      }
+      if (config.skipSuccessfulRequests) {
+        if (finishPromise) {
+          finishPromise.then(async () => {
+            const success = await config.requestWasSuccessful(request2, response);
+            debug7("computed requestWasSuccessful as %o", success);
+            if (success)
+              await decrementKey();
+          });
+        }
+      }
+    }
+    if (totalHits > limit) {
+      debug7("limit exceeded");
+      if (config.legacyHeaders || config.standardHeaders) {
+        debug7("set retry-after header");
+        setRetryAfterHeader(response, info, config.windowMs);
+      }
+      config.handler(request2, response, next, options);
+      return;
+    }
+    next();
+  });
+  const getThrowFn = () => {
+    throw new Error("The current store does not support the get/getKey method");
+  };
+  middleware.resetKey = config.store.resetKey.bind(config.store);
+  middleware.getKey = typeof config.store.get === "function" ? config.store.get.bind(config.store) : getThrowFn;
+  return middleware;
+};
+var rate_limit_default = rateLimit;
+var SECOND = 1000;
+var MINUTE = 60 * SECOND;
+var HOUR = 60 * MINUTE;
+var DAY = 24 * HOUR;
+
+// ../../packages/utils/src/constants/urls.ts
+var URLS = {
+  LEGACY_BASE_URL: process.env.NEXT_PUBLIC_LEGACY_BASE_URL ?? process.env.LEGACY_BASE_URL ?? "",
+  PLATFORM_BASE_URL: process.env.NEXT_PUBLIC_PLATFORM_BASE_URL ?? process.env.PLATFORM_BASE_URL ?? "",
+  GATEWAY_BASE_URL: process.env.NEXT_PUBLIC_GATEWAY_BASE_URL ?? process.env.GATEWAY_BASE_URL ?? "",
+  AUTHENTICATION_SERVICE_URL: process.env.AUTHENTICATION_SERVICE_URL ?? "",
+  USERS_SERVICE_URL: process.env.USERS_SERVICE_URL ?? ""
+};
+
 // src/index.ts
+import crypto from "crypto";
 var app = import_express.default();
 var PORT = process.env.PORT ?? 6060;
+var SERVICES = {
+  auth: URLS.AUTHENTICATION_SERVICE_URL,
+  users: URLS.USERS_SERVICE_URL
+};
 app.use(import_express.default.json());
 app.use(import_express.default.urlencoded({ extended: true }));
-app.use("/api/authenticate", createProxyMiddleware({
-  target: "http://localhost:6061",
-  changeOrigin: true
-}));
-app.use("/api/users", createProxyMiddleware({
-  target: "http://localhost:6062",
-  changeOrigin: true
-}));
+app.use((req, _res, next) => {
+  req.headers["x-correlation-id"] ??= crypto.randomUUID();
+  next();
+});
+app.use((req, res, next) => {
+  const start = Date.now();
+  const correlationId = req.headers["x-correlation-id"];
+  res.on("finish", () => {
+    console.log(JSON.stringify({
+      level: "info",
+      timestamp: new Date().toISOString(),
+      correlationId,
+      method: req.method,
+      path: req.originalUrl,
+      status: res.statusCode,
+      durationMs: Date.now() - start
+    }));
+  });
+  next();
+});
+var globalLimiter = rate_limit_default({
+  windowMs: 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please slow down." }
+});
+var authLimiter = rate_limit_default({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many authentication attempts. Try again later." }
+});
+app.use(globalLimiter);
+function proxy(target) {
+  return createProxyMiddleware({
+    target,
+    changeOrigin: true,
+    on: {
+      proxyReq: (proxyReq, req) => {
+        const correlationId = req.headers["x-correlation-id"];
+        if (correlationId) {
+          proxyReq.setHeader("x-correlation-id", correlationId);
+        }
+        proxyReq.removeHeader("cookie");
+      },
+      error: (err, _req, res) => {
+        console.error(JSON.stringify({
+          level: "error",
+          message: "Proxy error \u2014 downstream service unavailable",
+          target,
+          error: err.message
+        }));
+        res.status(502).json({ error: "Service temporarily unavailable." });
+      }
+    }
+  });
+}
+app.use("/api/authenticate", authLimiter, proxy(SERVICES.auth));
+app.use("/api/users", proxy(SERVICES.users));
 app.get("/", (_req, res) => {
-  res.json({ status: "ok", message: "CRM Gateway API is running" });
+  res.json({ status: "ok", message: "CRM Gateway is running" });
 });
 app.get("/health", (_req, res) => {
-  res.json({ status: "healthy", timestamp: new Date().toISOString() });
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    services: Object.entries(SERVICES).reduce((acc, [name, url]) => ({ ...acc, [name]: url }), {})
+  });
 });
 app.use((_req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 app.use((err, _req, res, _next) => {
-  console.error(err.stack);
+  console.error(JSON.stringify({
+    level: "error",
+    message: err.message,
+    stack: err.stack
+  }));
   res.status(500).json({ error: "Internal server error" });
 });
 app.listen(PORT, () => {
-  console.log(`[gateway] Server running on http://localhost:${PORT}`);
+  console.log(JSON.stringify({
+    level: "info",
+    message: `[gateway] Running on port ${PORT}`,
+    services: SERVICES
+  }));
 });
 var src_default = app;
 export {
