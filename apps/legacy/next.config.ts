@@ -10,9 +10,6 @@ const nextConfig: NextConfig = {
           exposes: {
             './SampleComponent': './src/components/SampleComponent.tsx',
           },
-          remotes: {
-            federatedApp: 'federatedApp@http://localhost:7070/_next/static/chunks/remoteEntry.js',
-          },
           shared: {
             react: {
               singleton: true,
@@ -29,9 +26,6 @@ const nextConfig: NextConfig = {
       // Fallback for server build to ignore federated modules
       if (Array.isArray(config.externals)) {
         config.externals.push((context: any, request: string, callback: any) => {
-          if (typeof request === 'string' && request.startsWith('federatedApp/')) {
-            return callback(null, `commonjs ${request}`);
-          }
           if (typeof callback === 'function') {
             callback();
           }

@@ -6,7 +6,6 @@ import React, { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const SampleComponent = dynamic(() => import("legacyApp/SampleComponent"), { ssr: false });
-const Button = dynamic(() => import("federatedApp/Button"), { ssr: false });
 
 export default function Home() {
   return (
@@ -19,13 +18,6 @@ export default function Home() {
           <p className="text-sm text-zinc-500 mb-4">The component below is dynamically loaded from the Legacy App (Port 5050)</p>
           <Suspense fallback={<div className="animate-pulse bg-zinc-200 h-32 w-full rounded-lg">Loading Federated Component...</div>}>
             <SampleComponent />
-          </Suspense>
-        </div>
-
-        <div className="w-full p-8 border-4 border-dashed border-zinc-200 rounded-xl mb-12 flex flex-col items-center">
-          <p className="text-sm text-zinc-500 mb-4">The component below is dynamically loaded from the UI App (Port 6060)</p>
-          <Suspense fallback={<div className="animate-pulse bg-zinc-200 h-10 w-32 rounded-lg">Loading...</div>}>
-            <Button variant="primary">Federated Button</Button>
           </Suspense>
         </div>
 

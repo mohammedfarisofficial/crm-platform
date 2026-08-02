@@ -3,10 +3,11 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "apps/gateway/services/*",
+    "services/*",
     "packages/*"
   ],
   "scripts": {
+    "preinstall": "npx only-allow bun",
     "build": "bunx turbo run build",
     "dev": "bunx turbo run dev --ui=tui",
     "start": "bunx turbo run start --ui=tui",
@@ -18,7 +19,7 @@
     "turbo": "latest",
     "prettier": "latest",
     "typescript": "latest",
-    "eslint": "latest",
+    "eslint": "^10.4.0",
     "eslint-config-next": "latest",
     "eslint-config-prettier": "latest",
     "eslint-plugin-unicorn": "latest",

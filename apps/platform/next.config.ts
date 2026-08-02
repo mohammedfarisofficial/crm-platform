@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
           name: 'platformApp',
           remotes: {
             legacyApp: 'legacyApp@http://localhost:5050/_next/static/chunks/remoteEntry.js',
-            federatedApp: 'federatedApp@http://localhost:7070/_next/static/chunks/remoteEntry.js',
           },
           shared: {
             react: {
@@ -26,7 +25,7 @@ const nextConfig: NextConfig = {
       // Fallback for server build to ignore federated modules (App Router workaround)
       if (Array.isArray(config.externals)) {
         config.externals.push((context: any, request: string, callback: any) => {
-          if (typeof request === 'string' && (request.startsWith('legacyApp/') || request.startsWith('federatedApp/'))) {
+          if (typeof request === 'string' && request.startsWith('legacyApp/')) {
             return callback(null, `commonjs ${request}`);
           }
           if (typeof callback === 'function') {
