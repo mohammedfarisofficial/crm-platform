@@ -20,6 +20,7 @@
       "name": "legacy",
       "version": "0.1.0",
       "dependencies": {
+        "@crm/interface": "workspace:*",
         "@crm/utils": "workspace:*",
         "@module-federation/nextjs-mf": "^8.8.71",
         "next": "16.2.10",

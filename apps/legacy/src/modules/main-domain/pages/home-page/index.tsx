@@ -1,5 +1,11 @@
+import { Layouts } from "@crm/interface";
+import { FeaturesSection, HeroSection } from "./sections";
+
 export function HomePage() {
     return (
-        <div>HomePage</div>
+        <Layouts.PageLayout>
+            <HeroSection />
+            <FeaturesSection />
+        </Layouts.PageLayout>
     )
 }

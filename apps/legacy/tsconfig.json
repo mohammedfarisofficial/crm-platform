@@ -20,6 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@crm/interface": ["../../packages/interface/src/index.ts"],
+      "@crm/interface/form-elements": ["../../packages/interface/src/form-elements/index.ts"],
       "@crm/utils": ["../../packages/utils/src/index.ts"],
       "@crm/utils/constants": ["../../packages/utils/src/index.ts"],
       "@crm/utils/constants/urls": ["../../packages/utils/src/constants/urls.ts"],
