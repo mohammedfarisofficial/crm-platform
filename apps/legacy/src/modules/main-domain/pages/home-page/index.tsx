@@ -1,11 +1,12 @@
 import { Layouts } from "@crm/interface";
-import { FeaturesSection, HeroSection } from "./sections";
+import { Sections } from "./sections";
 
 export function HomePage() {
     return (
         <Layouts.PageLayout>
-            <HeroSection />
-            <FeaturesSection />
+            <Sections.Hero />
+            <Sections.Features />
+            <Sections.Contact />
         </Layouts.PageLayout>
     )
 }
