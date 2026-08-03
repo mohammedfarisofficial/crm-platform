@@ -29511,7 +29511,7 @@ import crypto from "crypto";
 var app = import_express.default();
 var PORT = process.env.PORT ?? 6060;
 var SERVICES = {
-  auth: URLS.AUTHENTICATION_SERVICE_URL,
+  authentication: URLS.AUTHENTICATION_SERVICE_URL,
   users: URLS.USERS_SERVICE_URL
 };
 app.use(import_express.default.json());
@@ -29575,7 +29575,7 @@ function proxy(target) {
     }
   });
 }
-app.use("/api/authenticate", authLimiter, proxy(SERVICES.auth));
+app.use("/api/authenticate", authLimiter, proxy(SERVICES.authentication));
 app.use("/api/users", proxy(SERVICES.users));
 app.get("/", (_req, res) => {
   res.json({ status: "ok", message: "CRM Gateway is running" });
