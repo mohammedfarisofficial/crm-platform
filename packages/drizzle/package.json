@@ -1,0 +1,19 @@
+{
+  "name": "@crm/drizzle",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./client": "./src/client.ts",
+    "./migrate": "./src/migrate.ts",
+    "./config": "./src/config.ts"
+  },
+  "dependencies": {
+    "drizzle-orm": "latest",
+    "postgres": "latest"
+  },
+  "devDependencies": {
+    "drizzle-kit": "latest",
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}

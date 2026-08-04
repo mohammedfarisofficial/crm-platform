@@ -27521,8 +27521,11 @@ var require_ip_address = __commonJS((exports) => {
   exports.v6 = { helpers };
 });
 
-// src/index.ts
-var import_express = __toESM(require_express(), 1);
+// ../../packages/server/src/index.ts
+var import_express2 = __toESM(require_express(), 1);
+
+// ../../packages/server/src/proxy.ts
+import crypto from "crypto";
 
 // ../../node_modules/.bun/httpxy@0.5.5/node_modules/httpxy/dist/index.mjs
 import httpNative, { request } from "http";
@@ -28809,6 +28812,9 @@ function createProxyMiddleware(options) {
 }
 // ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/handlers/response-interceptor.js
 var debug6 = Debug.extend("response-interceptor");
+// ../../packages/server/src/proxy.ts
+var import_express = __toESM(require_express(), 1);
+
 // ../../node_modules/.bun/express-rate-limit@8.6.1+6eaaa7b2fde6cac9/node_modules/express-rate-limit/dist/index.mjs
 var import_ip_address = __toESM(require_ip_address(), 1);
 var import_debug9 = __toESM(require_src2(), 1);
@@ -29497,6 +29503,94 @@ var MINUTE = 60 * SECOND;
 var HOUR = 60 * MINUTE;
 var DAY = 24 * HOUR;
 
+// ../../packages/server/src/proxy.ts
+function createProxy({ name = "proxy", services, globalRateLimit }) {
+  const app = import_express.default();
+  app.use(import_express.default.json());
+  app.use(import_express.default.urlencoded({ extended: true }));
+  app.use((req, _res, next) => {
+    req.headers["x-correlation-id"] ??= crypto.randomUUID();
+    next();
+  });
+  app.use((req, res, next) => {
+    const start = Date.now();
+    const correlationId = req.headers["x-correlation-id"];
+    res.on("finish", () => {
+      console.log(JSON.stringify({
+        level: "info",
+        timestamp: new Date().toISOString(),
+        correlationId,
+        method: req.method,
+        path: req.originalUrl,
+        status: res.statusCode,
+        durationMs: Date.now() - start
+      }));
+    });
+    next();
+  });
+  app.use(rate_limit_default({
+    windowMs: 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests, please slow down." },
+    ...globalRateLimit
+  }));
+  function proxy(target) {
+    return createProxyMiddleware({
+      target,
+      changeOrigin: true,
+      on: {
+        proxyReq: (proxyReq, req) => {
+          const correlationId = req.headers["x-correlation-id"];
+          if (correlationId) {
+            proxyReq.setHeader("x-correlation-id", correlationId);
+          }
+          proxyReq.removeHeader("cookie");
+        },
+        error: (err, _req, res) => {
+          console.error(JSON.stringify({
+            level: "error",
+            message: "Proxy error \u2014 downstream service unavailable",
+            target,
+            error: err.message
+          }));
+          res.status(502).json({ error: "Service temporarily unavailable." });
+        }
+      }
+    });
+  }
+  for (const service of services) {
+    const handlers2 = [];
+    if (service.rateLimit) {
+      handlers2.push(rate_limit_default(service.rateLimit));
+    }
+    handlers2.push(proxy(service.target));
+    app.use(service.path, ...handlers2);
+  }
+  app.get("/", (_req, res) => {
+    res.json({ status: "ok", message: `CRM ${name} is running` });
+  });
+  app.get("/health", (_req, res) => {
+    res.json({
+      status: "healthy",
+      timestamp: new Date().toISOString(),
+      services: services.reduce((acc, { path, target }) => ({ ...acc, [path]: target }), {})
+    });
+  });
+  app.use((_req, res) => {
+    res.status(404).json({ error: "Route not found" });
+  });
+  app.use((err, _req, res, _next) => {
+    console.error(JSON.stringify({
+      level: "error",
+      message: err.message,
+      stack: err.stack
+    }));
+    res.status(500).json({ error: "Internal server error" });
+  });
+  return app;
+}
 // ../../packages/utils/src/constants/urls.ts
 var URLS = {
   LEGACY_BASE_URL: process.env.NEXT_PUBLIC_LEGACY_BASE_URL ?? process.env.LEGACY_BASE_URL ?? "",
@@ -29507,102 +29601,30 @@ var URLS = {
 };
 
 // src/index.ts
-import crypto from "crypto";
-var app = import_express.default();
 var PORT = process.env.PORT ?? 6060;
-var SERVICES = {
-  authentication: URLS.AUTHENTICATION_SERVICE_URL,
-  users: URLS.USERS_SERVICE_URL
+var authenticationService = {
+  path: "/api/authenticate",
+  target: URLS.AUTHENTICATION_SERVICE_URL,
+  rateLimit: {
+    windowMs: 15 * 60 * 1000,
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many authentication attempts. Try again later." }
+  }
 };
-app.use(import_express.default.json());
-app.use(import_express.default.urlencoded({ extended: true }));
-app.use((req, _res, next) => {
-  req.headers["x-correlation-id"] ??= crypto.randomUUID();
-  next();
-});
-app.use((req, res, next) => {
-  const start = Date.now();
-  const correlationId = req.headers["x-correlation-id"];
-  res.on("finish", () => {
-    console.log(JSON.stringify({
-      level: "info",
-      timestamp: new Date().toISOString(),
-      correlationId,
-      method: req.method,
-      path: req.originalUrl,
-      status: res.statusCode,
-      durationMs: Date.now() - start
-    }));
-  });
-  next();
-});
-var globalLimiter = rate_limit_default({
-  windowMs: 60 * 1000,
-  max: 300,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many requests, please slow down." }
-});
-var authLimiter = rate_limit_default({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: "Too many authentication attempts. Try again later." }
-});
-app.use(globalLimiter);
-function proxy(target) {
-  return createProxyMiddleware({
-    target,
-    changeOrigin: true,
-    on: {
-      proxyReq: (proxyReq, req) => {
-        const correlationId = req.headers["x-correlation-id"];
-        if (correlationId) {
-          proxyReq.setHeader("x-correlation-id", correlationId);
-        }
-        proxyReq.removeHeader("cookie");
-      },
-      error: (err, _req, res) => {
-        console.error(JSON.stringify({
-          level: "error",
-          message: "Proxy error \u2014 downstream service unavailable",
-          target,
-          error: err.message
-        }));
-        res.status(502).json({ error: "Service temporarily unavailable." });
-      }
-    }
-  });
-}
-app.use("/api/authenticate", authLimiter, proxy(SERVICES.authentication));
-app.use("/api/users", proxy(SERVICES.users));
-app.get("/", (_req, res) => {
-  res.json({ status: "ok", message: "CRM Gateway is running" });
-});
-app.get("/health", (_req, res) => {
-  res.json({
-    status: "healthy",
-    timestamp: new Date().toISOString(),
-    services: Object.entries(SERVICES).reduce((acc, [name, url]) => ({ ...acc, [name]: url }), {})
-  });
-});
-app.use((_req, res) => {
-  res.status(404).json({ error: "Route not found" });
-});
-app.use((err, _req, res, _next) => {
-  console.error(JSON.stringify({
-    level: "error",
-    message: err.message,
-    stack: err.stack
-  }));
-  res.status(500).json({ error: "Internal server error" });
+var usersService = {
+  path: "/api/users",
+  target: URLS.USERS_SERVICE_URL
+};
+var app = createProxy({
+  name: "proxy",
+  services: [authenticationService, usersService]
 });
 app.listen(PORT, () => {
   console.log(JSON.stringify({
     level: "info",
-    message: `[gateway] Running on port ${PORT}`,
-    services: SERVICES
+    message: `[proxy] Running on port ${PORT}`
   }));
 });
 var src_default = app;

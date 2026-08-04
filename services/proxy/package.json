@@ -1,5 +1,5 @@
 {
-  "name": "gateway",
+  "name": "proxy",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,13 +9,10 @@
     "lint": "bunx eslint src"
   },
   "dependencies": {
-    "@crm/utils": "workspace:*",
-    "express": "^4.19.2",
-    "express-rate-limit": "^8.6.1",
-    "http-proxy-middleware": "^4.2.0"
+    "@crm/server": "workspace:*",
+    "@crm/utils": "workspace:*"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
     "@types/bun": "latest",
     "typescript": "^5"
   }

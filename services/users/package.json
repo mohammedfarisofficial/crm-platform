@@ -3,17 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/index.ts",
-    "build": "bun build src/index.ts --outdir dist --target bun",
-    "start": "bun dist/index.js",
-    "lint": "bunx eslint src"
+    "dev":         "bun --watch src/index.ts",
+    "build":       "bun build src/index.ts --outdir dist --target bun",
+    "start":       "bun dist/index.js",
+    "lint":        "bunx eslint src",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate":  "bun src/database/migrate.ts",
+    "db:push":     "bunx drizzle-kit push",
+    "db:studio":   "bunx drizzle-kit studio",
+    "db:drop":     "bunx drizzle-kit drop"
   },
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "@crm/drizzle": "workspace:*",
+    "@crm/server": "workspace:*",
+    "drizzle-orm": "latest",
+    "postgres": "latest"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/bun": "latest",
-    "typescript": "^5"
+    "typescript": "^5",
+    "drizzle-kit": "latest"
   }
 }

@@ -16,6 +16,17 @@
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
+    },
+    "db:generate": {
+      "cache": false,
+      "outputs": ["src/database/migrations/**"]
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
