@@ -1,5 +1,5 @@
 {
-  "name": "@crm/server",
+  "name": "@crm/http-server",
   "version": "0.1.0",
   "private": true,
   "exports": {

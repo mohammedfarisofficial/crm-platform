@@ -14,7 +14,7 @@ export interface AppOptions {
  * Handles: JSON/urlencoded middleware, root + health routes, 404, and error handler.
  *
  * Usage in a service's index.ts:
- *   import { createApp } from '@crm/server';
+ *   import { createApp } from '@crm/http-server';
  *   import router from './routes';
  *   const app = createApp({ serviceName: 'users', mountPath: '/api/users', router });
  *   app.listen(PORT);

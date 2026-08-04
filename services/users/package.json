@@ -16,7 +16,7 @@
   "dependencies": {
     "express": "^4.19.2",
     "@crm/drizzle": "workspace:*",
-    "@crm/server": "workspace:*",
+    "@crm/http-server": "workspace:*",
     "drizzle-orm": "latest",
     "postgres": "latest"
   },

@@ -9,7 +9,7 @@
     "lint": "bunx eslint src"
   },
   "dependencies": {
-    "@crm/server": "workspace:*",
+    "@crm/http-server": "workspace:*",
     "@crm/utils": "workspace:*"
   },
   "devDependencies": {

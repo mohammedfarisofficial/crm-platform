@@ -1,4 +1,4 @@
-import { createProxy } from '@crm/server';
+import { createProxy } from '@crm/http-server';
 import { URLS } from '@crm/utils/constants/urls';
 
 const PORT = process.env.PORT ?? 6060;

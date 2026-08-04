@@ -26104,7 +26104,7 @@ var require_micromatch = __commonJS((exports, module) => {
   module.exports = micromatch;
 });
 
-// ../../packages/server/src/index.ts
+// ../../packages/http-server/src/index.ts
 var import_express2 = __toESM(require_express(), 1);
 
 // ../../node_modules/.bun/httpxy@0.5.5/node_modules/httpxy/dist/index.mjs
@@ -27386,7 +27386,7 @@ class HttpProxyMiddleware {
 }
 // ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/handlers/response-interceptor.js
 var debug6 = Debug.extend("response-interceptor");
-// ../../packages/server/src/proxy.ts
+// ../../packages/http-server/src/proxy.ts
 var import_express = __toESM(require_express(), 1);
 
 // ../../node_modules/.bun/express-rate-limit@8.6.1+6eaaa7b2fde6cac9/node_modules/express-rate-limit/dist/index.mjs
@@ -27396,7 +27396,7 @@ var MINUTE = 60 * SECOND;
 var HOUR = 60 * MINUTE;
 var DAY = 24 * HOUR;
 
-// ../../packages/server/src/index.ts
+// ../../packages/http-server/src/index.ts
 function createApp({ serviceName, mountPath, router }) {
   const app = import_express2.default();
   app.use(import_express2.default.json());

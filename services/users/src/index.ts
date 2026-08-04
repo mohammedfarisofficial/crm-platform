@@ -1,4 +1,4 @@
-import { createApp } from '@crm/server';
+import { createApp } from '@crm/http-server';
 import router from './routes';
 
 const PORT = process.env.PORT ?? 6062;
