@@ -1,6 +1,8 @@
+export const API_BASE = "/api";
+
 export const SERVICES = {
-  AUTHENTICATION: "/api/authenticate",
-  USERS: "/api/users",
+  AUTHENTICATION: "/authenticate",
+  USERS: "/users",
 };
 
 const AUTHENTICATION_ENDPOINTS = {

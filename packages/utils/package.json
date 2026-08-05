@@ -5,10 +5,16 @@
   "exports": {
     "./constants/endpoints": "./src/constants/endpoints.ts",
     "./constants/urls": "./src/constants/urls.ts",
+    "./constants/roles": "./src/constants/roles.ts",
     "./functions": "./src/functions/index.ts",
+    "./schemas/users": "./src/schemas/users.ts",
+    "./query-utils": "./src/query-utils/index.ts",
     ".": "./src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^26.1.2"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
   }
 }
