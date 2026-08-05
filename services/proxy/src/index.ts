@@ -1,10 +1,11 @@
 import { createProxy } from '@crm/http-server';
 import { URLS } from '@crm/utils/constants/urls';
+import { SERVICES } from '@crm/utils/constants/endpoints';
 
 const PORT = process.env.PORT ?? 6060;
 
 const authenticationService = {
-  path: '/api/authenticate',
+  path: SERVICES.AUTHENTICATION,
   target: URLS.AUTHENTICATION_SERVICE_URL,
   rateLimit: {
     windowMs: 15 * 60 * 1000,
@@ -16,7 +17,7 @@ const authenticationService = {
 }
 
 const usersService = {
-  path: '/api/users',
+  path: SERVICES.USERS,
   target: URLS.USERS_SERVICE_URL,
 }
 

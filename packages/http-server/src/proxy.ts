@@ -58,6 +58,7 @@ export function createProxy({ name = 'proxy', services, globalRateLimit }: Proxy
     return createProxyMiddleware({
       target,
       changeOrigin: true,
+      pathRewrite: (path, req) => req.originalUrl,
       on: {
         proxyReq: (proxyReq, req) => {
           const correlationId = req.headers['x-correlation-id'];

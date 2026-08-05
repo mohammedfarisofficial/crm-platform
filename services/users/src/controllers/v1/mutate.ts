@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from "express"
 
-export const queryFunctions = {
+export const mutateFunctions = {
     registerUser: (req: Request, res: Response, next: NextFunction) => {
         try {
-
+            res.json({ message: "User registration endpoint hit successfully (v1)" });
         } catch (error) {
             next(error);
         }

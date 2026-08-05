@@ -17,6 +17,7 @@
     "express": "^4.19.2",
     "@crm/drizzle": "workspace:*",
     "@crm/http-server": "workspace:*",
+    "@crm/utils": "workspace:*",
     "drizzle-orm": "latest",
     "postgres": "latest"
   },

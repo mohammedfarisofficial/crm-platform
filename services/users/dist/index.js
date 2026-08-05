@@ -27419,50 +27419,107 @@ function createApp({ serviceName, mountPath, router }) {
 }
 
 // src/routes/index.ts
-var import_express5 = __toESM(require_express(), 1);
+var import_express7 = __toESM(require_express(), 1);
 
-// src/routes/query.ts
+// src/routes/v1/mutate.ts
 var import_express3 = __toESM(require_express(), 1);
 
-// src/controllers/query.ts
-var queryFunctions = {
+// src/controllers/v1/query.ts
+var queryFunctions = {};
+
+// src/controllers/v1/mutate.ts
+var mutateFunctions = {
   registerUser: (req, res, next) => {
-    try {} catch (error) {
+    try {
+      res.json({ message: "User registration endpoint hit successfully (v1)" });
+    } catch (error) {
       next(error);
     }
   }
 };
 
-// src/controllers/mutate.ts
-var mutateFunctions = {};
+// src/controllers/v2/query.ts
+var queryFunctions2 = {};
+
+// src/controllers/v2/mutate.ts
+var mutateFunctions2 = {
+  registerUser: (req, res, next) => {
+    try {
+      res.json({ message: "User registration endpoint hit successfully (v2)" });
+    } catch (error) {
+      next(error);
+    }
+  }
+};
 
 // src/controllers/index.ts
-var usersController = {
+var usersControllerV1 = {
   ...queryFunctions,
   ...mutateFunctions
 };
+var usersControllerV2 = {
+  ...queryFunctions2,
+  ...mutateFunctions2
+};
 
-// src/routes/query.ts
+// ../../packages/utils/src/constants/endpoints.ts
+var SERVICES = {
+  AUTHENTICATION: "/api/authenticate",
+  USERS: "/api/users"
+};
+var AUTHENTICATION_ENDPOINTS = {
+  SIGN_IN: "/sign-in",
+  SIGN_UP: "/sign-up"
+};
+var USERS_ENDPOINTS = {
+  V1: {
+    REGISTER_USER: "/v1/register-user"
+  },
+  V2: {
+    REGISTER_USER: "/v2/register-user"
+  }
+};
+var ENDPOINTS = {
+  AUTHENTICATION: AUTHENTICATION_ENDPOINTS,
+  USERS: USERS_ENDPOINTS
+};
+
+// src/routes/v1/mutate.ts
 var router = import_express3.Router();
-router.post("/register-user", usersController.registerUser);
-var query_default = router;
+router.post(ENDPOINTS.USERS.V1.REGISTER_USER, usersControllerV1.registerUser);
+router.get(ENDPOINTS.USERS.V1.REGISTER_USER, (req, res) => res.json({ message: "This is a POST endpoint. Please send a POST request to register a user (v1)." }));
+var mutate_default = router;
 
-// src/routes/mutate.ts
+// src/routes/v1/query.ts
 var import_express4 = __toESM(require_express(), 1);
 var router2 = import_express4.Router();
-var mutate_default = router2;
+var query_default = router2;
+
+// src/routes/v2/mutate.ts
+var import_express5 = __toESM(require_express(), 1);
+var router3 = import_express5.Router();
+router3.post(ENDPOINTS.USERS.V2.REGISTER_USER, usersControllerV2.registerUser);
+router3.get(ENDPOINTS.USERS.V2.REGISTER_USER, (req, res) => res.json({ message: "This is a POST endpoint. Please send a POST request to register a user (v2)." }));
+var mutate_default2 = router3;
+
+// src/routes/v2/query.ts
+var import_express6 = __toESM(require_express(), 1);
+var router4 = import_express6.Router();
+var query_default2 = router4;
 
 // src/routes/index.ts
-var usersRouter = import_express5.Router();
+var usersRouter = import_express7.Router();
 usersRouter.use(query_default);
 usersRouter.use(mutate_default);
+usersRouter.use(query_default2);
+usersRouter.use(mutate_default2);
 var routes_default = usersRouter;
 
 // src/index.ts
 var PORT = process.env.PORT ?? 6062;
 var app = createApp({
   serviceName: "users",
-  mountPath: "/api/users",
+  mountPath: SERVICES.USERS,
   router: routes_default
 });
 app.listen(PORT, () => {

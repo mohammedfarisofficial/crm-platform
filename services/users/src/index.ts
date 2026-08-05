@@ -1,11 +1,12 @@
 import { createApp } from '@crm/http-server';
 import router from './routes';
+import { SERVICES } from '@crm/utils/constants/endpoints';
 
 const PORT = process.env.PORT ?? 6062;
 
 const app = createApp({
   serviceName: 'users',
-  mountPath: '/api/users',
+  mountPath: SERVICES.USERS,
   router,
 });
 
