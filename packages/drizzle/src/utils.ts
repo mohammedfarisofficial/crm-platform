@@ -1,5 +1,5 @@
 import type { PgTable } from 'drizzle-orm/pg-core';
-import type { DrizzleClient } from '@crm/drizzle/client';
+import type { DrizzleClient } from './client';
 
 /**
  * Generic insert helper for Drizzle tables.
@@ -8,7 +8,7 @@ import type { DrizzleClient } from '@crm/drizzle/client';
  * Usage:
  *   const [user] = await insertQuery(db, users, { email, first_name, ... });
  */
-export async function insertQuery<
+async function insertQuery<
   TTable extends PgTable,
   TInsert extends TTable['$inferInsert'],
 >(
@@ -21,3 +21,7 @@ export async function insertQuery<
     .values(values)
     .returning();
 }
+
+export const utils = {
+  insertQuery,
+};

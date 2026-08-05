@@ -127,9 +127,12 @@
       "name": "@crm/utils",
       "version": "0.1.0",
       "dependencies": {
+        "@crm/drizzle": "workspace:*",
+        "drizzle-orm": "^0.45.2",
         "zod": "^4.4.3",
       },
       "devDependencies": {
+        "@types/bun": "^1.3.14",
         "@types/node": "^26.1.2",
       },
     },

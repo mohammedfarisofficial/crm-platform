@@ -18,8 +18,7 @@ export interface ProxyOptions {
 export function createProxy({ name = 'proxy', services, globalRateLimit }: ProxyOptions) {
   const app = express();
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+
 
   app.use((req: Request, _res: Response, next: NextFunction) => {
     req.headers['x-correlation-id'] ??= crypto.randomUUID();
@@ -58,7 +57,7 @@ export function createProxy({ name = 'proxy', services, globalRateLimit }: Proxy
     return createProxyMiddleware({
       target,
       changeOrigin: true,
-      pathRewrite: (path, req) => req.originalUrl,
+      pathRewrite: (path, req) => (req as unknown as Request).originalUrl,
       on: {
         proxyReq: (proxyReq, req) => {
           const correlationId = req.headers['x-correlation-id'];

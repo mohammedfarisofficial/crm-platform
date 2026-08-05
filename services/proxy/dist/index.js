@@ -29506,8 +29506,6 @@ var DAY = 24 * HOUR;
 // ../../packages/http-server/src/proxy.ts
 function createProxy({ name = "proxy", services, globalRateLimit }) {
   const app = import_express.default();
-  app.use(import_express.default.json());
-  app.use(import_express.default.urlencoded({ extended: true }));
   app.use((req, _res, next) => {
     req.headers["x-correlation-id"] ??= crypto.randomUUID();
     next();
@@ -29540,6 +29538,7 @@ function createProxy({ name = "proxy", services, globalRateLimit }) {
     return createProxyMiddleware({
       target,
       changeOrigin: true,
+      pathRewrite: (path, req) => req.originalUrl,
       on: {
         proxyReq: (proxyReq, req) => {
           const correlationId = req.headers["x-correlation-id"];
@@ -29600,10 +29599,21 @@ var URLS = {
   USERS_SERVICE_URL: process.env.USERS_SERVICE_URL ?? ""
 };
 
+// ../../packages/utils/src/constants/endpoints.ts
+var API_BASE = "/api";
+var SERVICES = {
+  AUTHENTICATION: "/authenticate",
+  USERS: "/users"
+};
+var VERSION = {
+  V1: "/v1",
+  V2: "/v2"
+};
+
 // src/index.ts
 var PORT = process.env.PORT ?? 6060;
 var authenticationService = {
-  path: "/api/authenticate",
+  path: `${API_BASE}${VERSION.V1}${SERVICES.AUTHENTICATION}`,
   target: URLS.AUTHENTICATION_SERVICE_URL,
   rateLimit: {
     windowMs: 15 * 60 * 1000,
@@ -29614,7 +29624,7 @@ var authenticationService = {
   }
 };
 var usersService = {
-  path: "/api/users",
+  path: `${API_BASE}${VERSION.V1}${SERVICES.USERS}`,
   target: URLS.USERS_SERVICE_URL
 };
 var app = createProxy({

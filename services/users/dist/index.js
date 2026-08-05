@@ -26120,6 +26120,27 @@ var require_micromatch = __commonJS((exports, module) => {
 // ../../packages/http-server/src/index.ts
 var import_express2 = __toESM(require_express(), 1);
 
+// ../../packages/http-server/src/async-handler.ts
+function asyncHandler(fn) {
+  return (req, res, next) => {
+    fn(req, res, next).catch((error) => {
+      const message = error instanceof Error ? error.message : "Internal server error";
+      const body = {
+        success: false,
+        errors: [{ message }]
+      };
+      res.status(500).json(body);
+      next(error);
+    });
+  };
+}
+function ok(data) {
+  return { success: true, data };
+}
+function fail(errors) {
+  return { success: false, errors };
+}
+
 // ../../node_modules/.bun/httpxy@0.5.5/node_modules/httpxy/dist/index.mjs
 import httpNative, { request } from "http";
 import httpsNative, { request as request$1 } from "https";
@@ -27408,6 +27429,27 @@ var SECOND = 1000;
 var MINUTE = 60 * SECOND;
 var HOUR = 60 * MINUTE;
 var DAY = 24 * HOUR;
+// ../../packages/http-server/src/respond.ts
+function JSON200(res, data) {
+  res.status(200).json(ok(data));
+}
+function JSON400(res, errors) {
+  const normalized = typeof errors === "string" ? [{ message: errors }] : errors;
+  res.status(400).json(fail(normalized));
+}
+// ../../packages/http-server/src/parse-body.ts
+function parseBody(schema, req, res) {
+  const result = schema.safeParse(req.body);
+  if (!result.success) {
+    const errors = result.error.issues.map((issue) => ({
+      field: issue.path.join("."),
+      message: issue.message
+    }));
+    JSON400(res, errors);
+    return null;
+  }
+  return result.data;
+}
 
 // ../../packages/http-server/src/index.ts
 function createApp({ serviceName, mountPath, router }) {
@@ -27422,11 +27464,11 @@ function createApp({ serviceName, mountPath, router }) {
   });
   app.use(mountPath, router);
   app.use((_req, res) => {
-    res.status(404).json({ error: `Route not found in ${serviceName} service` });
+    res.status(404).json(fail([{ message: `Route not found in ${serviceName} service` }]));
   });
   app.use((err, _req, res, _next) => {
     console.error(`[${serviceName}] ${err.stack}`);
-    res.status(500).json({ error: `Internal server error in ${serviceName} service` });
+    res.status(500).json(fail([{ message: err.message ?? "Internal server error" }]));
   });
   return app;
 }
@@ -27440,10 +27482,13 @@ var import_express3 = __toESM(require_express(), 1);
 // src/controllers/v1/query.ts
 var queryFunctions = {};
 
-// ../../packages/utils/src/query-utils/index.ts
+// ../../packages/drizzle/src/utils.ts
 async function insertQuery(db, table, values) {
   return db.insert(table).values(values).returning();
 }
+var utils = {
+  insertQuery
+};
 
 // ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/index.js
 import os from "os";
@@ -34479,7 +34524,7 @@ __export(exports_users, {
 var users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull().unique(),
-  password_hash: text("password_hash").notNull(),
+  password: text("password").notNull(),
   role: integer("role").default(3).notNull(),
   first_name: text("first_name").notNull(),
   last_name: text("last_name").notNull(),
@@ -34492,59 +34537,11 @@ var users = pgTable("users", {
 // src/database/client.ts
 var db = createDbClient(exports_users);
 
-// src/repository/index.ts
-var usersRepository = {
-  createUser: async (args) => {
-    const { password, ...rest } = args;
-    const password_hash = Buffer.from(password).toString("base64");
-    const [user] = await insertQuery(db, users, {
-      ...rest,
-      password_hash
-    });
-    return user;
-  }
-};
-
-// src/controllers/v1/mutate.ts
-var mutateFunctions = {
-  registerUser: async (req, res, next) => {
-    try {
-      const user = await usersRepository.createUser(req.body);
-      res.status(201).json({ data: user });
-    } catch (error) {
-      next(error);
-    }
-  }
-};
-
-// src/controllers/v2/query.ts
-var queryFunctions2 = {};
-
-// src/controllers/v2/mutate.ts
-var mutateFunctions2 = {
-  registerUser: (req, res, next) => {
-    try {
-      res.json({ message: "User registration endpoint hit successfully (v2)" });
-    } catch (error) {
-      next(error);
-    }
-  }
-};
-
-// src/controllers/index.ts
-var usersControllerV1 = {
-  ...queryFunctions,
-  ...mutateFunctions
-};
-var usersControllerV2 = {
-  ...queryFunctions2,
-  ...mutateFunctions2
-};
-
 // ../../packages/utils/src/constants/endpoints.ts
+var API_BASE = "/api";
 var SERVICES = {
-  AUTHENTICATION: "/api/authenticate",
-  USERS: "/api/users"
+  AUTHENTICATION: "/authenticate",
+  USERS: "/users"
 };
 var AUTHENTICATION_ENDPOINTS = {
   SIGN_IN: "/sign-in",
@@ -34561,7 +34558,18 @@ var ENDPOINTS = {
   AUTHENTICATION: AUTHENTICATION_ENDPOINTS,
   USERS: USERS_ENDPOINTS
 };
-
+// ../../packages/utils/src/constants/urls.ts
+var URLS = {
+  LEGACY_BASE_URL: process.env.NEXT_PUBLIC_LEGACY_BASE_URL ?? process.env.LEGACY_BASE_URL ?? "",
+  PLATFORM_BASE_URL: process.env.NEXT_PUBLIC_PLATFORM_BASE_URL ?? process.env.PLATFORM_BASE_URL ?? "",
+  GATEWAY_BASE_URL: process.env.NEXT_PUBLIC_GATEWAY_BASE_URL ?? process.env.GATEWAY_BASE_URL ?? "",
+  AUTHENTICATION_SERVICE_URL: process.env.AUTHENTICATION_SERVICE_URL ?? "",
+  USERS_SERVICE_URL: process.env.USERS_SERVICE_URL ?? ""
+};
+// ../../packages/utils/src/constants/roles.ts
+var ROLES = {
+  ORGANIZATION: 2
+};
 // ../../node_modules/.bun/zod@4.4.3/node_modules/zod/v4/classic/external.js
 var exports_external = {};
 __export(exports_external, {
@@ -48847,30 +48855,73 @@ var RegisterUserSchema = exports_external.object({
   phone: exports_external.string().optional(),
   profile_url: exports_external.string().url("Invalid URL").optional().or(exports_external.literal(""))
 });
-
-// src/middleware/validate.ts
-function validateBody(schema) {
-  return (req, res, next) => {
-    const result = schema.safeParse(req.body);
-    if (!result.success) {
-      const errors3 = formatZodError(result.error);
-      res.status(400).json({ error: "Validation failed", details: errors3 });
-      return;
+// ../../packages/utils/src/hash.ts
+import crypto3 from "crypto";
+var passwordUtils = {
+  async hash(password) {
+    const pepper = process.env.PASSWORD_PEPPER;
+    if (!pepper) {
+      throw new Error("PASSWORD_PEPPER environment variable is missing.");
     }
-    req.body = result.data;
-    next();
-  };
-}
-function formatZodError(error51) {
-  return error51.errors.map((e) => ({
-    field: e.path.join("."),
-    message: e.message
-  }));
-}
+    const hmac2 = crypto3.createHmac("sha256", pepper).update(password).digest("hex");
+    return Bun.password.hash(hmac2);
+  },
+  async verify(password, hash2) {
+    const pepper = process.env.PASSWORD_PEPPER;
+    if (!pepper) {
+      throw new Error("PASSWORD_PEPPER environment variable is missing.");
+    }
+    const hmac2 = crypto3.createHmac("sha256", pepper).update(password).digest("hex");
+    return Bun.password.verify(hmac2, hash2);
+  }
+};
+// src/repository/index.ts
+var usersRepository = {
+  createUser: async (args) => {
+    const { password, ...restArgs } = args;
+    const hashedPassword = await passwordUtils.hash(password);
+    const [user] = await utils.insertQuery(db, users, {
+      ...restArgs,
+      password: hashedPassword
+    });
+    return user;
+  }
+};
+
+// src/controllers/v1/mutate.ts
+var mutateFunctions = {
+  registerUser: asyncHandler(async (req, res) => {
+    const postData = parseBody(RegisterUserSchema, req, res);
+    if (!postData)
+      return;
+    const updatedData = {
+      ...postData,
+      role: ROLES.ORGANIZATION
+    };
+    const user = await usersRepository.createUser(updatedData);
+    JSON200(res, user);
+  })
+};
+
+// src/controllers/v2/query.ts
+var queryFunctions2 = {};
+
+// src/controllers/v2/mutate.ts
+var mutateFunctions2 = {};
+
+// src/controllers/index.ts
+var usersControllerV1 = {
+  ...queryFunctions,
+  ...mutateFunctions
+};
+var usersControllerV2 = {
+  ...queryFunctions2,
+  ...mutateFunctions2
+};
 
 // src/routes/v1/mutate.ts
 var router = import_express3.Router();
-router.post(ENDPOINTS.USERS.REGISTER_USER, validateBody(RegisterUserSchema), usersControllerV1.registerUser);
+router.post(ENDPOINTS.USERS.REGISTER_USER, usersControllerV1.registerUser);
 var mutate_default = router;
 
 // src/routes/v1/query.ts
@@ -48881,8 +48932,6 @@ var query_default = router2;
 // src/routes/v2/mutate.ts
 var import_express5 = __toESM(require_express(), 1);
 var router3 = import_express5.Router();
-router3.post(ENDPOINTS.USERS.REGISTER_USER, usersControllerV2.registerUser);
-router3.get(ENDPOINTS.USERS.REGISTER_USER, (req, res) => res.json({ message: "This is a POST endpoint. Please send a POST request to register a user (v2)." }));
 var mutate_default2 = router3;
 
 // src/routes/v2/query.ts
@@ -48892,17 +48941,17 @@ var query_default2 = router4;
 
 // src/routes/index.ts
 var usersRouter = import_express7.Router();
-usersRouter.use(VERSION.V1, query_default);
-usersRouter.use(VERSION.V1, mutate_default);
-usersRouter.use(VERSION.V2, query_default2);
-usersRouter.use(VERSION.V2, mutate_default2);
+usersRouter.use(`${VERSION.V1}${SERVICES.USERS}`, query_default);
+usersRouter.use(`${VERSION.V1}${SERVICES.USERS}`, mutate_default);
+usersRouter.use(`${VERSION.V2}${SERVICES.USERS}`, query_default2);
+usersRouter.use(`${VERSION.V2}${SERVICES.USERS}`, mutate_default2);
 var routes_default = usersRouter;
 
 // src/index.ts
 var PORT = process.env.PORT ?? 6062;
 var app = createApp({
   serviceName: "users",
-  mountPath: SERVICES.USERS,
+  mountPath: API_BASE,
   router: routes_default
 });
 app.listen(PORT, () => {

@@ -15,6 +15,13 @@
       "when": 1785866745396,
       "tag": "0001_overjoyed_marvel_zombies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785949688017,
+      "tag": "0002_silky_silver_sable",
+      "breakpoints": true
     }
   ]
 }
