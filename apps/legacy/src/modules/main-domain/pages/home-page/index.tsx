@@ -5,8 +5,8 @@ export function HomePage() {
     return (
         <Layouts.PageLayout>
             <Sections.Hero />
-            <Sections.Features />
-            <Sections.Contact />
+            {/* <Sections.Features />
+            <Sections.Contact /> */}
         </Layouts.PageLayout>
     )
 }
