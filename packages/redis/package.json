@@ -1,0 +1,14 @@
+{
+  "name": "@crm/redis",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

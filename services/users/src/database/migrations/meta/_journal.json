@@ -22,6 +22,13 @@
       "when": 1785949688017,
       "tag": "0002_silky_silver_sable",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786985889010,
+      "tag": "0003_graceful_chameleon",
+      "breakpoints": true
     }
   ]
 }

@@ -37,3 +37,8 @@ bun run db:push       # Push schema directly (skip migration files)
 bun run db:studio     # Open Drizzle Studio (visual DB browser)
 bun run db:drop       # Drop a migration
 ```
+
+Redis 
+brew services start redis
+brew services stop redis
+brew services restart redis

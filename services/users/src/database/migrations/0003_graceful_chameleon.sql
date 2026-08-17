@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "user_status" integer DEFAULT 0 NOT NULL;
