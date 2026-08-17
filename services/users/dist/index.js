@@ -27482,14 +27482,6 @@ var import_express3 = __toESM(require_express(), 1);
 // src/controllers/v1/query.ts
 var queryFunctions = {};
 
-// ../../packages/drizzle/src/utils.ts
-async function insertQuery(db, table, values) {
-  return db.insert(table).values(values).returning();
-}
-var utils = {
-  insertQuery
-};
-
 // ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/index.js
 import os from "os";
 import fs from "fs";
@@ -34530,6 +34522,7 @@ var users = pgTable("users", {
   last_name: text("last_name").notNull(),
   profile_url: text("profile_url"),
   phone: text("phone"),
+  user_status: integer("user_status").default(0).notNull(),
   created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull()
 });
@@ -48875,6 +48868,14 @@ var passwordUtils = {
     return Bun.password.verify(hmac2, hash2);
   }
 };
+// ../../packages/drizzle/src/utils.ts
+async function insertQuery(db2, table, values2) {
+  return db2.insert(table).values(values2).returning();
+}
+var utils = {
+  insertQuery
+};
+
 // src/repository/index.ts
 var usersRepository = {
   createUser: async (args) => {

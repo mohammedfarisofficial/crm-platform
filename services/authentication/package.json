@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@crm/drizzle": "workspace:*",
+    "@crm/rabbitmq": "workspace:*",
     "@crm/redis": "workspace:*",
     "drizzle-orm": "latest",
     "express": "^4.19.2",

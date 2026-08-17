@@ -16,6 +16,7 @@
   "dependencies": {
     "@crm/drizzle": "workspace:*",
     "@crm/http-server": "workspace:*",
+    "@crm/rabbitmq": "workspace:*",
     "@crm/utils": "workspace:*",
     "drizzle-orm": "latest",
     "express": "^4.19.2",

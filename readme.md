@@ -42,3 +42,8 @@ Redis
 brew services start redis
 brew services stop redis
 brew services restart redis
+
+RabbitMQ
+brew install rabbitmq         - Installing
+brew services start rabbitmq  - Starting
+http://localhost:15672/#/connections - URL for connection checking

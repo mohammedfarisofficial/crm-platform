@@ -1,0 +1,18 @@
+{
+  "name": "@crm/rabbitmq",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.4",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
