@@ -6,8 +6,14 @@ export const SERVICES = {
 };
 
 const AUTHENTICATION_ENDPOINTS = {
-  SIGN_IN: "/sign-in",
-  SIGN_UP: "/sign-up",
+  SIGN_IN: "/login",
+  SIGN_UP: "/signup",
+  VERIFY_OTP: "/verify-otp",
+  RESEND_OTP: "/resend-otp",
+  REFRESH: "/refresh",
+  LOGOUT: "/logout",
+  LOGOUT_ALL: "/logout-all",
+  SESSIONS: "/sessions",
 };
 
 export const VERSION = {

@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, inet, boolean, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, inet, boolean, timestamp } from 'drizzle-orm/pg-core';
 
 
 export const loginAttempts = pgTable('login_attempts', {
@@ -7,6 +7,6 @@ export const loginAttempts = pgTable('login_attempts', {
   email: text('email'),
   ip_address: inet('ip_address'),
   success: boolean('success'),
-  reason: integer('reason'),
+  reason: text('reason'),
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });

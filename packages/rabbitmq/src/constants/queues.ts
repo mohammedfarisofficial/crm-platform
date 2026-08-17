@@ -7,9 +7,12 @@ export const QUEUES = {
     USER_EVENTS: 'auth_service_user_events_queue',
   },
   USERS: {
-    // Add queues for the users service here as needed
+    RPC_CREATE: 'users_rpc_create',
+    RPC_GET_BY_EMAIL: 'users_rpc_get_by_email',
+    RPC_VERIFY: 'users_rpc_verify',
   },
 } as const;
 
 export type QueueName =
-  | typeof QUEUES.AUTHENTICATION[keyof typeof QUEUES.AUTHENTICATION];
+  | typeof QUEUES.AUTHENTICATION[keyof typeof QUEUES.AUTHENTICATION]
+  | typeof QUEUES.USERS[keyof typeof QUEUES.USERS];

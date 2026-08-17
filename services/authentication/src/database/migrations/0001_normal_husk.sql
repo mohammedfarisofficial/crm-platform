@@ -1,0 +1,1 @@
+ALTER TABLE "login_attempts" ALTER COLUMN "reason" SET DATA TYPE text;

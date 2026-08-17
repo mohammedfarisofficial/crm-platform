@@ -4,6 +4,8 @@ import { users } from '../database/schema/users';
 import { utils as dbUtils } from '@crm/drizzle/utils';
 import type { RegisterUserInput } from '@crm/utils/schemas/users';
 
+import { eq } from 'drizzle-orm';
+
 export const usersRepository = {
     createUser: async (args: RegisterUserInput) => {
         const { password, ...restArgs } = args;
@@ -15,4 +17,14 @@ export const usersRepository = {
 
         return user;
     },
+    
+    getUserByEmail: async (email: string) => {
+        const [user] = await db.select().from(users).where(eq(users.email, email));
+        return user;
+    },
+
+    verifyUser: async (id: string) => {
+        const [user] = await db.update(users).set({ is_verified: true }).where(eq(users.id, id as any)).returning();
+        return user;
+    }
 };

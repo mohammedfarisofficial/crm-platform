@@ -12,8 +12,16 @@ export const ROUTING_KEYS = {
     LOGIN_SUCCESS: 'authentication.login_success',
     LOGIN_FAILED: 'authentication.login_failed',
   },
+  RPC: {
+    USERS: {
+      CREATE: 'rpc.users.create',
+      GET_BY_EMAIL: 'rpc.users.get_by_email',
+      VERIFY: 'rpc.users.verify',
+    }
+  }
 } as const;
 
 export type RoutingKey =
   | typeof ROUTING_KEYS.USERS[keyof typeof ROUTING_KEYS.USERS]
-  | typeof ROUTING_KEYS.AUTHENTICATION[keyof typeof ROUTING_KEYS.AUTHENTICATION];
+  | typeof ROUTING_KEYS.AUTHENTICATION[keyof typeof ROUTING_KEYS.AUTHENTICATION]
+  | typeof ROUTING_KEYS.RPC.USERS[keyof typeof ROUTING_KEYS.RPC.USERS];

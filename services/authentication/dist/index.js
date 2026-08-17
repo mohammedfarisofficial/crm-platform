@@ -1074,12 +1074,12 @@ var require_debug = __commonJS((exports, module) => {
     function debug() {
       if (!debug.enabled)
         return;
-      var self = debug;
+      var self2 = debug;
       var curr = +new Date;
       var ms = curr - (prevTime || curr);
-      self.diff = ms;
-      self.prev = prevTime;
-      self.curr = curr;
+      self2.diff = ms;
+      self2.prev = prevTime;
+      self2.curr = curr;
       prevTime = curr;
       var args = new Array(arguments.length);
       for (var i = 0;i < args.length; i++) {
@@ -1097,15 +1097,15 @@ var require_debug = __commonJS((exports, module) => {
         var formatter = exports.formatters[format];
         if (typeof formatter === "function") {
           var val = args[index];
-          match = formatter.call(self, val);
+          match = formatter.call(self2, val);
           args.splice(index, 1);
           index--;
         }
         return match;
       });
-      exports.formatArgs.call(self, args);
+      exports.formatArgs.call(self2, args);
       var logFn = debug.log || exports.log || console.log.bind(console);
-      logFn.apply(self, args);
+      logFn.apply(self2, args);
     }
     debug.namespace = namespace;
     debug.enabled = exports.enabled(namespace);
@@ -17838,7 +17838,7 @@ var require_router = __commonJS((exports, module) => {
     return this;
   };
   proto.handle = function handle(req, res, out) {
-    var self = this;
+    var self2 = this;
     debug("dispatching %s %s", req.method, req.url);
     var idx = 0;
     var protohost = getProtohost(req.url) || "";
@@ -17847,7 +17847,7 @@ var require_router = __commonJS((exports, module) => {
     var sync = 0;
     var paramcalled = {};
     var options = [];
-    var stack = self.stack;
+    var stack = self2.stack;
     var parentParams = req.params;
     var parentUrl = req.baseUrl || "";
     var done = restore(out, req, "baseUrl", "next", "params");
@@ -17923,9 +17923,9 @@ var require_router = __commonJS((exports, module) => {
       if (route) {
         req.route = route;
       }
-      req.params = self.mergeParams ? mergeParams(layer.params, parentParams) : layer.params;
+      req.params = self2.mergeParams ? mergeParams(layer.params, parentParams) : layer.params;
       var layerPath = layer.path;
-      self.process_params(layer, paramcalled, req, res, function(err2) {
+      self2.process_params(layer, paramcalled, req, res, function(err2) {
         if (err2) {
           next(layerError || err2);
         } else if (route) {
@@ -18539,14 +18539,14 @@ var require_etag = __commonJS((exports, module) => {
    * MIT Licensed
    */
   module.exports = etag;
-  var crypto = __require("crypto");
+  var crypto2 = __require("crypto");
   var Stats = __require("fs").Stats;
   var toString = Object.prototype.toString;
   function entitytag(entity) {
     if (entity.length === 0) {
       return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
     }
-    var hash = crypto.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+    var hash = crypto2.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
     var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
     return '"' + len.toString(16) + "-" + hash + '"';
   }
@@ -19244,59 +19244,59 @@ var require_send = __commonJS((exports, module) => {
   };
   SendStream.prototype.sendFile = function sendFile(path2) {
     var i = 0;
-    var self = this;
+    var self2 = this;
     debug('stat "%s"', path2);
     fs.stat(path2, function onstat(err, stat) {
       if (err && err.code === "ENOENT" && !extname(path2) && path2[path2.length - 1] !== sep) {
         return next(err);
       }
       if (err)
-        return self.onStatError(err);
+        return self2.onStatError(err);
       if (stat.isDirectory())
-        return self.redirect(path2);
-      self.emit("file", path2, stat);
-      self.send(path2, stat);
+        return self2.redirect(path2);
+      self2.emit("file", path2, stat);
+      self2.send(path2, stat);
     });
     function next(err) {
-      if (self._extensions.length <= i) {
-        return err ? self.onStatError(err) : self.error(404);
+      if (self2._extensions.length <= i) {
+        return err ? self2.onStatError(err) : self2.error(404);
       }
-      var p = path2 + "." + self._extensions[i++];
+      var p = path2 + "." + self2._extensions[i++];
       debug('stat "%s"', p);
       fs.stat(p, function(err2, stat) {
         if (err2)
           return next(err2);
         if (stat.isDirectory())
           return next();
-        self.emit("file", p, stat);
-        self.send(p, stat);
+        self2.emit("file", p, stat);
+        self2.send(p, stat);
       });
     }
   };
   SendStream.prototype.sendIndex = function sendIndex(path2) {
     var i = -1;
-    var self = this;
+    var self2 = this;
     function next(err) {
-      if (++i >= self._index.length) {
+      if (++i >= self2._index.length) {
         if (err)
-          return self.onStatError(err);
-        return self.error(404);
+          return self2.onStatError(err);
+        return self2.error(404);
       }
-      var p = join(path2, self._index[i]);
+      var p = join(path2, self2._index[i]);
       debug('stat "%s"', p);
       fs.stat(p, function(err2, stat) {
         if (err2)
           return next(err2);
         if (stat.isDirectory())
           return next();
-        self.emit("file", p, stat);
-        self.send(p, stat);
+        self2.emit("file", p, stat);
+        self2.send(p, stat);
       });
     }
     next();
   };
   SendStream.prototype.stream = function stream(path2, options) {
-    var self = this;
+    var self2 = this;
     var res = this.res;
     var stream2 = fs.createReadStream(path2, options);
     this.emit("stream", stream2);
@@ -19307,10 +19307,10 @@ var require_send = __commonJS((exports, module) => {
     onFinished(res, cleanup);
     stream2.on("error", function onerror(err) {
       cleanup();
-      self.onStatError(err);
+      self2.onStatError(err);
     });
     stream2.on("end", function onend() {
-      self.emit("end");
+      self2.emit("end");
     });
   };
   SendStream.prototype.type = function type(path2) {
@@ -21465,13 +21465,13 @@ var require_request = __commonJS((exports, module) => {
 
 // ../../node_modules/.bun/cookie-signature@1.0.7/node_modules/cookie-signature/index.js
 var require_cookie_signature = __commonJS((exports) => {
-  var crypto = __require("crypto");
+  var crypto2 = __require("crypto");
   exports.sign = function(val, secret) {
     if (typeof val !== "string")
       throw new TypeError("Cookie value must be provided as a string.");
     if (secret == null)
       throw new TypeError("Secret key must be provided.");
-    return val + "." + crypto.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+    return val + "." + crypto2.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
   };
   exports.unsign = function(val, secret) {
     if (typeof val !== "string")
@@ -21482,7 +21482,7 @@ var require_cookie_signature = __commonJS((exports) => {
     return sha1(mac) == sha1(val) ? str : false;
   };
   function sha1(str) {
-    return crypto.createHash("sha1").update(str).digest("hex");
+    return crypto2.createHash("sha1").update(str).digest("hex");
   }
 });
 
@@ -22185,16 +22185,16 @@ var require_response = __commonJS((exports, module) => {
     var done = callback;
     var opts = options || {};
     var req = this.req;
-    var self = this;
+    var self2 = this;
     if (typeof options === "function") {
       done = options;
       opts = {};
     }
-    opts._locals = self.locals;
+    opts._locals = self2.locals;
     done = done || function(err, str) {
       if (err)
         return req.next(err);
-      self.send(str);
+      self2.send(str);
     };
     app.render(view, opts, done);
   };
@@ -26281,12 +26281,12 @@ var require_common = __commonJS((exports, module) => {
         if (!debug.enabled) {
           return;
         }
-        const self = debug;
+        const self2 = debug;
         const curr = Number(new Date);
         const ms = curr - (prevTime || curr);
-        self.diff = ms;
-        self.prev = prevTime;
-        self.curr = curr;
+        self2.diff = ms;
+        self2.prev = prevTime;
+        self2.curr = curr;
         prevTime = curr;
         args[0] = createDebug.coerce(args[0]);
         if (typeof args[0] !== "string") {
@@ -26301,15 +26301,15 @@ var require_common = __commonJS((exports, module) => {
           const formatter = createDebug.formatters[format];
           if (typeof formatter === "function") {
             const val = args[index];
-            match = formatter.call(self, val);
+            match = formatter.call(self2, val);
             args.splice(index, 1);
             index--;
           }
           return match;
         });
-        createDebug.formatArgs.call(self, args);
-        const logFn = self.log || createDebug.log;
-        logFn.apply(self, args);
+        createDebug.formatArgs.call(self2, args);
+        const logFn = self2.log || createDebug.log;
+        logFn.apply(self2, args);
       }
       debug.namespace = namespace;
       debug.useColors = createDebug.useColors();
@@ -29967,9 +29967,9 @@ var require_cluster = __commonJS((exports) => {
             this.manuallyClosing = false;
             this.setStatus("connect");
             if (this.options.enableReadyCheck) {
-              this.readyCheck((err, fail) => {
-                if (err || fail) {
-                  debug("Ready check failed (%s). Reconnecting...", err || fail);
+              this.readyCheck((err, fail2) => {
+                if (err || fail2) {
+                  debug("Ready check failed (%s). Reconnecting...", err || fail2);
                   if (this.status === "connect") {
                     this.disconnect(true);
                   }
@@ -30529,7 +30529,7 @@ var require_cluster = __commonJS((exports) => {
           if (err) {
             return reject(err);
           }
-          const self = this, groupedRecords = (0, util_1.groupSrvRecords)(records), sortedKeys = Object.keys(groupedRecords).sort((a, b) => parseInt(a) - parseInt(b));
+          const self2 = this, groupedRecords = (0, util_1.groupSrvRecords)(records), sortedKeys = Object.keys(groupedRecords).sort((a, b) => parseInt(a) - parseInt(b));
           function tryFirstOne(err2) {
             if (!sortedKeys.length) {
               return reject(err2);
@@ -30538,7 +30538,7 @@ var require_cluster = __commonJS((exports) => {
             if (!group.records.length) {
               sortedKeys.shift();
             }
-            self.dnsLookup(record.name).then((host) => resolve({
+            self2.dnsLookup(record.name).then((host) => resolve({
               host,
               port: record.port
             }), tryFirstOne);
@@ -31731,16 +31731,16 @@ var require_event_handler = __commonJS((exports) => {
   var utils_1 = require_utils4();
   var DataHandler_1 = require_DataHandler();
   var debug = (0, utils_1.Debug)("connection");
-  function connectHandler(self) {
+  function connectHandler(self2) {
     return function() {
       var _a;
-      self.setStatus("connect");
-      self.resetCommandQueue();
+      self2.setStatus("connect");
+      self2.resetCommandQueue();
       let flushed = false;
-      const { connectionEpoch } = self;
-      if (self.condition.auth) {
-        self.auth(self.condition.auth, function(err) {
-          if (connectionEpoch !== self.connectionEpoch) {
+      const { connectionEpoch } = self2;
+      if (self2.condition.auth) {
+        self2.auth(self2.condition.auth, function(err) {
+          if (connectionEpoch !== self2.connectionEpoch) {
             return;
           }
           if (err) {
@@ -31752,49 +31752,49 @@ var require_event_handler = __commonJS((exports) => {
               console.warn(`[ERROR] The server returned "wrong number of arguments for 'auth' command". You are probably passing both username and password to Redis version 5 or below. You should only pass the 'password' option for Redis version 5 and under.`);
             } else {
               flushed = true;
-              self.recoverFromFatalError(err, err);
+              self2.recoverFromFatalError(err, err);
             }
           }
         });
       }
-      if (self.condition.select) {
-        self.select(self.condition.select).catch((err) => {
-          self.silentEmit("error", err);
+      if (self2.condition.select) {
+        self2.select(self2.condition.select).catch((err) => {
+          self2.silentEmit("error", err);
         });
       }
-      new DataHandler_1.default(self, {
-        stringNumbers: self.options.stringNumbers
+      new DataHandler_1.default(self2, {
+        stringNumbers: self2.options.stringNumbers
       });
       const clientCommandPromises = [];
-      if (self.options.connectionName) {
-        debug("set the connection name [%s]", self.options.connectionName);
-        clientCommandPromises.push(self.client("setname", self.options.connectionName).catch(utils_1.noop));
+      if (self2.options.connectionName) {
+        debug("set the connection name [%s]", self2.options.connectionName);
+        clientCommandPromises.push(self2.client("setname", self2.options.connectionName).catch(utils_1.noop));
       }
-      if (!self.options.disableClientInfo) {
+      if (!self2.options.disableClientInfo) {
         debug("set the client info");
         clientCommandPromises.push((0, utils_1.getPackageMeta)().then((packageMeta) => {
-          return self.client("SETINFO", "LIB-VER", packageMeta.version).catch(utils_1.noop);
+          return self2.client("SETINFO", "LIB-VER", packageMeta.version).catch(utils_1.noop);
         }).catch(utils_1.noop));
-        clientCommandPromises.push(self.client("SETINFO", "LIB-NAME", ((_a = self.options) === null || _a === undefined ? undefined : _a.clientInfoTag) ? `ioredis(${self.options.clientInfoTag})` : "ioredis").catch(utils_1.noop));
+        clientCommandPromises.push(self2.client("SETINFO", "LIB-NAME", ((_a = self2.options) === null || _a === undefined ? undefined : _a.clientInfoTag) ? `ioredis(${self2.options.clientInfoTag})` : "ioredis").catch(utils_1.noop));
       }
       Promise.all(clientCommandPromises).catch(utils_1.noop).finally(() => {
-        if (!self.options.enableReadyCheck) {
-          exports.readyHandler(self)();
+        if (!self2.options.enableReadyCheck) {
+          exports.readyHandler(self2)();
         }
-        if (self.options.enableReadyCheck) {
-          self._readyCheck(function(err, info) {
-            if (connectionEpoch !== self.connectionEpoch) {
+        if (self2.options.enableReadyCheck) {
+          self2._readyCheck(function(err, info) {
+            if (connectionEpoch !== self2.connectionEpoch) {
               return;
             }
             if (err) {
               if (!flushed) {
-                self.recoverFromFatalError(new Error("Ready check failed: " + err.message), err);
+                self2.recoverFromFatalError(new Error("Ready check failed: " + err.message), err);
               }
             } else {
-              if (self.connector.check(info)) {
-                exports.readyHandler(self)();
+              if (self2.connector.check(info)) {
+                exports.readyHandler(self2)();
               } else {
-                self.disconnect(true);
+                self2.disconnect(true);
               }
             }
           });
@@ -31848,150 +31848,150 @@ var require_event_handler = __commonJS((exports) => {
       }
     }
   }
-  function closeHandler(self) {
+  function closeHandler(self2) {
     return function() {
-      const prevStatus = self.status;
-      self.setStatus("close");
-      if (self.commandQueue.length) {
-        abortIncompletePipelines(self.commandQueue);
+      const prevStatus = self2.status;
+      self2.setStatus("close");
+      if (self2.commandQueue.length) {
+        abortIncompletePipelines(self2.commandQueue);
       }
-      if (self.offlineQueue.length) {
-        abortTransactionFragments(self.offlineQueue);
+      if (self2.offlineQueue.length) {
+        abortTransactionFragments(self2.offlineQueue);
       }
       if (prevStatus === "ready") {
-        if (!self.prevCondition) {
-          self.prevCondition = self.condition;
+        if (!self2.prevCondition) {
+          self2.prevCondition = self2.condition;
         }
-        if (self.commandQueue.length) {
-          self.prevCommandQueue = self.commandQueue;
+        if (self2.commandQueue.length) {
+          self2.prevCommandQueue = self2.commandQueue;
         }
       }
-      if (self.manuallyClosing) {
-        self.manuallyClosing = false;
+      if (self2.manuallyClosing) {
+        self2.manuallyClosing = false;
         debug("skip reconnecting since the connection is manually closed.");
         return close();
       }
-      if (typeof self.options.retryStrategy !== "function") {
+      if (typeof self2.options.retryStrategy !== "function") {
         debug("skip reconnecting because `retryStrategy` is not a function");
         return close();
       }
-      const retryDelay = self.options.retryStrategy(++self.retryAttempts);
+      const retryDelay = self2.options.retryStrategy(++self2.retryAttempts);
       if (typeof retryDelay !== "number") {
         debug("skip reconnecting because `retryStrategy` doesn't return a number");
         return close();
       }
       debug("reconnect in %sms", retryDelay);
-      self.setStatus("reconnecting", retryDelay);
-      self.reconnectTimeout = setTimeout(function() {
-        self.reconnectTimeout = null;
-        self.connect().catch(utils_1.noop);
+      self2.setStatus("reconnecting", retryDelay);
+      self2.reconnectTimeout = setTimeout(function() {
+        self2.reconnectTimeout = null;
+        self2.connect().catch(utils_1.noop);
       }, retryDelay);
-      const { maxRetriesPerRequest } = self.options;
+      const { maxRetriesPerRequest } = self2.options;
       if (typeof maxRetriesPerRequest === "number") {
         if (maxRetriesPerRequest < 0) {
           debug("maxRetriesPerRequest is negative, ignoring...");
         } else {
-          const remainder = self.retryAttempts % (maxRetriesPerRequest + 1);
+          const remainder = self2.retryAttempts % (maxRetriesPerRequest + 1);
           if (remainder === 0) {
             debug("reach maxRetriesPerRequest limitation, flushing command queue...");
-            self.flushQueue(new errors_1.MaxRetriesPerRequestError(maxRetriesPerRequest));
+            self2.flushQueue(new errors_1.MaxRetriesPerRequestError(maxRetriesPerRequest));
           }
         }
       }
     };
     function close() {
-      self.setStatus("end");
-      self.flushQueue(new Error(utils_1.CONNECTION_CLOSED_ERROR_MSG));
+      self2.setStatus("end");
+      self2.flushQueue(new Error(utils_1.CONNECTION_CLOSED_ERROR_MSG));
     }
   }
   exports.closeHandler = closeHandler;
-  function errorHandler(self) {
+  function errorHandler(self2) {
     return function(error) {
       debug("error: %s", error);
-      self.silentEmit("error", error);
+      self2.silentEmit("error", error);
     };
   }
   exports.errorHandler = errorHandler;
-  function readyHandler(self) {
+  function readyHandler(self2) {
     return function() {
-      self.setStatus("ready");
-      self.retryAttempts = 0;
-      if (self.options.monitor) {
-        self.call("monitor").then(() => self.setStatus("monitoring"), (error) => self.emit("error", error));
-        const { sendCommand } = self;
-        self.sendCommand = function(command) {
+      self2.setStatus("ready");
+      self2.retryAttempts = 0;
+      if (self2.options.monitor) {
+        self2.call("monitor").then(() => self2.setStatus("monitoring"), (error) => self2.emit("error", error));
+        const { sendCommand } = self2;
+        self2.sendCommand = function(command) {
           if (Command_1.default.checkFlag("VALID_IN_MONITOR_MODE", command.name)) {
-            return sendCommand.call(self, command);
+            return sendCommand.call(self2, command);
           }
           command.reject(new Error("Connection is in monitoring mode, can't process commands."));
           return command.promise;
         };
-        self.once("close", function() {
-          delete self.sendCommand;
+        self2.once("close", function() {
+          delete self2.sendCommand;
         });
         return;
       }
-      const finalSelect = self.prevCondition ? self.prevCondition.select : self.condition.select;
-      if (self.options.readOnly) {
+      const finalSelect = self2.prevCondition ? self2.prevCondition.select : self2.condition.select;
+      if (self2.options.readOnly) {
         debug("set the connection to readonly mode");
-        self.readonly().catch(utils_1.noop);
+        self2.readonly().catch(utils_1.noop);
       }
-      if (self.prevCondition) {
-        const condition = self.prevCondition;
-        self.prevCondition = null;
-        if (condition.subscriber && self.options.autoResubscribe) {
-          if (self.condition.select !== finalSelect) {
+      if (self2.prevCondition) {
+        const condition = self2.prevCondition;
+        self2.prevCondition = null;
+        if (condition.subscriber && self2.options.autoResubscribe) {
+          if (self2.condition.select !== finalSelect) {
             debug("connect to db [%d]", finalSelect);
-            self.select(finalSelect);
+            self2.select(finalSelect);
           }
           const subscribeChannels = condition.subscriber.channels("subscribe");
           if (subscribeChannels.length) {
             debug("subscribe %d channels", subscribeChannels.length);
-            self.subscribe(subscribeChannels);
+            self2.subscribe(subscribeChannels);
           }
           const psubscribeChannels = condition.subscriber.channels("psubscribe");
           if (psubscribeChannels.length) {
             debug("psubscribe %d channels", psubscribeChannels.length);
-            self.psubscribe(psubscribeChannels);
+            self2.psubscribe(psubscribeChannels);
           }
           const ssubscribeChannels = condition.subscriber.channels("ssubscribe");
           if (ssubscribeChannels.length) {
             debug("ssubscribe %s", ssubscribeChannels.length);
             for (const channel of ssubscribeChannels) {
-              self.ssubscribe(channel);
+              self2.ssubscribe(channel);
             }
           }
         }
       }
-      if (self.prevCommandQueue) {
-        if (self.options.autoResendUnfulfilledCommands) {
-          debug("resend %d unfulfilled commands", self.prevCommandQueue.length);
-          while (self.prevCommandQueue.length > 0) {
-            const item = self.prevCommandQueue.shift();
-            if (item.select !== self.condition.select && item.command.name !== "select") {
-              self.select(item.select);
+      if (self2.prevCommandQueue) {
+        if (self2.options.autoResendUnfulfilledCommands) {
+          debug("resend %d unfulfilled commands", self2.prevCommandQueue.length);
+          while (self2.prevCommandQueue.length > 0) {
+            const item = self2.prevCommandQueue.shift();
+            if (item.select !== self2.condition.select && item.command.name !== "select") {
+              self2.select(item.select);
             }
-            self.sendCommand(item.command, item.stream);
+            self2.sendCommand(item.command, item.stream);
           }
         } else {
-          self.prevCommandQueue = null;
+          self2.prevCommandQueue = null;
         }
       }
-      if (self.offlineQueue.length) {
-        debug("send %d commands in offline queue", self.offlineQueue.length);
-        const offlineQueue = self.offlineQueue;
-        self.resetOfflineQueue();
+      if (self2.offlineQueue.length) {
+        debug("send %d commands in offline queue", self2.offlineQueue.length);
+        const offlineQueue = self2.offlineQueue;
+        self2.resetOfflineQueue();
         while (offlineQueue.length > 0) {
           const item = offlineQueue.shift();
-          if (item.select !== self.condition.select && item.command.name !== "select") {
-            self.select(item.select);
+          if (item.select !== self2.condition.select && item.command.name !== "select") {
+            self2.select(item.select);
           }
-          self.sendCommand(item.command, item.stream);
+          self2.sendCommand(item.command, item.stream);
         }
       }
-      if (self.condition.select !== finalSelect) {
+      if (self2.condition.select !== finalSelect) {
         debug("connect to db [%d]", finalSelect);
-        self.select(finalSelect);
+        self2.select(finalSelect);
       }
     };
   }
@@ -32691,8 +32691,15128 @@ var require_built3 = __commonJS((exports, module) => {
   exports.print = print;
 });
 
-// src/index.ts
-var import_express = __toESM(require_express(), 1);
+// ../../node_modules/.bun/is-extglob@2.1.1/node_modules/is-extglob/index.js
+var require_is_extglob = __commonJS((exports, module) => {
+  /*!
+   * is-extglob <https://github.com/jonschlinkert/is-extglob>
+   *
+   * Copyright (c) 2014-2016, Jon Schlinkert.
+   * Licensed under the MIT License.
+   */
+  module.exports = function isExtglob(str) {
+    if (typeof str !== "string" || str === "") {
+      return false;
+    }
+    var match;
+    while (match = /(\\).|([@?!+*]\(.*\))/g.exec(str)) {
+      if (match[2])
+        return true;
+      str = str.slice(match.index + match[0].length);
+    }
+    return false;
+  };
+});
+
+// ../../node_modules/.bun/is-glob@4.0.3/node_modules/is-glob/index.js
+var require_is_glob = __commonJS((exports, module) => {
+  /*!
+   * is-glob <https://github.com/jonschlinkert/is-glob>
+   *
+   * Copyright (c) 2014-2017, Jon Schlinkert.
+   * Released under the MIT License.
+   */
+  var isExtglob = require_is_extglob();
+  var chars = { "{": "}", "(": ")", "[": "]" };
+  var strictCheck = function(str) {
+    if (str[0] === "!") {
+      return true;
+    }
+    var index = 0;
+    var pipeIndex = -2;
+    var closeSquareIndex = -2;
+    var closeCurlyIndex = -2;
+    var closeParenIndex = -2;
+    var backSlashIndex = -2;
+    while (index < str.length) {
+      if (str[index] === "*") {
+        return true;
+      }
+      if (str[index + 1] === "?" && /[\].+)]/.test(str[index])) {
+        return true;
+      }
+      if (closeSquareIndex !== -1 && str[index] === "[" && str[index + 1] !== "]") {
+        if (closeSquareIndex < index) {
+          closeSquareIndex = str.indexOf("]", index);
+        }
+        if (closeSquareIndex > index) {
+          if (backSlashIndex === -1 || backSlashIndex > closeSquareIndex) {
+            return true;
+          }
+          backSlashIndex = str.indexOf("\\", index);
+          if (backSlashIndex === -1 || backSlashIndex > closeSquareIndex) {
+            return true;
+          }
+        }
+      }
+      if (closeCurlyIndex !== -1 && str[index] === "{" && str[index + 1] !== "}") {
+        closeCurlyIndex = str.indexOf("}", index);
+        if (closeCurlyIndex > index) {
+          backSlashIndex = str.indexOf("\\", index);
+          if (backSlashIndex === -1 || backSlashIndex > closeCurlyIndex) {
+            return true;
+          }
+        }
+      }
+      if (closeParenIndex !== -1 && str[index] === "(" && str[index + 1] === "?" && /[:!=]/.test(str[index + 2]) && str[index + 3] !== ")") {
+        closeParenIndex = str.indexOf(")", index);
+        if (closeParenIndex > index) {
+          backSlashIndex = str.indexOf("\\", index);
+          if (backSlashIndex === -1 || backSlashIndex > closeParenIndex) {
+            return true;
+          }
+        }
+      }
+      if (pipeIndex !== -1 && str[index] === "(" && str[index + 1] !== "|") {
+        if (pipeIndex < index) {
+          pipeIndex = str.indexOf("|", index);
+        }
+        if (pipeIndex !== -1 && str[pipeIndex + 1] !== ")") {
+          closeParenIndex = str.indexOf(")", pipeIndex);
+          if (closeParenIndex > pipeIndex) {
+            backSlashIndex = str.indexOf("\\", pipeIndex);
+            if (backSlashIndex === -1 || backSlashIndex > closeParenIndex) {
+              return true;
+            }
+          }
+        }
+      }
+      if (str[index] === "\\") {
+        var open = str[index + 1];
+        index += 2;
+        var close = chars[open];
+        if (close) {
+          var n = str.indexOf(close, index);
+          if (n !== -1) {
+            index = n + 1;
+          }
+        }
+        if (str[index] === "!") {
+          return true;
+        }
+      } else {
+        index++;
+      }
+    }
+    return false;
+  };
+  var relaxedCheck = function(str) {
+    if (str[0] === "!") {
+      return true;
+    }
+    var index = 0;
+    while (index < str.length) {
+      if (/[*?{}()[\]]/.test(str[index])) {
+        return true;
+      }
+      if (str[index] === "\\") {
+        var open = str[index + 1];
+        index += 2;
+        var close = chars[open];
+        if (close) {
+          var n = str.indexOf(close, index);
+          if (n !== -1) {
+            index = n + 1;
+          }
+        }
+        if (str[index] === "!") {
+          return true;
+        }
+      } else {
+        index++;
+      }
+    }
+    return false;
+  };
+  module.exports = function isGlob(str, options) {
+    if (typeof str !== "string" || str === "") {
+      return false;
+    }
+    if (isExtglob(str)) {
+      return true;
+    }
+    var check = strictCheck;
+    if (options && options.strict === false) {
+      check = relaxedCheck;
+    }
+    return check(str);
+  };
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/utils.js
+var require_utils5 = __commonJS((exports) => {
+  exports.isInteger = (num) => {
+    if (typeof num === "number") {
+      return Number.isInteger(num);
+    }
+    if (typeof num === "string" && num.trim() !== "") {
+      return Number.isInteger(Number(num));
+    }
+    return false;
+  };
+  exports.find = (node, type) => node.nodes.find((node2) => node2.type === type);
+  exports.exceedsLimit = (min, max, step = 1, limit) => {
+    if (limit === false)
+      return false;
+    if (!exports.isInteger(min) || !exports.isInteger(max))
+      return false;
+    return (Number(max) - Number(min)) / Number(step) >= limit;
+  };
+  exports.escapeNode = (block, n = 0, type) => {
+    const node = block.nodes[n];
+    if (!node)
+      return;
+    if (type && node.type === type || node.type === "open" || node.type === "close") {
+      if (node.escaped !== true) {
+        node.value = "\\" + node.value;
+        node.escaped = true;
+      }
+    }
+  };
+  exports.encloseBrace = (node) => {
+    if (node.type !== "brace")
+      return false;
+    if (node.commas >> 0 + node.ranges >> 0 === 0) {
+      node.invalid = true;
+      return true;
+    }
+    return false;
+  };
+  exports.isInvalidBrace = (block) => {
+    if (block.type !== "brace")
+      return false;
+    if (block.invalid === true || block.dollar)
+      return true;
+    if (block.commas >> 0 + block.ranges >> 0 === 0) {
+      block.invalid = true;
+      return true;
+    }
+    if (block.open !== true || block.close !== true) {
+      block.invalid = true;
+      return true;
+    }
+    return false;
+  };
+  exports.isOpenOrClose = (node) => {
+    if (node.type === "open" || node.type === "close") {
+      return true;
+    }
+    return node.open === true || node.close === true;
+  };
+  exports.reduce = (nodes) => nodes.reduce((acc, node) => {
+    if (node.type === "text")
+      acc.push(node.value);
+    if (node.type === "range")
+      node.type = "text";
+    return acc;
+  }, []);
+  exports.flatten = (...args) => {
+    const result = [];
+    const flat = (arr) => {
+      for (let i = 0;i < arr.length; i++) {
+        const ele = arr[i];
+        if (Array.isArray(ele)) {
+          flat(ele);
+          continue;
+        }
+        if (ele !== undefined) {
+          result.push(ele);
+        }
+      }
+      return result;
+    };
+    flat(args);
+    return result;
+  };
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/stringify.js
+var require_stringify2 = __commonJS((exports, module) => {
+  var utils = require_utils5();
+  module.exports = (ast, options = {}) => {
+    const stringify = (node, parent = {}) => {
+      const invalidBlock = options.escapeInvalid && utils.isInvalidBrace(parent);
+      const invalidNode = node.invalid === true && options.escapeInvalid === true;
+      let output = "";
+      if (node.value) {
+        if ((invalidBlock || invalidNode) && utils.isOpenOrClose(node)) {
+          return "\\" + node.value;
+        }
+        return node.value;
+      }
+      if (node.value) {
+        return node.value;
+      }
+      if (node.nodes) {
+        for (const child of node.nodes) {
+          output += stringify(child);
+        }
+      }
+      return output;
+    };
+    return stringify(ast);
+  };
+});
+
+// ../../node_modules/.bun/is-number@7.0.0/node_modules/is-number/index.js
+var require_is_number = __commonJS((exports, module) => {
+  /*!
+   * is-number <https://github.com/jonschlinkert/is-number>
+   *
+   * Copyright (c) 2014-present, Jon Schlinkert.
+   * Released under the MIT License.
+   */
+  module.exports = function(num) {
+    if (typeof num === "number") {
+      return num - num === 0;
+    }
+    if (typeof num === "string" && num.trim() !== "") {
+      return Number.isFinite ? Number.isFinite(+num) : isFinite(+num);
+    }
+    return false;
+  };
+});
+
+// ../../node_modules/.bun/to-regex-range@5.0.1/node_modules/to-regex-range/index.js
+var require_to_regex_range = __commonJS((exports, module) => {
+  /*!
+   * to-regex-range <https://github.com/micromatch/to-regex-range>
+   *
+   * Copyright (c) 2015-present, Jon Schlinkert.
+   * Released under the MIT License.
+   */
+  var isNumber = require_is_number();
+  var toRegexRange = (min, max, options) => {
+    if (isNumber(min) === false) {
+      throw new TypeError("toRegexRange: expected the first argument to be a number");
+    }
+    if (max === undefined || min === max) {
+      return String(min);
+    }
+    if (isNumber(max) === false) {
+      throw new TypeError("toRegexRange: expected the second argument to be a number.");
+    }
+    let opts = { relaxZeros: true, ...options };
+    if (typeof opts.strictZeros === "boolean") {
+      opts.relaxZeros = opts.strictZeros === false;
+    }
+    let relax = String(opts.relaxZeros);
+    let shorthand = String(opts.shorthand);
+    let capture = String(opts.capture);
+    let wrap = String(opts.wrap);
+    let cacheKey = min + ":" + max + "=" + relax + shorthand + capture + wrap;
+    if (toRegexRange.cache.hasOwnProperty(cacheKey)) {
+      return toRegexRange.cache[cacheKey].result;
+    }
+    let a = Math.min(min, max);
+    let b = Math.max(min, max);
+    if (Math.abs(a - b) === 1) {
+      let result = min + "|" + max;
+      if (opts.capture) {
+        return `(${result})`;
+      }
+      if (opts.wrap === false) {
+        return result;
+      }
+      return `(?:${result})`;
+    }
+    let isPadded = hasPadding(min) || hasPadding(max);
+    let state = { min, max, a, b };
+    let positives = [];
+    let negatives = [];
+    if (isPadded) {
+      state.isPadded = isPadded;
+      state.maxLen = String(state.max).length;
+    }
+    if (a < 0) {
+      let newMin = b < 0 ? Math.abs(b) : 1;
+      negatives = splitToPatterns(newMin, Math.abs(a), state, opts);
+      a = state.a = 0;
+    }
+    if (b >= 0) {
+      positives = splitToPatterns(a, b, state, opts);
+    }
+    state.negatives = negatives;
+    state.positives = positives;
+    state.result = collatePatterns(negatives, positives, opts);
+    if (opts.capture === true) {
+      state.result = `(${state.result})`;
+    } else if (opts.wrap !== false && positives.length + negatives.length > 1) {
+      state.result = `(?:${state.result})`;
+    }
+    toRegexRange.cache[cacheKey] = state;
+    return state.result;
+  };
+  function collatePatterns(neg, pos, options) {
+    let onlyNegative = filterPatterns(neg, pos, "-", false, options) || [];
+    let onlyPositive = filterPatterns(pos, neg, "", false, options) || [];
+    let intersected = filterPatterns(neg, pos, "-?", true, options) || [];
+    let subpatterns = onlyNegative.concat(intersected).concat(onlyPositive);
+    return subpatterns.join("|");
+  }
+  function splitToRanges(min, max) {
+    let nines = 1;
+    let zeros = 1;
+    let stop = countNines(min, nines);
+    let stops = new Set([max]);
+    while (min <= stop && stop <= max) {
+      stops.add(stop);
+      nines += 1;
+      stop = countNines(min, nines);
+    }
+    stop = countZeros(max + 1, zeros) - 1;
+    while (min < stop && stop <= max) {
+      stops.add(stop);
+      zeros += 1;
+      stop = countZeros(max + 1, zeros) - 1;
+    }
+    stops = [...stops];
+    stops.sort(compare);
+    return stops;
+  }
+  function rangeToPattern(start, stop, options) {
+    if (start === stop) {
+      return { pattern: start, count: [], digits: 0 };
+    }
+    let zipped = zip(start, stop);
+    let digits = zipped.length;
+    let pattern = "";
+    let count = 0;
+    for (let i = 0;i < digits; i++) {
+      let [startDigit, stopDigit] = zipped[i];
+      if (startDigit === stopDigit) {
+        pattern += startDigit;
+      } else if (startDigit !== "0" || stopDigit !== "9") {
+        pattern += toCharacterClass(startDigit, stopDigit, options);
+      } else {
+        count++;
+      }
+    }
+    if (count) {
+      pattern += options.shorthand === true ? "\\d" : "[0-9]";
+    }
+    return { pattern, count: [count], digits };
+  }
+  function splitToPatterns(min, max, tok, options) {
+    let ranges = splitToRanges(min, max);
+    let tokens = [];
+    let start = min;
+    let prev;
+    for (let i = 0;i < ranges.length; i++) {
+      let max2 = ranges[i];
+      let obj = rangeToPattern(String(start), String(max2), options);
+      let zeros = "";
+      if (!tok.isPadded && prev && prev.pattern === obj.pattern) {
+        if (prev.count.length > 1) {
+          prev.count.pop();
+        }
+        prev.count.push(obj.count[0]);
+        prev.string = prev.pattern + toQuantifier(prev.count);
+        start = max2 + 1;
+        continue;
+      }
+      if (tok.isPadded) {
+        zeros = padZeros(max2, tok, options);
+      }
+      obj.string = zeros + obj.pattern + toQuantifier(obj.count);
+      tokens.push(obj);
+      start = max2 + 1;
+      prev = obj;
+    }
+    return tokens;
+  }
+  function filterPatterns(arr, comparison, prefix, intersection, options) {
+    let result = [];
+    for (let ele of arr) {
+      let { string } = ele;
+      if (!intersection && !contains(comparison, "string", string)) {
+        result.push(prefix + string);
+      }
+      if (intersection && contains(comparison, "string", string)) {
+        result.push(prefix + string);
+      }
+    }
+    return result;
+  }
+  function zip(a, b) {
+    let arr = [];
+    for (let i = 0;i < a.length; i++)
+      arr.push([a[i], b[i]]);
+    return arr;
+  }
+  function compare(a, b) {
+    return a > b ? 1 : b > a ? -1 : 0;
+  }
+  function contains(arr, key, val) {
+    return arr.some((ele) => ele[key] === val);
+  }
+  function countNines(min, len) {
+    return Number(String(min).slice(0, -len) + "9".repeat(len));
+  }
+  function countZeros(integer, zeros) {
+    return integer - integer % Math.pow(10, zeros);
+  }
+  function toQuantifier(digits) {
+    let [start = 0, stop = ""] = digits;
+    if (stop || start > 1) {
+      return `{${start + (stop ? "," + stop : "")}}`;
+    }
+    return "";
+  }
+  function toCharacterClass(a, b, options) {
+    return `[${a}${b - a === 1 ? "" : "-"}${b}]`;
+  }
+  function hasPadding(str) {
+    return /^-?(0+)\d/.test(str);
+  }
+  function padZeros(value, tok, options) {
+    if (!tok.isPadded) {
+      return value;
+    }
+    let diff = Math.abs(tok.maxLen - String(value).length);
+    let relax = options.relaxZeros !== false;
+    switch (diff) {
+      case 0:
+        return "";
+      case 1:
+        return relax ? "0?" : "0";
+      case 2:
+        return relax ? "0{0,2}" : "00";
+      default: {
+        return relax ? `0{0,${diff}}` : `0{${diff}}`;
+      }
+    }
+  }
+  toRegexRange.cache = {};
+  toRegexRange.clearCache = () => toRegexRange.cache = {};
+  module.exports = toRegexRange;
+});
+
+// ../../node_modules/.bun/fill-range@7.1.1/node_modules/fill-range/index.js
+var require_fill_range = __commonJS((exports, module) => {
+  /*!
+   * fill-range <https://github.com/jonschlinkert/fill-range>
+   *
+   * Copyright (c) 2014-present, Jon Schlinkert.
+   * Licensed under the MIT License.
+   */
+  var util = __require("util");
+  var toRegexRange = require_to_regex_range();
+  var isObject = (val) => val !== null && typeof val === "object" && !Array.isArray(val);
+  var transform = (toNumber) => {
+    return (value) => toNumber === true ? Number(value) : String(value);
+  };
+  var isValidValue = (value) => {
+    return typeof value === "number" || typeof value === "string" && value !== "";
+  };
+  var isNumber = (num) => Number.isInteger(+num);
+  var zeros = (input) => {
+    let value = `${input}`;
+    let index = -1;
+    if (value[0] === "-")
+      value = value.slice(1);
+    if (value === "0")
+      return false;
+    while (value[++index] === "0")
+      ;
+    return index > 0;
+  };
+  var stringify = (start, end, options) => {
+    if (typeof start === "string" || typeof end === "string") {
+      return true;
+    }
+    return options.stringify === true;
+  };
+  var pad = (input, maxLength, toNumber) => {
+    if (maxLength > 0) {
+      let dash = input[0] === "-" ? "-" : "";
+      if (dash)
+        input = input.slice(1);
+      input = dash + input.padStart(dash ? maxLength - 1 : maxLength, "0");
+    }
+    if (toNumber === false) {
+      return String(input);
+    }
+    return input;
+  };
+  var toMaxLen = (input, maxLength) => {
+    let negative = input[0] === "-" ? "-" : "";
+    if (negative) {
+      input = input.slice(1);
+      maxLength--;
+    }
+    while (input.length < maxLength)
+      input = "0" + input;
+    return negative ? "-" + input : input;
+  };
+  var toSequence = (parts, options, maxLen) => {
+    parts.negatives.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+    parts.positives.sort((a, b) => a < b ? -1 : a > b ? 1 : 0);
+    let prefix = options.capture ? "" : "?:";
+    let positives = "";
+    let negatives = "";
+    let result;
+    if (parts.positives.length) {
+      positives = parts.positives.map((v) => toMaxLen(String(v), maxLen)).join("|");
+    }
+    if (parts.negatives.length) {
+      negatives = `-(${prefix}${parts.negatives.map((v) => toMaxLen(String(v), maxLen)).join("|")})`;
+    }
+    if (positives && negatives) {
+      result = `${positives}|${negatives}`;
+    } else {
+      result = positives || negatives;
+    }
+    if (options.wrap) {
+      return `(${prefix}${result})`;
+    }
+    return result;
+  };
+  var toRange = (a, b, isNumbers, options) => {
+    if (isNumbers) {
+      return toRegexRange(a, b, { wrap: false, ...options });
+    }
+    let start = String.fromCharCode(a);
+    if (a === b)
+      return start;
+    let stop = String.fromCharCode(b);
+    return `[${start}-${stop}]`;
+  };
+  var toRegex = (start, end, options) => {
+    if (Array.isArray(start)) {
+      let wrap = options.wrap === true;
+      let prefix = options.capture ? "" : "?:";
+      return wrap ? `(${prefix}${start.join("|")})` : start.join("|");
+    }
+    return toRegexRange(start, end, options);
+  };
+  var rangeError = (...args) => {
+    return new RangeError("Invalid range arguments: " + util.inspect(...args));
+  };
+  var invalidRange = (start, end, options) => {
+    if (options.strictRanges === true)
+      throw rangeError([start, end]);
+    return [];
+  };
+  var invalidStep = (step, options) => {
+    if (options.strictRanges === true) {
+      throw new TypeError(`Expected step "${step}" to be a number`);
+    }
+    return [];
+  };
+  var fillNumbers = (start, end, step = 1, options = {}) => {
+    let a = Number(start);
+    let b = Number(end);
+    if (!Number.isInteger(a) || !Number.isInteger(b)) {
+      if (options.strictRanges === true)
+        throw rangeError([start, end]);
+      return [];
+    }
+    if (a === 0)
+      a = 0;
+    if (b === 0)
+      b = 0;
+    let descending = a > b;
+    let startString = String(start);
+    let endString = String(end);
+    let stepString = String(step);
+    step = Math.max(Math.abs(step), 1);
+    let padded = zeros(startString) || zeros(endString) || zeros(stepString);
+    let maxLen = padded ? Math.max(startString.length, endString.length, stepString.length) : 0;
+    let toNumber = padded === false && stringify(start, end, options) === false;
+    let format = options.transform || transform(toNumber);
+    if (options.toRegex && step === 1) {
+      return toRange(toMaxLen(start, maxLen), toMaxLen(end, maxLen), true, options);
+    }
+    let parts = { negatives: [], positives: [] };
+    let push = (num) => parts[num < 0 ? "negatives" : "positives"].push(Math.abs(num));
+    let range = [];
+    let index = 0;
+    while (descending ? a >= b : a <= b) {
+      if (options.toRegex === true && step > 1) {
+        push(a);
+      } else {
+        range.push(pad(format(a, index), maxLen, toNumber));
+      }
+      a = descending ? a - step : a + step;
+      index++;
+    }
+    if (options.toRegex === true) {
+      return step > 1 ? toSequence(parts, options, maxLen) : toRegex(range, null, { wrap: false, ...options });
+    }
+    return range;
+  };
+  var fillLetters = (start, end, step = 1, options = {}) => {
+    if (!isNumber(start) && start.length > 1 || !isNumber(end) && end.length > 1) {
+      return invalidRange(start, end, options);
+    }
+    let format = options.transform || ((val) => String.fromCharCode(val));
+    let a = `${start}`.charCodeAt(0);
+    let b = `${end}`.charCodeAt(0);
+    let descending = a > b;
+    let min = Math.min(a, b);
+    let max = Math.max(a, b);
+    if (options.toRegex && step === 1) {
+      return toRange(min, max, false, options);
+    }
+    let range = [];
+    let index = 0;
+    while (descending ? a >= b : a <= b) {
+      range.push(format(a, index));
+      a = descending ? a - step : a + step;
+      index++;
+    }
+    if (options.toRegex === true) {
+      return toRegex(range, null, { wrap: false, options });
+    }
+    return range;
+  };
+  var fill = (start, end, step, options = {}) => {
+    if (end == null && isValidValue(start)) {
+      return [start];
+    }
+    if (!isValidValue(start) || !isValidValue(end)) {
+      return invalidRange(start, end, options);
+    }
+    if (typeof step === "function") {
+      return fill(start, end, 1, { transform: step });
+    }
+    if (isObject(step)) {
+      return fill(start, end, 0, step);
+    }
+    let opts = { ...options };
+    if (opts.capture === true)
+      opts.wrap = true;
+    step = step || opts.step || 1;
+    if (!isNumber(step)) {
+      if (step != null && !isObject(step))
+        return invalidStep(step, opts);
+      return fill(start, end, 1, step);
+    }
+    if (isNumber(start) && isNumber(end)) {
+      return fillNumbers(start, end, step, opts);
+    }
+    return fillLetters(start, end, Math.max(Math.abs(step), 1), opts);
+  };
+  module.exports = fill;
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/compile.js
+var require_compile = __commonJS((exports, module) => {
+  var fill = require_fill_range();
+  var utils = require_utils5();
+  var compile = (ast, options = {}) => {
+    const walk = (node, parent = {}) => {
+      const invalidBlock = utils.isInvalidBrace(parent);
+      const invalidNode = node.invalid === true && options.escapeInvalid === true;
+      const invalid = invalidBlock === true || invalidNode === true;
+      const prefix = options.escapeInvalid === true ? "\\" : "";
+      let output = "";
+      if (node.isOpen === true) {
+        return prefix + node.value;
+      }
+      if (node.isClose === true) {
+        console.log("node.isClose", prefix, node.value);
+        return prefix + node.value;
+      }
+      if (node.type === "open") {
+        return invalid ? prefix + node.value : "(";
+      }
+      if (node.type === "close") {
+        return invalid ? prefix + node.value : ")";
+      }
+      if (node.type === "comma") {
+        return node.prev.type === "comma" ? "" : invalid ? node.value : "|";
+      }
+      if (node.value) {
+        return node.value;
+      }
+      if (node.nodes && node.ranges > 0) {
+        const args = utils.reduce(node.nodes);
+        const range = fill(...args, { ...options, wrap: false, toRegex: true, strictZeros: true });
+        if (range.length !== 0) {
+          return args.length > 1 && range.length > 1 ? `(${range})` : range;
+        }
+      }
+      if (node.nodes) {
+        for (const child of node.nodes) {
+          output += walk(child, node);
+        }
+      }
+      return output;
+    };
+    return walk(ast);
+  };
+  module.exports = compile;
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/expand.js
+var require_expand = __commonJS((exports, module) => {
+  var fill = require_fill_range();
+  var stringify = require_stringify2();
+  var utils = require_utils5();
+  var append = (queue = "", stash = "", enclose = false) => {
+    const result = [];
+    queue = [].concat(queue);
+    stash = [].concat(stash);
+    if (!stash.length)
+      return queue;
+    if (!queue.length) {
+      return enclose ? utils.flatten(stash).map((ele) => `{${ele}}`) : stash;
+    }
+    for (const item of queue) {
+      if (Array.isArray(item)) {
+        for (const value of item) {
+          result.push(append(value, stash, enclose));
+        }
+      } else {
+        for (let ele of stash) {
+          if (enclose === true && typeof ele === "string")
+            ele = `{${ele}}`;
+          result.push(Array.isArray(ele) ? append(item, ele, enclose) : item + ele);
+        }
+      }
+    }
+    return utils.flatten(result);
+  };
+  var expand = (ast, options = {}) => {
+    const rangeLimit = options.rangeLimit === undefined ? 1000 : options.rangeLimit;
+    const walk = (node, parent = {}) => {
+      node.queue = [];
+      let p = parent;
+      let q = parent.queue;
+      while (p.type !== "brace" && p.type !== "root" && p.parent) {
+        p = p.parent;
+        q = p.queue;
+      }
+      if (node.invalid || node.dollar) {
+        q.push(append(q.pop(), stringify(node, options)));
+        return;
+      }
+      if (node.type === "brace" && node.invalid !== true && node.nodes.length === 2) {
+        q.push(append(q.pop(), ["{}"]));
+        return;
+      }
+      if (node.nodes && node.ranges > 0) {
+        const args = utils.reduce(node.nodes);
+        if (utils.exceedsLimit(...args, options.step, rangeLimit)) {
+          throw new RangeError("expanded array length exceeds range limit. Use options.rangeLimit to increase or disable the limit.");
+        }
+        let range = fill(...args, options);
+        if (range.length === 0) {
+          range = stringify(node, options);
+        }
+        q.push(append(q.pop(), range));
+        node.nodes = [];
+        return;
+      }
+      const enclose = utils.encloseBrace(node);
+      let queue = node.queue;
+      let block = node;
+      while (block.type !== "brace" && block.type !== "root" && block.parent) {
+        block = block.parent;
+        queue = block.queue;
+      }
+      for (let i = 0;i < node.nodes.length; i++) {
+        const child = node.nodes[i];
+        if (child.type === "comma" && node.type === "brace") {
+          if (i === 1)
+            queue.push("");
+          queue.push("");
+          continue;
+        }
+        if (child.type === "close") {
+          q.push(append(q.pop(), queue, enclose));
+          continue;
+        }
+        if (child.value && child.type !== "open") {
+          queue.push(append(queue.pop(), child.value));
+          continue;
+        }
+        if (child.nodes) {
+          walk(child, node);
+        }
+      }
+      return queue;
+    };
+    return utils.flatten(walk(ast));
+  };
+  module.exports = expand;
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/constants.js
+var require_constants = __commonJS((exports, module) => {
+  module.exports = {
+    MAX_LENGTH: 1e4,
+    CHAR_0: "0",
+    CHAR_9: "9",
+    CHAR_UPPERCASE_A: "A",
+    CHAR_LOWERCASE_A: "a",
+    CHAR_UPPERCASE_Z: "Z",
+    CHAR_LOWERCASE_Z: "z",
+    CHAR_LEFT_PARENTHESES: "(",
+    CHAR_RIGHT_PARENTHESES: ")",
+    CHAR_ASTERISK: "*",
+    CHAR_AMPERSAND: "&",
+    CHAR_AT: "@",
+    CHAR_BACKSLASH: "\\",
+    CHAR_BACKTICK: "`",
+    CHAR_CARRIAGE_RETURN: "\r",
+    CHAR_CIRCUMFLEX_ACCENT: "^",
+    CHAR_COLON: ":",
+    CHAR_COMMA: ",",
+    CHAR_DOLLAR: "$",
+    CHAR_DOT: ".",
+    CHAR_DOUBLE_QUOTE: '"',
+    CHAR_EQUAL: "=",
+    CHAR_EXCLAMATION_MARK: "!",
+    CHAR_FORM_FEED: "\f",
+    CHAR_FORWARD_SLASH: "/",
+    CHAR_HASH: "#",
+    CHAR_HYPHEN_MINUS: "-",
+    CHAR_LEFT_ANGLE_BRACKET: "<",
+    CHAR_LEFT_CURLY_BRACE: "{",
+    CHAR_LEFT_SQUARE_BRACKET: "[",
+    CHAR_LINE_FEED: `
+`,
+    CHAR_NO_BREAK_SPACE: "\xA0",
+    CHAR_PERCENT: "%",
+    CHAR_PLUS: "+",
+    CHAR_QUESTION_MARK: "?",
+    CHAR_RIGHT_ANGLE_BRACKET: ">",
+    CHAR_RIGHT_CURLY_BRACE: "}",
+    CHAR_RIGHT_SQUARE_BRACKET: "]",
+    CHAR_SEMICOLON: ";",
+    CHAR_SINGLE_QUOTE: "'",
+    CHAR_SPACE: " ",
+    CHAR_TAB: "\t",
+    CHAR_UNDERSCORE: "_",
+    CHAR_VERTICAL_LINE: "|",
+    CHAR_ZERO_WIDTH_NOBREAK_SPACE: "\uFEFF"
+  };
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/lib/parse.js
+var require_parse2 = __commonJS((exports, module) => {
+  var stringify = require_stringify2();
+  var {
+    MAX_LENGTH,
+    CHAR_BACKSLASH,
+    CHAR_BACKTICK,
+    CHAR_COMMA,
+    CHAR_DOT,
+    CHAR_LEFT_PARENTHESES,
+    CHAR_RIGHT_PARENTHESES,
+    CHAR_LEFT_CURLY_BRACE,
+    CHAR_RIGHT_CURLY_BRACE,
+    CHAR_LEFT_SQUARE_BRACKET,
+    CHAR_RIGHT_SQUARE_BRACKET,
+    CHAR_DOUBLE_QUOTE,
+    CHAR_SINGLE_QUOTE,
+    CHAR_NO_BREAK_SPACE,
+    CHAR_ZERO_WIDTH_NOBREAK_SPACE
+  } = require_constants();
+  var parse = (input, options = {}) => {
+    if (typeof input !== "string") {
+      throw new TypeError("Expected a string");
+    }
+    const opts = options || {};
+    const max = typeof opts.maxLength === "number" ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+    if (input.length > max) {
+      throw new SyntaxError(`Input length (${input.length}), exceeds max characters (${max})`);
+    }
+    const ast = { type: "root", input, nodes: [] };
+    const stack = [ast];
+    let block = ast;
+    let prev = ast;
+    let brackets = 0;
+    const length = input.length;
+    let index = 0;
+    let depth = 0;
+    let value;
+    const advance = () => input[index++];
+    const push = (node) => {
+      if (node.type === "text" && prev.type === "dot") {
+        prev.type = "text";
+      }
+      if (prev && prev.type === "text" && node.type === "text") {
+        prev.value += node.value;
+        return;
+      }
+      block.nodes.push(node);
+      node.parent = block;
+      node.prev = prev;
+      prev = node;
+      return node;
+    };
+    push({ type: "bos" });
+    while (index < length) {
+      block = stack[stack.length - 1];
+      value = advance();
+      if (value === CHAR_ZERO_WIDTH_NOBREAK_SPACE || value === CHAR_NO_BREAK_SPACE) {
+        continue;
+      }
+      if (value === CHAR_BACKSLASH) {
+        push({ type: "text", value: (options.keepEscaping ? value : "") + advance() });
+        continue;
+      }
+      if (value === CHAR_RIGHT_SQUARE_BRACKET) {
+        push({ type: "text", value: "\\" + value });
+        continue;
+      }
+      if (value === CHAR_LEFT_SQUARE_BRACKET) {
+        brackets++;
+        let next;
+        while (index < length && (next = advance())) {
+          value += next;
+          if (next === CHAR_LEFT_SQUARE_BRACKET) {
+            brackets++;
+            continue;
+          }
+          if (next === CHAR_BACKSLASH) {
+            value += advance();
+            continue;
+          }
+          if (next === CHAR_RIGHT_SQUARE_BRACKET) {
+            brackets--;
+            if (brackets === 0) {
+              break;
+            }
+          }
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value === CHAR_LEFT_PARENTHESES) {
+        block = push({ type: "paren", nodes: [] });
+        stack.push(block);
+        push({ type: "text", value });
+        continue;
+      }
+      if (value === CHAR_RIGHT_PARENTHESES) {
+        if (block.type !== "paren") {
+          push({ type: "text", value });
+          continue;
+        }
+        block = stack.pop();
+        push({ type: "text", value });
+        block = stack[stack.length - 1];
+        continue;
+      }
+      if (value === CHAR_DOUBLE_QUOTE || value === CHAR_SINGLE_QUOTE || value === CHAR_BACKTICK) {
+        const open = value;
+        let next;
+        if (options.keepQuotes !== true) {
+          value = "";
+        }
+        while (index < length && (next = advance())) {
+          if (next === CHAR_BACKSLASH) {
+            value += next + advance();
+            continue;
+          }
+          if (next === open) {
+            if (options.keepQuotes === true)
+              value += next;
+            break;
+          }
+          value += next;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value === CHAR_LEFT_CURLY_BRACE) {
+        depth++;
+        const dollar = prev.value && prev.value.slice(-1) === "$" || block.dollar === true;
+        const brace = {
+          type: "brace",
+          open: true,
+          close: false,
+          dollar,
+          depth,
+          commas: 0,
+          ranges: 0,
+          nodes: []
+        };
+        block = push(brace);
+        stack.push(block);
+        push({ type: "open", value });
+        continue;
+      }
+      if (value === CHAR_RIGHT_CURLY_BRACE) {
+        if (block.type !== "brace") {
+          push({ type: "text", value });
+          continue;
+        }
+        const type = "close";
+        block = stack.pop();
+        block.close = true;
+        push({ type, value });
+        depth--;
+        block = stack[stack.length - 1];
+        continue;
+      }
+      if (value === CHAR_COMMA && depth > 0) {
+        if (block.ranges > 0) {
+          block.ranges = 0;
+          const open = block.nodes.shift();
+          block.nodes = [open, { type: "text", value: stringify(block) }];
+        }
+        push({ type: "comma", value });
+        block.commas++;
+        continue;
+      }
+      if (value === CHAR_DOT && depth > 0 && block.commas === 0) {
+        const siblings = block.nodes;
+        if (depth === 0 || siblings.length === 0) {
+          push({ type: "text", value });
+          continue;
+        }
+        if (prev.type === "dot") {
+          block.range = [];
+          prev.value += value;
+          prev.type = "range";
+          if (block.nodes.length !== 3 && block.nodes.length !== 5) {
+            block.invalid = true;
+            block.ranges = 0;
+            prev.type = "text";
+            continue;
+          }
+          block.ranges++;
+          block.args = [];
+          continue;
+        }
+        if (prev.type === "range") {
+          siblings.pop();
+          const before = siblings[siblings.length - 1];
+          before.value += prev.value + value;
+          prev = before;
+          block.ranges--;
+          continue;
+        }
+        push({ type: "dot", value });
+        continue;
+      }
+      push({ type: "text", value });
+    }
+    do {
+      block = stack.pop();
+      if (block.type !== "root") {
+        block.nodes.forEach((node) => {
+          if (!node.nodes) {
+            if (node.type === "open")
+              node.isOpen = true;
+            if (node.type === "close")
+              node.isClose = true;
+            if (!node.nodes)
+              node.type = "text";
+            node.invalid = true;
+          }
+        });
+        const parent = stack[stack.length - 1];
+        const index2 = parent.nodes.indexOf(block);
+        parent.nodes.splice(index2, 1, ...block.nodes);
+      }
+    } while (stack.length > 0);
+    push({ type: "eos" });
+    return ast;
+  };
+  module.exports = parse;
+});
+
+// ../../node_modules/.bun/braces@3.0.3/node_modules/braces/index.js
+var require_braces = __commonJS((exports, module) => {
+  var stringify = require_stringify2();
+  var compile = require_compile();
+  var expand = require_expand();
+  var parse = require_parse2();
+  var braces = (input, options = {}) => {
+    let output = [];
+    if (Array.isArray(input)) {
+      for (const pattern of input) {
+        const result = braces.create(pattern, options);
+        if (Array.isArray(result)) {
+          output.push(...result);
+        } else {
+          output.push(result);
+        }
+      }
+    } else {
+      output = [].concat(braces.create(input, options));
+    }
+    if (options && options.expand === true && options.nodupes === true) {
+      output = [...new Set(output)];
+    }
+    return output;
+  };
+  braces.parse = (input, options = {}) => parse(input, options);
+  braces.stringify = (input, options = {}) => {
+    if (typeof input === "string") {
+      return stringify(braces.parse(input, options), options);
+    }
+    return stringify(input, options);
+  };
+  braces.compile = (input, options = {}) => {
+    if (typeof input === "string") {
+      input = braces.parse(input, options);
+    }
+    return compile(input, options);
+  };
+  braces.expand = (input, options = {}) => {
+    if (typeof input === "string") {
+      input = braces.parse(input, options);
+    }
+    let result = expand(input, options);
+    if (options.noempty === true) {
+      result = result.filter(Boolean);
+    }
+    if (options.nodupes === true) {
+      result = [...new Set(result)];
+    }
+    return result;
+  };
+  braces.create = (input, options = {}) => {
+    if (input === "" || input.length < 3) {
+      return [input];
+    }
+    return options.expand !== true ? braces.compile(input, options) : braces.expand(input, options);
+  };
+  module.exports = braces;
+});
+
+// ../../node_modules/.bun/picomatch@2.3.2/node_modules/picomatch/lib/constants.js
+var require_constants2 = __commonJS((exports, module) => {
+  var path = __require("path");
+  var WIN_SLASH = "\\\\/";
+  var WIN_NO_SLASH = `[^${WIN_SLASH}]`;
+  var DEFAULT_MAX_EXTGLOB_RECURSION = 0;
+  var DOT_LITERAL = "\\.";
+  var PLUS_LITERAL = "\\+";
+  var QMARK_LITERAL = "\\?";
+  var SLASH_LITERAL = "\\/";
+  var ONE_CHAR = "(?=.)";
+  var QMARK = "[^/]";
+  var END_ANCHOR = `(?:${SLASH_LITERAL}|$)`;
+  var START_ANCHOR = `(?:^|${SLASH_LITERAL})`;
+  var DOTS_SLASH = `${DOT_LITERAL}{1,2}${END_ANCHOR}`;
+  var NO_DOT = `(?!${DOT_LITERAL})`;
+  var NO_DOTS = `(?!${START_ANCHOR}${DOTS_SLASH})`;
+  var NO_DOT_SLASH = `(?!${DOT_LITERAL}{0,1}${END_ANCHOR})`;
+  var NO_DOTS_SLASH = `(?!${DOTS_SLASH})`;
+  var QMARK_NO_DOT = `[^.${SLASH_LITERAL}]`;
+  var STAR = `${QMARK}*?`;
+  var POSIX_CHARS = {
+    DOT_LITERAL,
+    PLUS_LITERAL,
+    QMARK_LITERAL,
+    SLASH_LITERAL,
+    ONE_CHAR,
+    QMARK,
+    END_ANCHOR,
+    DOTS_SLASH,
+    NO_DOT,
+    NO_DOTS,
+    NO_DOT_SLASH,
+    NO_DOTS_SLASH,
+    QMARK_NO_DOT,
+    STAR,
+    START_ANCHOR
+  };
+  var WINDOWS_CHARS = {
+    ...POSIX_CHARS,
+    SLASH_LITERAL: `[${WIN_SLASH}]`,
+    QMARK: WIN_NO_SLASH,
+    STAR: `${WIN_NO_SLASH}*?`,
+    DOTS_SLASH: `${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$)`,
+    NO_DOT: `(?!${DOT_LITERAL})`,
+    NO_DOTS: `(?!(?:^|[${WIN_SLASH}])${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$))`,
+    NO_DOT_SLASH: `(?!${DOT_LITERAL}{0,1}(?:[${WIN_SLASH}]|$))`,
+    NO_DOTS_SLASH: `(?!${DOT_LITERAL}{1,2}(?:[${WIN_SLASH}]|$))`,
+    QMARK_NO_DOT: `[^.${WIN_SLASH}]`,
+    START_ANCHOR: `(?:^|[${WIN_SLASH}])`,
+    END_ANCHOR: `(?:[${WIN_SLASH}]|$)`
+  };
+  var POSIX_REGEX_SOURCE = {
+    __proto__: null,
+    alnum: "a-zA-Z0-9",
+    alpha: "a-zA-Z",
+    ascii: "\\x00-\\x7F",
+    blank: " \\t",
+    cntrl: "\\x00-\\x1F\\x7F",
+    digit: "0-9",
+    graph: "\\x21-\\x7E",
+    lower: "a-z",
+    print: "\\x20-\\x7E ",
+    punct: "\\-!\"#$%&'()\\*+,./:;<=>?@[\\]^_`{|}~",
+    space: " \\t\\r\\n\\v\\f",
+    upper: "A-Z",
+    word: "A-Za-z0-9_",
+    xdigit: "A-Fa-f0-9"
+  };
+  module.exports = {
+    DEFAULT_MAX_EXTGLOB_RECURSION,
+    MAX_LENGTH: 1024 * 64,
+    POSIX_REGEX_SOURCE,
+    REGEX_BACKSLASH: /\\(?![*+?^${}(|)[\]])/g,
+    REGEX_NON_SPECIAL_CHARS: /^[^@![\].,$*+?^{}()|\\/]+/,
+    REGEX_SPECIAL_CHARS: /[-*+?.^${}(|)[\]]/,
+    REGEX_SPECIAL_CHARS_BACKREF: /(\\?)((\W)(\3*))/g,
+    REGEX_SPECIAL_CHARS_GLOBAL: /([-*+?.^${}(|)[\]])/g,
+    REGEX_REMOVE_BACKSLASH: /(?:\[.*?[^\\]\]|\\(?=.))/g,
+    REPLACEMENTS: {
+      __proto__: null,
+      "***": "*",
+      "**/**": "**",
+      "**/**/**": "**"
+    },
+    CHAR_0: 48,
+    CHAR_9: 57,
+    CHAR_UPPERCASE_A: 65,
+    CHAR_LOWERCASE_A: 97,
+    CHAR_UPPERCASE_Z: 90,
+    CHAR_LOWERCASE_Z: 122,
+    CHAR_LEFT_PARENTHESES: 40,
+    CHAR_RIGHT_PARENTHESES: 41,
+    CHAR_ASTERISK: 42,
+    CHAR_AMPERSAND: 38,
+    CHAR_AT: 64,
+    CHAR_BACKWARD_SLASH: 92,
+    CHAR_CARRIAGE_RETURN: 13,
+    CHAR_CIRCUMFLEX_ACCENT: 94,
+    CHAR_COLON: 58,
+    CHAR_COMMA: 44,
+    CHAR_DOT: 46,
+    CHAR_DOUBLE_QUOTE: 34,
+    CHAR_EQUAL: 61,
+    CHAR_EXCLAMATION_MARK: 33,
+    CHAR_FORM_FEED: 12,
+    CHAR_FORWARD_SLASH: 47,
+    CHAR_GRAVE_ACCENT: 96,
+    CHAR_HASH: 35,
+    CHAR_HYPHEN_MINUS: 45,
+    CHAR_LEFT_ANGLE_BRACKET: 60,
+    CHAR_LEFT_CURLY_BRACE: 123,
+    CHAR_LEFT_SQUARE_BRACKET: 91,
+    CHAR_LINE_FEED: 10,
+    CHAR_NO_BREAK_SPACE: 160,
+    CHAR_PERCENT: 37,
+    CHAR_PLUS: 43,
+    CHAR_QUESTION_MARK: 63,
+    CHAR_RIGHT_ANGLE_BRACKET: 62,
+    CHAR_RIGHT_CURLY_BRACE: 125,
+    CHAR_RIGHT_SQUARE_BRACKET: 93,
+    CHAR_SEMICOLON: 59,
+    CHAR_SINGLE_QUOTE: 39,
+    CHAR_SPACE: 32,
+    CHAR_TAB: 9,
+    CHAR_UNDERSCORE: 95,
+    CHAR_VERTICAL_LINE: 124,
+    CHAR_ZERO_WIDTH_NOBREAK_SPACE: 65279,
+    SEP: path.sep,
+    extglobChars(chars) {
+      return {
+        "!": { type: "negate", open: "(?:(?!(?:", close: `))${chars.STAR})` },
+        "?": { type: "qmark", open: "(?:", close: ")?" },
+        "+": { type: "plus", open: "(?:", close: ")+" },
+        "*": { type: "star", open: "(?:", close: ")*" },
+        "@": { type: "at", open: "(?:", close: ")" }
+      };
+    },
+    globChars(win32) {
+      return win32 === true ? WINDOWS_CHARS : POSIX_CHARS;
+    }
+  };
+});
+
+// ../../node_modules/.bun/picomatch@2.3.2/node_modules/picomatch/lib/utils.js
+var require_utils6 = __commonJS((exports) => {
+  var path = __require("path");
+  var win32 = process.platform === "win32";
+  var {
+    REGEX_BACKSLASH,
+    REGEX_REMOVE_BACKSLASH,
+    REGEX_SPECIAL_CHARS,
+    REGEX_SPECIAL_CHARS_GLOBAL
+  } = require_constants2();
+  exports.isObject = (val) => val !== null && typeof val === "object" && !Array.isArray(val);
+  exports.hasRegexChars = (str) => REGEX_SPECIAL_CHARS.test(str);
+  exports.isRegexChar = (str) => str.length === 1 && exports.hasRegexChars(str);
+  exports.escapeRegex = (str) => str.replace(REGEX_SPECIAL_CHARS_GLOBAL, "\\$1");
+  exports.toPosixSlashes = (str) => str.replace(REGEX_BACKSLASH, "/");
+  exports.removeBackslashes = (str) => {
+    return str.replace(REGEX_REMOVE_BACKSLASH, (match) => {
+      return match === "\\" ? "" : match;
+    });
+  };
+  exports.supportsLookbehinds = () => {
+    const segs = process.version.slice(1).split(".").map(Number);
+    if (segs.length === 3 && segs[0] >= 9 || segs[0] === 8 && segs[1] >= 10) {
+      return true;
+    }
+    return false;
+  };
+  exports.isWindows = (options) => {
+    if (options && typeof options.windows === "boolean") {
+      return options.windows;
+    }
+    return win32 === true || path.sep === "\\";
+  };
+  exports.escapeLast = (input, char, lastIdx) => {
+    const idx = input.lastIndexOf(char, lastIdx);
+    if (idx === -1)
+      return input;
+    if (input[idx - 1] === "\\")
+      return exports.escapeLast(input, char, idx - 1);
+    return `${input.slice(0, idx)}\\${input.slice(idx)}`;
+  };
+  exports.removePrefix = (input, state = {}) => {
+    let output = input;
+    if (output.startsWith("./")) {
+      output = output.slice(2);
+      state.prefix = "./";
+    }
+    return output;
+  };
+  exports.wrapOutput = (input, state = {}, options = {}) => {
+    const prepend = options.contains ? "" : "^";
+    const append = options.contains ? "" : "$";
+    let output = `${prepend}(?:${input})${append}`;
+    if (state.negated === true) {
+      output = `(?:^(?!${output}).*$)`;
+    }
+    return output;
+  };
+});
+
+// ../../node_modules/.bun/picomatch@2.3.2/node_modules/picomatch/lib/scan.js
+var require_scan = __commonJS((exports, module) => {
+  var utils = require_utils6();
+  var {
+    CHAR_ASTERISK,
+    CHAR_AT,
+    CHAR_BACKWARD_SLASH,
+    CHAR_COMMA,
+    CHAR_DOT,
+    CHAR_EXCLAMATION_MARK,
+    CHAR_FORWARD_SLASH,
+    CHAR_LEFT_CURLY_BRACE,
+    CHAR_LEFT_PARENTHESES,
+    CHAR_LEFT_SQUARE_BRACKET,
+    CHAR_PLUS,
+    CHAR_QUESTION_MARK,
+    CHAR_RIGHT_CURLY_BRACE,
+    CHAR_RIGHT_PARENTHESES,
+    CHAR_RIGHT_SQUARE_BRACKET
+  } = require_constants2();
+  var isPathSeparator = (code) => {
+    return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
+  };
+  var depth = (token) => {
+    if (token.isPrefix !== true) {
+      token.depth = token.isGlobstar ? Infinity : 1;
+    }
+  };
+  var scan = (input, options) => {
+    const opts = options || {};
+    const length = input.length - 1;
+    const scanToEnd = opts.parts === true || opts.scanToEnd === true;
+    const slashes = [];
+    const tokens = [];
+    const parts = [];
+    let str = input;
+    let index = -1;
+    let start = 0;
+    let lastIndex = 0;
+    let isBrace = false;
+    let isBracket = false;
+    let isGlob = false;
+    let isExtglob = false;
+    let isGlobstar = false;
+    let braceEscaped = false;
+    let backslashes = false;
+    let negated = false;
+    let negatedExtglob = false;
+    let finished = false;
+    let braces = 0;
+    let prev;
+    let code;
+    let token = { value: "", depth: 0, isGlob: false };
+    const eos = () => index >= length;
+    const peek = () => str.charCodeAt(index + 1);
+    const advance = () => {
+      prev = code;
+      return str.charCodeAt(++index);
+    };
+    while (index < length) {
+      code = advance();
+      let next;
+      if (code === CHAR_BACKWARD_SLASH) {
+        backslashes = token.backslashes = true;
+        code = advance();
+        if (code === CHAR_LEFT_CURLY_BRACE) {
+          braceEscaped = true;
+        }
+        continue;
+      }
+      if (braceEscaped === true || code === CHAR_LEFT_CURLY_BRACE) {
+        braces++;
+        while (eos() !== true && (code = advance())) {
+          if (code === CHAR_BACKWARD_SLASH) {
+            backslashes = token.backslashes = true;
+            advance();
+            continue;
+          }
+          if (code === CHAR_LEFT_CURLY_BRACE) {
+            braces++;
+            continue;
+          }
+          if (braceEscaped !== true && code === CHAR_DOT && (code = advance()) === CHAR_DOT) {
+            isBrace = token.isBrace = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            if (scanToEnd === true) {
+              continue;
+            }
+            break;
+          }
+          if (braceEscaped !== true && code === CHAR_COMMA) {
+            isBrace = token.isBrace = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            if (scanToEnd === true) {
+              continue;
+            }
+            break;
+          }
+          if (code === CHAR_RIGHT_CURLY_BRACE) {
+            braces--;
+            if (braces === 0) {
+              braceEscaped = false;
+              isBrace = token.isBrace = true;
+              finished = true;
+              break;
+            }
+          }
+        }
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_FORWARD_SLASH) {
+        slashes.push(index);
+        tokens.push(token);
+        token = { value: "", depth: 0, isGlob: false };
+        if (finished === true)
+          continue;
+        if (prev === CHAR_DOT && index === start + 1) {
+          start += 2;
+          continue;
+        }
+        lastIndex = index + 1;
+        continue;
+      }
+      if (opts.noext !== true) {
+        const isExtglobChar = code === CHAR_PLUS || code === CHAR_AT || code === CHAR_ASTERISK || code === CHAR_QUESTION_MARK || code === CHAR_EXCLAMATION_MARK;
+        if (isExtglobChar === true && peek() === CHAR_LEFT_PARENTHESES) {
+          isGlob = token.isGlob = true;
+          isExtglob = token.isExtglob = true;
+          finished = true;
+          if (code === CHAR_EXCLAMATION_MARK && index === start) {
+            negatedExtglob = true;
+          }
+          if (scanToEnd === true) {
+            while (eos() !== true && (code = advance())) {
+              if (code === CHAR_BACKWARD_SLASH) {
+                backslashes = token.backslashes = true;
+                code = advance();
+                continue;
+              }
+              if (code === CHAR_RIGHT_PARENTHESES) {
+                isGlob = token.isGlob = true;
+                finished = true;
+                break;
+              }
+            }
+            continue;
+          }
+          break;
+        }
+      }
+      if (code === CHAR_ASTERISK) {
+        if (prev === CHAR_ASTERISK)
+          isGlobstar = token.isGlobstar = true;
+        isGlob = token.isGlob = true;
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_QUESTION_MARK) {
+        isGlob = token.isGlob = true;
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (code === CHAR_LEFT_SQUARE_BRACKET) {
+        while (eos() !== true && (next = advance())) {
+          if (next === CHAR_BACKWARD_SLASH) {
+            backslashes = token.backslashes = true;
+            advance();
+            continue;
+          }
+          if (next === CHAR_RIGHT_SQUARE_BRACKET) {
+            isBracket = token.isBracket = true;
+            isGlob = token.isGlob = true;
+            finished = true;
+            break;
+          }
+        }
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+      if (opts.nonegate !== true && code === CHAR_EXCLAMATION_MARK && index === start) {
+        negated = token.negated = true;
+        start++;
+        continue;
+      }
+      if (opts.noparen !== true && code === CHAR_LEFT_PARENTHESES) {
+        isGlob = token.isGlob = true;
+        if (scanToEnd === true) {
+          while (eos() !== true && (code = advance())) {
+            if (code === CHAR_LEFT_PARENTHESES) {
+              backslashes = token.backslashes = true;
+              code = advance();
+              continue;
+            }
+            if (code === CHAR_RIGHT_PARENTHESES) {
+              finished = true;
+              break;
+            }
+          }
+          continue;
+        }
+        break;
+      }
+      if (isGlob === true) {
+        finished = true;
+        if (scanToEnd === true) {
+          continue;
+        }
+        break;
+      }
+    }
+    if (opts.noext === true) {
+      isExtglob = false;
+      isGlob = false;
+    }
+    let base = str;
+    let prefix = "";
+    let glob = "";
+    if (start > 0) {
+      prefix = str.slice(0, start);
+      str = str.slice(start);
+      lastIndex -= start;
+    }
+    if (base && isGlob === true && lastIndex > 0) {
+      base = str.slice(0, lastIndex);
+      glob = str.slice(lastIndex);
+    } else if (isGlob === true) {
+      base = "";
+      glob = str;
+    } else {
+      base = str;
+    }
+    if (base && base !== "" && base !== "/" && base !== str) {
+      if (isPathSeparator(base.charCodeAt(base.length - 1))) {
+        base = base.slice(0, -1);
+      }
+    }
+    if (opts.unescape === true) {
+      if (glob)
+        glob = utils.removeBackslashes(glob);
+      if (base && backslashes === true) {
+        base = utils.removeBackslashes(base);
+      }
+    }
+    const state = {
+      prefix,
+      input,
+      start,
+      base,
+      glob,
+      isBrace,
+      isBracket,
+      isGlob,
+      isExtglob,
+      isGlobstar,
+      negated,
+      negatedExtglob
+    };
+    if (opts.tokens === true) {
+      state.maxDepth = 0;
+      if (!isPathSeparator(code)) {
+        tokens.push(token);
+      }
+      state.tokens = tokens;
+    }
+    if (opts.parts === true || opts.tokens === true) {
+      let prevIndex;
+      for (let idx = 0;idx < slashes.length; idx++) {
+        const n = prevIndex ? prevIndex + 1 : start;
+        const i = slashes[idx];
+        const value = input.slice(n, i);
+        if (opts.tokens) {
+          if (idx === 0 && start !== 0) {
+            tokens[idx].isPrefix = true;
+            tokens[idx].value = prefix;
+          } else {
+            tokens[idx].value = value;
+          }
+          depth(tokens[idx]);
+          state.maxDepth += tokens[idx].depth;
+        }
+        if (idx !== 0 || value !== "") {
+          parts.push(value);
+        }
+        prevIndex = i;
+      }
+      if (prevIndex && prevIndex + 1 < input.length) {
+        const value = input.slice(prevIndex + 1);
+        parts.push(value);
+        if (opts.tokens) {
+          tokens[tokens.length - 1].value = value;
+          depth(tokens[tokens.length - 1]);
+          state.maxDepth += tokens[tokens.length - 1].depth;
+        }
+      }
+      state.slashes = slashes;
+      state.parts = parts;
+    }
+    return state;
+  };
+  module.exports = scan;
+});
+
+// ../../node_modules/.bun/picomatch@2.3.2/node_modules/picomatch/lib/parse.js
+var require_parse3 = __commonJS((exports, module) => {
+  var constants = require_constants2();
+  var utils = require_utils6();
+  var {
+    MAX_LENGTH,
+    POSIX_REGEX_SOURCE,
+    REGEX_NON_SPECIAL_CHARS,
+    REGEX_SPECIAL_CHARS_BACKREF,
+    REPLACEMENTS
+  } = constants;
+  var expandRange = (args, options) => {
+    if (typeof options.expandRange === "function") {
+      return options.expandRange(...args, options);
+    }
+    args.sort();
+    const value = `[${args.join("-")}]`;
+    try {
+      new RegExp(value);
+    } catch (ex) {
+      return args.map((v) => utils.escapeRegex(v)).join("..");
+    }
+    return value;
+  };
+  var syntaxError = (type, char) => {
+    return `Missing ${type}: "${char}" - use "\\\\${char}" to match literal characters`;
+  };
+  var splitTopLevel = (input) => {
+    const parts = [];
+    let bracket = 0;
+    let paren = 0;
+    let quote = 0;
+    let value = "";
+    let escaped = false;
+    for (const ch of input) {
+      if (escaped === true) {
+        value += ch;
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        value += ch;
+        escaped = true;
+        continue;
+      }
+      if (ch === '"') {
+        quote = quote === 1 ? 0 : 1;
+        value += ch;
+        continue;
+      }
+      if (quote === 0) {
+        if (ch === "[") {
+          bracket++;
+        } else if (ch === "]" && bracket > 0) {
+          bracket--;
+        } else if (bracket === 0) {
+          if (ch === "(") {
+            paren++;
+          } else if (ch === ")" && paren > 0) {
+            paren--;
+          } else if (ch === "|" && paren === 0) {
+            parts.push(value);
+            value = "";
+            continue;
+          }
+        }
+      }
+      value += ch;
+    }
+    parts.push(value);
+    return parts;
+  };
+  var isPlainBranch = (branch) => {
+    let escaped = false;
+    for (const ch of branch) {
+      if (escaped === true) {
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = true;
+        continue;
+      }
+      if (/[?*+@!()[\]{}]/.test(ch)) {
+        return false;
+      }
+    }
+    return true;
+  };
+  var normalizeSimpleBranch = (branch) => {
+    let value = branch.trim();
+    let changed = true;
+    while (changed === true) {
+      changed = false;
+      if (/^@\([^\\()[\]{}|]+\)$/.test(value)) {
+        value = value.slice(2, -1);
+        changed = true;
+      }
+    }
+    if (!isPlainBranch(value)) {
+      return;
+    }
+    return value.replace(/\\(.)/g, "$1");
+  };
+  var hasRepeatedCharPrefixOverlap = (branches) => {
+    const values = branches.map(normalizeSimpleBranch).filter(Boolean);
+    for (let i = 0;i < values.length; i++) {
+      for (let j = i + 1;j < values.length; j++) {
+        const a = values[i];
+        const b = values[j];
+        const char = a[0];
+        if (!char || a !== char.repeat(a.length) || b !== char.repeat(b.length)) {
+          continue;
+        }
+        if (a === b || a.startsWith(b) || b.startsWith(a)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+  var parseRepeatedExtglob = (pattern, requireEnd = true) => {
+    if (pattern[0] !== "+" && pattern[0] !== "*" || pattern[1] !== "(") {
+      return;
+    }
+    let bracket = 0;
+    let paren = 0;
+    let quote = 0;
+    let escaped = false;
+    for (let i = 1;i < pattern.length; i++) {
+      const ch = pattern[i];
+      if (escaped === true) {
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = true;
+        continue;
+      }
+      if (ch === '"') {
+        quote = quote === 1 ? 0 : 1;
+        continue;
+      }
+      if (quote === 1) {
+        continue;
+      }
+      if (ch === "[") {
+        bracket++;
+        continue;
+      }
+      if (ch === "]" && bracket > 0) {
+        bracket--;
+        continue;
+      }
+      if (bracket > 0) {
+        continue;
+      }
+      if (ch === "(") {
+        paren++;
+        continue;
+      }
+      if (ch === ")") {
+        paren--;
+        if (paren === 0) {
+          if (requireEnd === true && i !== pattern.length - 1) {
+            return;
+          }
+          return {
+            type: pattern[0],
+            body: pattern.slice(2, i),
+            end: i
+          };
+        }
+      }
+    }
+  };
+  var getStarExtglobSequenceOutput = (pattern) => {
+    let index = 0;
+    const chars = [];
+    while (index < pattern.length) {
+      const match = parseRepeatedExtglob(pattern.slice(index), false);
+      if (!match || match.type !== "*") {
+        return;
+      }
+      const branches = splitTopLevel(match.body).map((branch2) => branch2.trim());
+      if (branches.length !== 1) {
+        return;
+      }
+      const branch = normalizeSimpleBranch(branches[0]);
+      if (!branch || branch.length !== 1) {
+        return;
+      }
+      chars.push(branch);
+      index += match.end + 1;
+    }
+    if (chars.length < 1) {
+      return;
+    }
+    const source = chars.length === 1 ? utils.escapeRegex(chars[0]) : `[${chars.map((ch) => utils.escapeRegex(ch)).join("")}]`;
+    return `${source}*`;
+  };
+  var repeatedExtglobRecursion = (pattern) => {
+    let depth = 0;
+    let value = pattern.trim();
+    let match = parseRepeatedExtglob(value);
+    while (match) {
+      depth++;
+      value = match.body.trim();
+      match = parseRepeatedExtglob(value);
+    }
+    return depth;
+  };
+  var analyzeRepeatedExtglob = (body, options) => {
+    if (options.maxExtglobRecursion === false) {
+      return { risky: false };
+    }
+    const max = typeof options.maxExtglobRecursion === "number" ? options.maxExtglobRecursion : constants.DEFAULT_MAX_EXTGLOB_RECURSION;
+    const branches = splitTopLevel(body).map((branch) => branch.trim());
+    if (branches.length > 1) {
+      if (branches.some((branch) => branch === "") || branches.some((branch) => /^[*?]+$/.test(branch)) || hasRepeatedCharPrefixOverlap(branches)) {
+        return { risky: true };
+      }
+    }
+    for (const branch of branches) {
+      const safeOutput = getStarExtglobSequenceOutput(branch);
+      if (safeOutput) {
+        return { risky: true, safeOutput };
+      }
+      if (repeatedExtglobRecursion(branch) > max) {
+        return { risky: true };
+      }
+    }
+    return { risky: false };
+  };
+  var parse = (input, options) => {
+    if (typeof input !== "string") {
+      throw new TypeError("Expected a string");
+    }
+    input = REPLACEMENTS[input] || input;
+    const opts = { ...options };
+    const max = typeof opts.maxLength === "number" ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+    let len = input.length;
+    if (len > max) {
+      throw new SyntaxError(`Input length: ${len}, exceeds maximum allowed length: ${max}`);
+    }
+    const bos = { type: "bos", value: "", output: opts.prepend || "" };
+    const tokens = [bos];
+    const capture = opts.capture ? "" : "?:";
+    const win32 = utils.isWindows(options);
+    const PLATFORM_CHARS = constants.globChars(win32);
+    const EXTGLOB_CHARS = constants.extglobChars(PLATFORM_CHARS);
+    const {
+      DOT_LITERAL,
+      PLUS_LITERAL,
+      SLASH_LITERAL,
+      ONE_CHAR,
+      DOTS_SLASH,
+      NO_DOT,
+      NO_DOT_SLASH,
+      NO_DOTS_SLASH,
+      QMARK,
+      QMARK_NO_DOT,
+      STAR,
+      START_ANCHOR
+    } = PLATFORM_CHARS;
+    const globstar = (opts2) => {
+      return `(${capture}(?:(?!${START_ANCHOR}${opts2.dot ? DOTS_SLASH : DOT_LITERAL}).)*?)`;
+    };
+    const nodot = opts.dot ? "" : NO_DOT;
+    const qmarkNoDot = opts.dot ? QMARK : QMARK_NO_DOT;
+    let star = opts.bash === true ? globstar(opts) : STAR;
+    if (opts.capture) {
+      star = `(${star})`;
+    }
+    if (typeof opts.noext === "boolean") {
+      opts.noextglob = opts.noext;
+    }
+    const state = {
+      input,
+      index: -1,
+      start: 0,
+      dot: opts.dot === true,
+      consumed: "",
+      output: "",
+      prefix: "",
+      backtrack: false,
+      negated: false,
+      brackets: 0,
+      braces: 0,
+      parens: 0,
+      quotes: 0,
+      globstar: false,
+      tokens
+    };
+    input = utils.removePrefix(input, state);
+    len = input.length;
+    const extglobs = [];
+    const braces = [];
+    const stack = [];
+    let prev = bos;
+    let value;
+    const eos = () => state.index === len - 1;
+    const peek = state.peek = (n = 1) => input[state.index + n];
+    const advance = state.advance = () => input[++state.index] || "";
+    const remaining = () => input.slice(state.index + 1);
+    const consume = (value2 = "", num = 0) => {
+      state.consumed += value2;
+      state.index += num;
+    };
+    const append = (token) => {
+      state.output += token.output != null ? token.output : token.value;
+      consume(token.value);
+    };
+    const negate = () => {
+      let count = 1;
+      while (peek() === "!" && (peek(2) !== "(" || peek(3) === "?")) {
+        advance();
+        state.start++;
+        count++;
+      }
+      if (count % 2 === 0) {
+        return false;
+      }
+      state.negated = true;
+      state.start++;
+      return true;
+    };
+    const increment = (type) => {
+      state[type]++;
+      stack.push(type);
+    };
+    const decrement = (type) => {
+      state[type]--;
+      stack.pop();
+    };
+    const push = (tok) => {
+      if (prev.type === "globstar") {
+        const isBrace = state.braces > 0 && (tok.type === "comma" || tok.type === "brace");
+        const isExtglob = tok.extglob === true || extglobs.length && (tok.type === "pipe" || tok.type === "paren");
+        if (tok.type !== "slash" && tok.type !== "paren" && !isBrace && !isExtglob) {
+          state.output = state.output.slice(0, -prev.output.length);
+          prev.type = "star";
+          prev.value = "*";
+          prev.output = star;
+          state.output += prev.output;
+        }
+      }
+      if (extglobs.length && tok.type !== "paren") {
+        extglobs[extglobs.length - 1].inner += tok.value;
+      }
+      if (tok.value || tok.output)
+        append(tok);
+      if (prev && prev.type === "text" && tok.type === "text") {
+        prev.value += tok.value;
+        prev.output = (prev.output || "") + tok.value;
+        return;
+      }
+      tok.prev = prev;
+      tokens.push(tok);
+      prev = tok;
+    };
+    const extglobOpen = (type, value2) => {
+      const token = { ...EXTGLOB_CHARS[value2], conditions: 1, inner: "" };
+      token.prev = prev;
+      token.parens = state.parens;
+      token.output = state.output;
+      token.startIndex = state.index;
+      token.tokensIndex = tokens.length;
+      const output = (opts.capture ? "(" : "") + token.open;
+      increment("parens");
+      push({ type, value: value2, output: state.output ? "" : ONE_CHAR });
+      push({ type: "paren", extglob: true, value: advance(), output });
+      extglobs.push(token);
+    };
+    const extglobClose = (token) => {
+      const literal = input.slice(token.startIndex, state.index + 1);
+      const body = input.slice(token.startIndex + 2, state.index);
+      const analysis = analyzeRepeatedExtglob(body, opts);
+      if ((token.type === "plus" || token.type === "star") && analysis.risky) {
+        const safeOutput = analysis.safeOutput ? (token.output ? "" : ONE_CHAR) + (opts.capture ? `(${analysis.safeOutput})` : analysis.safeOutput) : undefined;
+        const open = tokens[token.tokensIndex];
+        open.type = "text";
+        open.value = literal;
+        open.output = safeOutput || utils.escapeRegex(literal);
+        for (let i = token.tokensIndex + 1;i < tokens.length; i++) {
+          tokens[i].value = "";
+          tokens[i].output = "";
+          delete tokens[i].suffix;
+        }
+        state.output = token.output + open.output;
+        state.backtrack = true;
+        push({ type: "paren", extglob: true, value, output: "" });
+        decrement("parens");
+        return;
+      }
+      let output = token.close + (opts.capture ? ")" : "");
+      let rest;
+      if (token.type === "negate") {
+        let extglobStar = star;
+        if (token.inner && token.inner.length > 1 && token.inner.includes("/")) {
+          extglobStar = globstar(opts);
+        }
+        if (extglobStar !== star || eos() || /^\)+$/.test(remaining())) {
+          output = token.close = `)$))${extglobStar}`;
+        }
+        if (token.inner.includes("*") && (rest = remaining()) && /^\.[^\\/.]+$/.test(rest)) {
+          const expression = parse(rest, { ...options, fastpaths: false }).output;
+          output = token.close = `)${expression})${extglobStar})`;
+        }
+        if (token.prev.type === "bos") {
+          state.negatedExtglob = true;
+        }
+      }
+      push({ type: "paren", extglob: true, value, output });
+      decrement("parens");
+    };
+    if (opts.fastpaths !== false && !/(^[*!]|[/()[\]{}"])/.test(input)) {
+      let backslashes = false;
+      let output = input.replace(REGEX_SPECIAL_CHARS_BACKREF, (m, esc, chars, first, rest, index) => {
+        if (first === "\\") {
+          backslashes = true;
+          return m;
+        }
+        if (first === "?") {
+          if (esc) {
+            return esc + first + (rest ? QMARK.repeat(rest.length) : "");
+          }
+          if (index === 0) {
+            return qmarkNoDot + (rest ? QMARK.repeat(rest.length) : "");
+          }
+          return QMARK.repeat(chars.length);
+        }
+        if (first === ".") {
+          return DOT_LITERAL.repeat(chars.length);
+        }
+        if (first === "*") {
+          if (esc) {
+            return esc + first + (rest ? star : "");
+          }
+          return star;
+        }
+        return esc ? m : `\\${m}`;
+      });
+      if (backslashes === true) {
+        if (opts.unescape === true) {
+          output = output.replace(/\\/g, "");
+        } else {
+          output = output.replace(/\\+/g, (m) => {
+            return m.length % 2 === 0 ? "\\\\" : m ? "\\" : "";
+          });
+        }
+      }
+      if (output === input && opts.contains === true) {
+        state.output = input;
+        return state;
+      }
+      state.output = utils.wrapOutput(output, state, options);
+      return state;
+    }
+    while (!eos()) {
+      value = advance();
+      if (value === "\x00") {
+        continue;
+      }
+      if (value === "\\") {
+        const next = peek();
+        if (next === "/" && opts.bash !== true) {
+          continue;
+        }
+        if (next === "." || next === ";") {
+          continue;
+        }
+        if (!next) {
+          value += "\\";
+          push({ type: "text", value });
+          continue;
+        }
+        const match = /^\\+/.exec(remaining());
+        let slashes = 0;
+        if (match && match[0].length > 2) {
+          slashes = match[0].length;
+          state.index += slashes;
+          if (slashes % 2 !== 0) {
+            value += "\\";
+          }
+        }
+        if (opts.unescape === true) {
+          value = advance();
+        } else {
+          value += advance();
+        }
+        if (state.brackets === 0) {
+          push({ type: "text", value });
+          continue;
+        }
+      }
+      if (state.brackets > 0 && (value !== "]" || prev.value === "[" || prev.value === "[^")) {
+        if (opts.posix !== false && value === ":") {
+          const inner = prev.value.slice(1);
+          if (inner.includes("[")) {
+            prev.posix = true;
+            if (inner.includes(":")) {
+              const idx = prev.value.lastIndexOf("[");
+              const pre = prev.value.slice(0, idx);
+              const rest2 = prev.value.slice(idx + 2);
+              const posix = POSIX_REGEX_SOURCE[rest2];
+              if (posix) {
+                prev.value = pre + posix;
+                state.backtrack = true;
+                advance();
+                if (!bos.output && tokens.indexOf(prev) === 1) {
+                  bos.output = ONE_CHAR;
+                }
+                continue;
+              }
+            }
+          }
+        }
+        if (value === "[" && peek() !== ":" || value === "-" && peek() === "]") {
+          value = `\\${value}`;
+        }
+        if (value === "]" && (prev.value === "[" || prev.value === "[^")) {
+          value = `\\${value}`;
+        }
+        if (opts.posix === true && value === "!" && prev.value === "[") {
+          value = "^";
+        }
+        prev.value += value;
+        append({ value });
+        continue;
+      }
+      if (state.quotes === 1 && value !== '"') {
+        value = utils.escapeRegex(value);
+        prev.value += value;
+        append({ value });
+        continue;
+      }
+      if (value === '"') {
+        state.quotes = state.quotes === 1 ? 0 : 1;
+        if (opts.keepQuotes === true) {
+          push({ type: "text", value });
+        }
+        continue;
+      }
+      if (value === "(") {
+        increment("parens");
+        push({ type: "paren", value });
+        continue;
+      }
+      if (value === ")") {
+        if (state.parens === 0 && opts.strictBrackets === true) {
+          throw new SyntaxError(syntaxError("opening", "("));
+        }
+        const extglob = extglobs[extglobs.length - 1];
+        if (extglob && state.parens === extglob.parens + 1) {
+          extglobClose(extglobs.pop());
+          continue;
+        }
+        push({ type: "paren", value, output: state.parens ? ")" : "\\)" });
+        decrement("parens");
+        continue;
+      }
+      if (value === "[") {
+        if (opts.nobracket === true || !remaining().includes("]")) {
+          if (opts.nobracket !== true && opts.strictBrackets === true) {
+            throw new SyntaxError(syntaxError("closing", "]"));
+          }
+          value = `\\${value}`;
+        } else {
+          increment("brackets");
+        }
+        push({ type: "bracket", value });
+        continue;
+      }
+      if (value === "]") {
+        if (opts.nobracket === true || prev && prev.type === "bracket" && prev.value.length === 1) {
+          push({ type: "text", value, output: `\\${value}` });
+          continue;
+        }
+        if (state.brackets === 0) {
+          if (opts.strictBrackets === true) {
+            throw new SyntaxError(syntaxError("opening", "["));
+          }
+          push({ type: "text", value, output: `\\${value}` });
+          continue;
+        }
+        decrement("brackets");
+        const prevValue = prev.value.slice(1);
+        if (prev.posix !== true && prevValue[0] === "^" && !prevValue.includes("/")) {
+          value = `/${value}`;
+        }
+        prev.value += value;
+        append({ value });
+        if (opts.literalBrackets === false || utils.hasRegexChars(prevValue)) {
+          continue;
+        }
+        const escaped = utils.escapeRegex(prev.value);
+        state.output = state.output.slice(0, -prev.value.length);
+        if (opts.literalBrackets === true) {
+          state.output += escaped;
+          prev.value = escaped;
+          continue;
+        }
+        prev.value = `(${capture}${escaped}|${prev.value})`;
+        state.output += prev.value;
+        continue;
+      }
+      if (value === "{" && opts.nobrace !== true) {
+        increment("braces");
+        const open = {
+          type: "brace",
+          value,
+          output: "(",
+          outputIndex: state.output.length,
+          tokensIndex: state.tokens.length
+        };
+        braces.push(open);
+        push(open);
+        continue;
+      }
+      if (value === "}") {
+        const brace = braces[braces.length - 1];
+        if (opts.nobrace === true || !brace) {
+          push({ type: "text", value, output: value });
+          continue;
+        }
+        let output = ")";
+        if (brace.dots === true) {
+          const arr = tokens.slice();
+          const range = [];
+          for (let i = arr.length - 1;i >= 0; i--) {
+            tokens.pop();
+            if (arr[i].type === "brace") {
+              break;
+            }
+            if (arr[i].type !== "dots") {
+              range.unshift(arr[i].value);
+            }
+          }
+          output = expandRange(range, opts);
+          state.backtrack = true;
+        }
+        if (brace.comma !== true && brace.dots !== true) {
+          const out = state.output.slice(0, brace.outputIndex);
+          const toks = state.tokens.slice(brace.tokensIndex);
+          brace.value = brace.output = "\\{";
+          value = output = "\\}";
+          state.output = out;
+          for (const t of toks) {
+            state.output += t.output || t.value;
+          }
+        }
+        push({ type: "brace", value, output });
+        decrement("braces");
+        braces.pop();
+        continue;
+      }
+      if (value === "|") {
+        if (extglobs.length > 0) {
+          extglobs[extglobs.length - 1].conditions++;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value === ",") {
+        let output = value;
+        const brace = braces[braces.length - 1];
+        if (brace && stack[stack.length - 1] === "braces") {
+          brace.comma = true;
+          output = "|";
+        }
+        push({ type: "comma", value, output });
+        continue;
+      }
+      if (value === "/") {
+        if (prev.type === "dot" && state.index === state.start + 1) {
+          state.start = state.index + 1;
+          state.consumed = "";
+          state.output = "";
+          tokens.pop();
+          prev = bos;
+          continue;
+        }
+        push({ type: "slash", value, output: SLASH_LITERAL });
+        continue;
+      }
+      if (value === ".") {
+        if (state.braces > 0 && prev.type === "dot") {
+          if (prev.value === ".")
+            prev.output = DOT_LITERAL;
+          const brace = braces[braces.length - 1];
+          prev.type = "dots";
+          prev.output += value;
+          prev.value += value;
+          brace.dots = true;
+          continue;
+        }
+        if (state.braces + state.parens === 0 && prev.type !== "bos" && prev.type !== "slash") {
+          push({ type: "text", value, output: DOT_LITERAL });
+          continue;
+        }
+        push({ type: "dot", value, output: DOT_LITERAL });
+        continue;
+      }
+      if (value === "?") {
+        const isGroup = prev && prev.value === "(";
+        if (!isGroup && opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          extglobOpen("qmark", value);
+          continue;
+        }
+        if (prev && prev.type === "paren") {
+          const next = peek();
+          let output = value;
+          if (next === "<" && !utils.supportsLookbehinds()) {
+            throw new Error("Node.js v10 or higher is required for regex lookbehinds");
+          }
+          if (prev.value === "(" && !/[!=<:]/.test(next) || next === "<" && !/<([!=]|\w+>)/.test(remaining())) {
+            output = `\\${value}`;
+          }
+          push({ type: "text", value, output });
+          continue;
+        }
+        if (opts.dot !== true && (prev.type === "slash" || prev.type === "bos")) {
+          push({ type: "qmark", value, output: QMARK_NO_DOT });
+          continue;
+        }
+        push({ type: "qmark", value, output: QMARK });
+        continue;
+      }
+      if (value === "!") {
+        if (opts.noextglob !== true && peek() === "(") {
+          if (peek(2) !== "?" || !/[!=<:]/.test(peek(3))) {
+            extglobOpen("negate", value);
+            continue;
+          }
+        }
+        if (opts.nonegate !== true && state.index === 0) {
+          negate();
+          continue;
+        }
+      }
+      if (value === "+") {
+        if (opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          extglobOpen("plus", value);
+          continue;
+        }
+        if (prev && prev.value === "(" || opts.regex === false) {
+          push({ type: "plus", value, output: PLUS_LITERAL });
+          continue;
+        }
+        if (prev && (prev.type === "bracket" || prev.type === "paren" || prev.type === "brace") || state.parens > 0) {
+          push({ type: "plus", value });
+          continue;
+        }
+        push({ type: "plus", value: PLUS_LITERAL });
+        continue;
+      }
+      if (value === "@") {
+        if (opts.noextglob !== true && peek() === "(" && peek(2) !== "?") {
+          push({ type: "at", extglob: true, value, output: "" });
+          continue;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (value !== "*") {
+        if (value === "$" || value === "^") {
+          value = `\\${value}`;
+        }
+        const match = REGEX_NON_SPECIAL_CHARS.exec(remaining());
+        if (match) {
+          value += match[0];
+          state.index += match[0].length;
+        }
+        push({ type: "text", value });
+        continue;
+      }
+      if (prev && (prev.type === "globstar" || prev.star === true)) {
+        prev.type = "star";
+        prev.star = true;
+        prev.value += value;
+        prev.output = star;
+        state.backtrack = true;
+        state.globstar = true;
+        consume(value);
+        continue;
+      }
+      let rest = remaining();
+      if (opts.noextglob !== true && /^\([^?]/.test(rest)) {
+        extglobOpen("star", value);
+        continue;
+      }
+      if (prev.type === "star") {
+        if (opts.noglobstar === true) {
+          consume(value);
+          continue;
+        }
+        const prior = prev.prev;
+        const before = prior.prev;
+        const isStart = prior.type === "slash" || prior.type === "bos";
+        const afterStar = before && (before.type === "star" || before.type === "globstar");
+        if (opts.bash === true && (!isStart || rest[0] && rest[0] !== "/")) {
+          push({ type: "star", value, output: "" });
+          continue;
+        }
+        const isBrace = state.braces > 0 && (prior.type === "comma" || prior.type === "brace");
+        const isExtglob = extglobs.length && (prior.type === "pipe" || prior.type === "paren");
+        if (!isStart && prior.type !== "paren" && !isBrace && !isExtglob) {
+          push({ type: "star", value, output: "" });
+          continue;
+        }
+        while (rest.slice(0, 3) === "/**") {
+          const after = input[state.index + 4];
+          if (after && after !== "/") {
+            break;
+          }
+          rest = rest.slice(3);
+          consume("/**", 3);
+        }
+        if (prior.type === "bos" && eos()) {
+          prev.type = "globstar";
+          prev.value += value;
+          prev.output = globstar(opts);
+          state.output = prev.output;
+          state.globstar = true;
+          consume(value);
+          continue;
+        }
+        if (prior.type === "slash" && prior.prev.type !== "bos" && !afterStar && eos()) {
+          state.output = state.output.slice(0, -(prior.output + prev.output).length);
+          prior.output = `(?:${prior.output}`;
+          prev.type = "globstar";
+          prev.output = globstar(opts) + (opts.strictSlashes ? ")" : "|$)");
+          prev.value += value;
+          state.globstar = true;
+          state.output += prior.output + prev.output;
+          consume(value);
+          continue;
+        }
+        if (prior.type === "slash" && prior.prev.type !== "bos" && rest[0] === "/") {
+          const end = rest[1] !== undefined ? "|$" : "";
+          state.output = state.output.slice(0, -(prior.output + prev.output).length);
+          prior.output = `(?:${prior.output}`;
+          prev.type = "globstar";
+          prev.output = `${globstar(opts)}${SLASH_LITERAL}|${SLASH_LITERAL}${end})`;
+          prev.value += value;
+          state.output += prior.output + prev.output;
+          state.globstar = true;
+          consume(value + advance());
+          push({ type: "slash", value: "/", output: "" });
+          continue;
+        }
+        if (prior.type === "bos" && rest[0] === "/") {
+          prev.type = "globstar";
+          prev.value += value;
+          prev.output = `(?:^|${SLASH_LITERAL}|${globstar(opts)}${SLASH_LITERAL})`;
+          state.output = prev.output;
+          state.globstar = true;
+          consume(value + advance());
+          push({ type: "slash", value: "/", output: "" });
+          continue;
+        }
+        state.output = state.output.slice(0, -prev.output.length);
+        prev.type = "globstar";
+        prev.output = globstar(opts);
+        prev.value += value;
+        state.output += prev.output;
+        state.globstar = true;
+        consume(value);
+        continue;
+      }
+      const token = { type: "star", value, output: star };
+      if (opts.bash === true) {
+        token.output = ".*?";
+        if (prev.type === "bos" || prev.type === "slash") {
+          token.output = nodot + token.output;
+        }
+        push(token);
+        continue;
+      }
+      if (prev && (prev.type === "bracket" || prev.type === "paren") && opts.regex === true) {
+        token.output = value;
+        push(token);
+        continue;
+      }
+      if (state.index === state.start || prev.type === "slash" || prev.type === "dot") {
+        if (prev.type === "dot") {
+          state.output += NO_DOT_SLASH;
+          prev.output += NO_DOT_SLASH;
+        } else if (opts.dot === true) {
+          state.output += NO_DOTS_SLASH;
+          prev.output += NO_DOTS_SLASH;
+        } else {
+          state.output += nodot;
+          prev.output += nodot;
+        }
+        if (peek() !== "*") {
+          state.output += ONE_CHAR;
+          prev.output += ONE_CHAR;
+        }
+      }
+      push(token);
+    }
+    while (state.brackets > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", "]"));
+      state.output = utils.escapeLast(state.output, "[");
+      decrement("brackets");
+    }
+    while (state.parens > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", ")"));
+      state.output = utils.escapeLast(state.output, "(");
+      decrement("parens");
+    }
+    while (state.braces > 0) {
+      if (opts.strictBrackets === true)
+        throw new SyntaxError(syntaxError("closing", "}"));
+      state.output = utils.escapeLast(state.output, "{");
+      decrement("braces");
+    }
+    if (opts.strictSlashes !== true && (prev.type === "star" || prev.type === "bracket")) {
+      push({ type: "maybe_slash", value: "", output: `${SLASH_LITERAL}?` });
+    }
+    if (state.backtrack === true) {
+      state.output = "";
+      for (const token of state.tokens) {
+        state.output += token.output != null ? token.output : token.value;
+        if (token.suffix) {
+          state.output += token.suffix;
+        }
+      }
+    }
+    return state;
+  };
+  parse.fastpaths = (input, options) => {
+    const opts = { ...options };
+    const max = typeof opts.maxLength === "number" ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
+    const len = input.length;
+    if (len > max) {
+      throw new SyntaxError(`Input length: ${len}, exceeds maximum allowed length: ${max}`);
+    }
+    input = REPLACEMENTS[input] || input;
+    const win32 = utils.isWindows(options);
+    const {
+      DOT_LITERAL,
+      SLASH_LITERAL,
+      ONE_CHAR,
+      DOTS_SLASH,
+      NO_DOT,
+      NO_DOTS,
+      NO_DOTS_SLASH,
+      STAR,
+      START_ANCHOR
+    } = constants.globChars(win32);
+    const nodot = opts.dot ? NO_DOTS : NO_DOT;
+    const slashDot = opts.dot ? NO_DOTS_SLASH : NO_DOT;
+    const capture = opts.capture ? "" : "?:";
+    const state = { negated: false, prefix: "" };
+    let star = opts.bash === true ? ".*?" : STAR;
+    if (opts.capture) {
+      star = `(${star})`;
+    }
+    const globstar = (opts2) => {
+      if (opts2.noglobstar === true)
+        return star;
+      return `(${capture}(?:(?!${START_ANCHOR}${opts2.dot ? DOTS_SLASH : DOT_LITERAL}).)*?)`;
+    };
+    const create = (str) => {
+      switch (str) {
+        case "*":
+          return `${nodot}${ONE_CHAR}${star}`;
+        case ".*":
+          return `${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "*.*":
+          return `${nodot}${star}${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "*/*":
+          return `${nodot}${star}${SLASH_LITERAL}${ONE_CHAR}${slashDot}${star}`;
+        case "**":
+          return nodot + globstar(opts);
+        case "**/*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${slashDot}${ONE_CHAR}${star}`;
+        case "**/*.*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${slashDot}${star}${DOT_LITERAL}${ONE_CHAR}${star}`;
+        case "**/.*":
+          return `(?:${nodot}${globstar(opts)}${SLASH_LITERAL})?${DOT_LITERAL}${ONE_CHAR}${star}`;
+        default: {
+          const match = /^(.*?)\.(\w+)$/.exec(str);
+          if (!match)
+            return;
+          const source2 = create(match[1]);
+          if (!source2)
+            return;
+          return source2 + DOT_LITERAL + match[2];
+        }
+      }
+    };
+    const output = utils.removePrefix(input, state);
+    let source = create(output);
+    if (source && opts.strictSlashes !== true) {
+      source += `${SLASH_LITERAL}?`;
+    }
+    return source;
+  };
+  module.exports = parse;
+});
+
+// ../../node_modules/.bun/picomatch@2.3.2/node_modules/picomatch/lib/picomatch.js
+var require_picomatch = __commonJS((exports, module) => {
+  var path = __require("path");
+  var scan = require_scan();
+  var parse = require_parse3();
+  var utils = require_utils6();
+  var constants = require_constants2();
+  var isObject = (val) => val && typeof val === "object" && !Array.isArray(val);
+  var picomatch = (glob, options, returnState = false) => {
+    if (Array.isArray(glob)) {
+      const fns = glob.map((input) => picomatch(input, options, returnState));
+      const arrayMatcher = (str) => {
+        for (const isMatch of fns) {
+          const state2 = isMatch(str);
+          if (state2)
+            return state2;
+        }
+        return false;
+      };
+      return arrayMatcher;
+    }
+    const isState = isObject(glob) && glob.tokens && glob.input;
+    if (glob === "" || typeof glob !== "string" && !isState) {
+      throw new TypeError("Expected pattern to be a non-empty string");
+    }
+    const opts = options || {};
+    const posix = utils.isWindows(options);
+    const regex = isState ? picomatch.compileRe(glob, options) : picomatch.makeRe(glob, options, false, true);
+    const state = regex.state;
+    delete regex.state;
+    let isIgnored = () => false;
+    if (opts.ignore) {
+      const ignoreOpts = { ...options, ignore: null, onMatch: null, onResult: null };
+      isIgnored = picomatch(opts.ignore, ignoreOpts, returnState);
+    }
+    const matcher = (input, returnObject = false) => {
+      const { isMatch, match, output } = picomatch.test(input, regex, options, { glob, posix });
+      const result = { glob, state, regex, posix, input, output, match, isMatch };
+      if (typeof opts.onResult === "function") {
+        opts.onResult(result);
+      }
+      if (isMatch === false) {
+        result.isMatch = false;
+        return returnObject ? result : false;
+      }
+      if (isIgnored(input)) {
+        if (typeof opts.onIgnore === "function") {
+          opts.onIgnore(result);
+        }
+        result.isMatch = false;
+        return returnObject ? result : false;
+      }
+      if (typeof opts.onMatch === "function") {
+        opts.onMatch(result);
+      }
+      return returnObject ? result : true;
+    };
+    if (returnState) {
+      matcher.state = state;
+    }
+    return matcher;
+  };
+  picomatch.test = (input, regex, options, { glob, posix } = {}) => {
+    if (typeof input !== "string") {
+      throw new TypeError("Expected input to be a string");
+    }
+    if (input === "") {
+      return { isMatch: false, output: "" };
+    }
+    const opts = options || {};
+    const format = opts.format || (posix ? utils.toPosixSlashes : null);
+    let match = input === glob;
+    let output = match && format ? format(input) : input;
+    if (match === false) {
+      output = format ? format(input) : input;
+      match = output === glob;
+    }
+    if (match === false || opts.capture === true) {
+      if (opts.matchBase === true || opts.basename === true) {
+        match = picomatch.matchBase(input, regex, options, posix);
+      } else {
+        match = regex.exec(output);
+      }
+    }
+    return { isMatch: Boolean(match), match, output };
+  };
+  picomatch.matchBase = (input, glob, options, posix = utils.isWindows(options)) => {
+    const regex = glob instanceof RegExp ? glob : picomatch.makeRe(glob, options);
+    return regex.test(path.basename(input));
+  };
+  picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str);
+  picomatch.parse = (pattern, options) => {
+    if (Array.isArray(pattern))
+      return pattern.map((p) => picomatch.parse(p, options));
+    return parse(pattern, { ...options, fastpaths: false });
+  };
+  picomatch.scan = (input, options) => scan(input, options);
+  picomatch.compileRe = (state, options, returnOutput = false, returnState = false) => {
+    if (returnOutput === true) {
+      return state.output;
+    }
+    const opts = options || {};
+    const prepend = opts.contains ? "" : "^";
+    const append = opts.contains ? "" : "$";
+    let source = `${prepend}(?:${state.output})${append}`;
+    if (state && state.negated === true) {
+      source = `^(?!${source}).*$`;
+    }
+    const regex = picomatch.toRegex(source, options);
+    if (returnState === true) {
+      regex.state = state;
+    }
+    return regex;
+  };
+  picomatch.makeRe = (input, options = {}, returnOutput = false, returnState = false) => {
+    if (!input || typeof input !== "string") {
+      throw new TypeError("Expected a non-empty string");
+    }
+    let parsed = { negated: false, fastpaths: true };
+    if (options.fastpaths !== false && (input[0] === "." || input[0] === "*")) {
+      parsed.output = parse.fastpaths(input, options);
+    }
+    if (!parsed.output) {
+      parsed = parse(input, options);
+    }
+    return picomatch.compileRe(parsed, options, returnOutput, returnState);
+  };
+  picomatch.toRegex = (source, options) => {
+    try {
+      const opts = options || {};
+      return new RegExp(source, opts.flags || (opts.nocase ? "i" : ""));
+    } catch (err) {
+      if (options && options.debug === true)
+        throw err;
+      return /$^/;
+    }
+  };
+  picomatch.constants = constants;
+  module.exports = picomatch;
+});
+
+// ../../node_modules/.bun/micromatch@4.0.8/node_modules/micromatch/index.js
+var require_micromatch = __commonJS((exports, module) => {
+  var util = __require("util");
+  var braces = require_braces();
+  var picomatch = require_picomatch();
+  var utils = require_utils6();
+  var isEmptyString = (v) => v === "" || v === "./";
+  var hasBraces = (v) => {
+    const index = v.indexOf("{");
+    return index > -1 && v.indexOf("}", index) > -1;
+  };
+  var micromatch = (list, patterns, options) => {
+    patterns = [].concat(patterns);
+    list = [].concat(list);
+    let omit = new Set;
+    let keep = new Set;
+    let items = new Set;
+    let negatives = 0;
+    let onResult = (state) => {
+      items.add(state.output);
+      if (options && options.onResult) {
+        options.onResult(state);
+      }
+    };
+    for (let i = 0;i < patterns.length; i++) {
+      let isMatch = picomatch(String(patterns[i]), { ...options, onResult }, true);
+      let negated = isMatch.state.negated || isMatch.state.negatedExtglob;
+      if (negated)
+        negatives++;
+      for (let item of list) {
+        let matched = isMatch(item, true);
+        let match = negated ? !matched.isMatch : matched.isMatch;
+        if (!match)
+          continue;
+        if (negated) {
+          omit.add(matched.output);
+        } else {
+          omit.delete(matched.output);
+          keep.add(matched.output);
+        }
+      }
+    }
+    let result = negatives === patterns.length ? [...items] : [...keep];
+    let matches = result.filter((item) => !omit.has(item));
+    if (options && matches.length === 0) {
+      if (options.failglob === true) {
+        throw new Error(`No matches found for "${patterns.join(", ")}"`);
+      }
+      if (options.nonull === true || options.nullglob === true) {
+        return options.unescape ? patterns.map((p) => p.replace(/\\/g, "")) : patterns;
+      }
+    }
+    return matches;
+  };
+  micromatch.match = micromatch;
+  micromatch.matcher = (pattern, options) => picomatch(pattern, options);
+  micromatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str);
+  micromatch.any = micromatch.isMatch;
+  micromatch.not = (list, patterns, options = {}) => {
+    patterns = [].concat(patterns).map(String);
+    let result = new Set;
+    let items = [];
+    let onResult = (state) => {
+      if (options.onResult)
+        options.onResult(state);
+      items.push(state.output);
+    };
+    let matches = new Set(micromatch(list, patterns, { ...options, onResult }));
+    for (let item of items) {
+      if (!matches.has(item)) {
+        result.add(item);
+      }
+    }
+    return [...result];
+  };
+  micromatch.contains = (str, pattern, options) => {
+    if (typeof str !== "string") {
+      throw new TypeError(`Expected a string: "${util.inspect(str)}"`);
+    }
+    if (Array.isArray(pattern)) {
+      return pattern.some((p) => micromatch.contains(str, p, options));
+    }
+    if (typeof pattern === "string") {
+      if (isEmptyString(str) || isEmptyString(pattern)) {
+        return false;
+      }
+      if (str.includes(pattern) || str.startsWith("./") && str.slice(2).includes(pattern)) {
+        return true;
+      }
+    }
+    return micromatch.isMatch(str, pattern, { ...options, contains: true });
+  };
+  micromatch.matchKeys = (obj, patterns, options) => {
+    if (!utils.isObject(obj)) {
+      throw new TypeError("Expected the first argument to be an object");
+    }
+    let keys = micromatch(Object.keys(obj), patterns, options);
+    let res = {};
+    for (let key of keys)
+      res[key] = obj[key];
+    return res;
+  };
+  micromatch.some = (list, patterns, options) => {
+    let items = [].concat(list);
+    for (let pattern of [].concat(patterns)) {
+      let isMatch = picomatch(String(pattern), options);
+      if (items.some((item) => isMatch(item))) {
+        return true;
+      }
+    }
+    return false;
+  };
+  micromatch.every = (list, patterns, options) => {
+    let items = [].concat(list);
+    for (let pattern of [].concat(patterns)) {
+      let isMatch = picomatch(String(pattern), options);
+      if (!items.every((item) => isMatch(item))) {
+        return false;
+      }
+    }
+    return true;
+  };
+  micromatch.all = (str, patterns, options) => {
+    if (typeof str !== "string") {
+      throw new TypeError(`Expected a string: "${util.inspect(str)}"`);
+    }
+    return [].concat(patterns).every((p) => picomatch(p, options)(str));
+  };
+  micromatch.capture = (glob, input, options) => {
+    let posix = utils.isWindows(options);
+    let regex = picomatch.makeRe(String(glob), { ...options, capture: true });
+    let match = regex.exec(posix ? utils.toPosixSlashes(input) : input);
+    if (match) {
+      return match.slice(1).map((v) => v === undefined ? "" : v);
+    }
+  };
+  micromatch.makeRe = (...args) => picomatch.makeRe(...args);
+  micromatch.scan = (...args) => picomatch.scan(...args);
+  micromatch.parse = (patterns, options) => {
+    let res = [];
+    for (let pattern of [].concat(patterns || [])) {
+      for (let str of braces(String(pattern), options)) {
+        res.push(picomatch.parse(str, options));
+      }
+    }
+    return res;
+  };
+  micromatch.braces = (pattern, options) => {
+    if (typeof pattern !== "string")
+      throw new TypeError("Expected a string");
+    if (options && options.nobrace === true || !hasBraces(pattern)) {
+      return [pattern];
+    }
+    return braces(pattern, options);
+  };
+  micromatch.braceExpand = (pattern, options) => {
+    if (typeof pattern !== "string")
+      throw new TypeError("Expected a string");
+    return micromatch.braces(pattern, { ...options, expand: true });
+  };
+  micromatch.hasBraces = hasBraces;
+  module.exports = micromatch;
+});
+
+// ../../node_modules/.bun/@phc+format@1.0.0/node_modules/@phc/format/index.js
+var require_format = __commonJS((exports, module) => {
+  var idRegex = /^[a-z0-9-]{1,32}$/;
+  var nameRegex = /^[a-z0-9-]{1,32}$/;
+  var valueRegex = /^[a-zA-Z0-9/+.-]+$/;
+  var b64Regex = /^([a-zA-Z0-9/+.-]+|)$/;
+  var decimalRegex = /^((-)?[1-9]\d*|0)$/;
+  var versionRegex = /^v=(\d+)$/;
+  function objToKeyVal(obj) {
+    return objectKeys(obj).map((k) => [k, obj[k]].join("=")).join(",");
+  }
+  function keyValtoObj(str) {
+    const obj = {};
+    str.split(",").forEach((ps) => {
+      const pss = ps.split("=");
+      if (pss.length < 2) {
+        throw new TypeError(`params must be in the format name=value`);
+      }
+      obj[pss.shift()] = pss.join("=");
+    });
+    return obj;
+  }
+  function objectKeys(object) {
+    return Object.keys(object);
+  }
+  function objectValues(object) {
+    if (typeof Object.values === "function")
+      return Object.values(object);
+    return objectKeys(object).map((k) => object[k]);
+  }
+  function serialize(opts) {
+    const fields = [""];
+    if (typeof opts !== "object" || opts === null) {
+      throw new TypeError("opts must be an object");
+    }
+    if (typeof opts.id !== "string") {
+      throw new TypeError("id must be a string");
+    }
+    if (!idRegex.test(opts.id)) {
+      throw new TypeError(`id must satisfy ${idRegex}`);
+    }
+    fields.push(opts.id);
+    if (typeof opts.version !== "undefined") {
+      if (typeof opts.version !== "number" || opts.version < 0 || !Number.isInteger(opts.version)) {
+        throw new TypeError("version must be a positive integer number");
+      }
+      fields.push(`v=${opts.version}`);
+    }
+    if (typeof opts.params !== "undefined") {
+      if (typeof opts.params !== "object" || opts.params === null) {
+        throw new TypeError("params must be an object");
+      }
+      const pk = objectKeys(opts.params);
+      if (!pk.every((p) => nameRegex.test(p))) {
+        throw new TypeError(`params names must satisfy ${nameRegex}`);
+      }
+      pk.forEach((k) => {
+        if (typeof opts.params[k] === "number") {
+          opts.params[k] = opts.params[k].toString();
+        } else if (Buffer.isBuffer(opts.params[k])) {
+          opts.params[k] = opts.params[k].toString("base64").split("=")[0];
+        }
+      });
+      const pv = objectValues(opts.params);
+      if (!pv.every((v) => typeof v === "string")) {
+        throw new TypeError("params values must be strings");
+      }
+      if (!pv.every((v) => valueRegex.test(v))) {
+        throw new TypeError(`params values must satisfy ${valueRegex}`);
+      }
+      const strpar = objToKeyVal(opts.params);
+      fields.push(strpar);
+    }
+    if (typeof opts.salt !== "undefined") {
+      if (!Buffer.isBuffer(opts.salt)) {
+        throw new TypeError("salt must be a Buffer");
+      }
+      fields.push(opts.salt.toString("base64").split("=")[0]);
+      if (typeof opts.hash !== "undefined") {
+        if (!Buffer.isBuffer(opts.hash)) {
+          throw new TypeError("hash must be a Buffer");
+        }
+        fields.push(opts.hash.toString("base64").split("=")[0]);
+      }
+    }
+    const phcstr = fields.join("$");
+    return phcstr;
+  }
+  function deserialize(phcstr) {
+    if (typeof phcstr !== "string" || phcstr === "") {
+      throw new TypeError("pchstr must be a non-empty string");
+    }
+    if (phcstr[0] !== "$") {
+      throw new TypeError("pchstr must contain a $ as first char");
+    }
+    const fields = phcstr.split("$");
+    fields.shift();
+    let maxf = 5;
+    if (!versionRegex.test(fields[1]))
+      maxf--;
+    if (fields.length > maxf) {
+      throw new TypeError(`pchstr contains too many fileds: ${fields.length}/${maxf}`);
+    }
+    const id = fields.shift();
+    if (!idRegex.test(id)) {
+      throw new TypeError(`id must satisfy ${idRegex}`);
+    }
+    let version;
+    if (versionRegex.test(fields[0])) {
+      version = parseInt(fields.shift().match(versionRegex)[1], 10);
+    }
+    let hash;
+    let salt;
+    if (b64Regex.test(fields[fields.length - 1])) {
+      if (fields.length > 1 && b64Regex.test(fields[fields.length - 2])) {
+        hash = Buffer.from(fields.pop(), "base64");
+        salt = Buffer.from(fields.pop(), "base64");
+      } else {
+        salt = Buffer.from(fields.pop(), "base64");
+      }
+    }
+    let params;
+    if (fields.length > 0) {
+      const parstr = fields.pop();
+      params = keyValtoObj(parstr);
+      if (!objectKeys(params).every((p) => nameRegex.test(p))) {
+        throw new TypeError(`params names must satisfy ${nameRegex}`);
+      }
+      const pv = objectValues(params);
+      if (!pv.every((v) => valueRegex.test(v))) {
+        throw new TypeError(`params values must satisfy ${valueRegex}`);
+      }
+      const pk = objectKeys(params);
+      pk.forEach((k) => {
+        params[k] = decimalRegex.test(params[k]) ? parseInt(params[k], 10) : params[k];
+      });
+    }
+    if (fields.length > 0) {
+      throw new TypeError(`pchstr contains unrecognized fileds: ${fields}`);
+    }
+    const phcobj = { id };
+    if (version)
+      phcobj.version = version;
+    if (params)
+      phcobj.params = params;
+    if (salt)
+      phcobj.salt = salt;
+    if (hash)
+      phcobj.hash = hash;
+    return phcobj;
+  }
+  module.exports = {
+    serialize,
+    deserialize
+  };
+});
+
+// ../../node_modules/.bun/node-gyp-build@4.8.4/node_modules/node-gyp-build/node-gyp-build.js
+var require_node_gyp_build = __commonJS((exports, module) => {
+  var fs = __require("fs");
+  var path = __require("path");
+  var os = __require("os");
+  var runtimeRequire = typeof __webpack_require__ === "function" ? __non_webpack_require__ : __require;
+  var vars = process.config && process.config.variables || {};
+  var prebuildsOnly = !!process.env.PREBUILDS_ONLY;
+  var abi = process.versions.modules;
+  var runtime = isElectron() ? "electron" : isNwjs() ? "node-webkit" : "node";
+  var arch = process.env.npm_config_arch || os.arch();
+  var platform = process.env.npm_config_platform || os.platform();
+  var libc = process.env.LIBC || (isAlpine(platform) ? "musl" : "glibc");
+  var armv = process.env.ARM_VERSION || (arch === "arm64" ? "8" : vars.arm_version) || "";
+  var uv = (process.versions.uv || "").split(".")[0];
+  module.exports = load;
+  function load(dir) {
+    return runtimeRequire(load.resolve(dir));
+  }
+  load.resolve = load.path = function(dir) {
+    dir = path.resolve(dir || ".");
+    try {
+      var name = runtimeRequire(path.join(dir, "package.json")).name.toUpperCase().replace(/-/g, "_");
+      if (process.env[name + "_PREBUILD"])
+        dir = process.env[name + "_PREBUILD"];
+    } catch (err) {}
+    if (!prebuildsOnly) {
+      var release = getFirst(path.join(dir, "build/Release"), matchBuild);
+      if (release)
+        return release;
+      var debug7 = getFirst(path.join(dir, "build/Debug"), matchBuild);
+      if (debug7)
+        return debug7;
+    }
+    var prebuild = resolve(dir);
+    if (prebuild)
+      return prebuild;
+    var nearby = resolve(path.dirname(process.execPath));
+    if (nearby)
+      return nearby;
+    var target = [
+      "platform=" + platform,
+      "arch=" + arch,
+      "runtime=" + runtime,
+      "abi=" + abi,
+      "uv=" + uv,
+      armv ? "armv=" + armv : "",
+      "libc=" + libc,
+      "node=" + process.versions.node,
+      process.versions.electron ? "electron=" + process.versions.electron : "",
+      typeof __webpack_require__ === "function" ? "webpack=true" : ""
+    ].filter(Boolean).join(" ");
+    throw new Error("No native build was found for " + target + `
+    loaded from: ` + dir + `
+`);
+    function resolve(dir2) {
+      var tuples = readdirSync(path.join(dir2, "prebuilds")).map(parseTuple);
+      var tuple = tuples.filter(matchTuple(platform, arch)).sort(compareTuples)[0];
+      if (!tuple)
+        return;
+      var prebuilds = path.join(dir2, "prebuilds", tuple.name);
+      var parsed = readdirSync(prebuilds).map(parseTags);
+      var candidates = parsed.filter(matchTags(runtime, abi));
+      var winner = candidates.sort(compareTags(runtime))[0];
+      if (winner)
+        return path.join(prebuilds, winner.file);
+    }
+  };
+  function readdirSync(dir) {
+    try {
+      return fs.readdirSync(dir);
+    } catch (err) {
+      return [];
+    }
+  }
+  function getFirst(dir, filter) {
+    var files = readdirSync(dir).filter(filter);
+    return files[0] && path.join(dir, files[0]);
+  }
+  function matchBuild(name) {
+    return /\.node$/.test(name);
+  }
+  function parseTuple(name) {
+    var arr = name.split("-");
+    if (arr.length !== 2)
+      return;
+    var platform2 = arr[0];
+    var architectures = arr[1].split("+");
+    if (!platform2)
+      return;
+    if (!architectures.length)
+      return;
+    if (!architectures.every(Boolean))
+      return;
+    return { name, platform: platform2, architectures };
+  }
+  function matchTuple(platform2, arch2) {
+    return function(tuple) {
+      if (tuple == null)
+        return false;
+      if (tuple.platform !== platform2)
+        return false;
+      return tuple.architectures.includes(arch2);
+    };
+  }
+  function compareTuples(a, b) {
+    return a.architectures.length - b.architectures.length;
+  }
+  function parseTags(file) {
+    var arr = file.split(".");
+    var extension = arr.pop();
+    var tags = { file, specificity: 0 };
+    if (extension !== "node")
+      return;
+    for (var i = 0;i < arr.length; i++) {
+      var tag = arr[i];
+      if (tag === "node" || tag === "electron" || tag === "node-webkit") {
+        tags.runtime = tag;
+      } else if (tag === "napi") {
+        tags.napi = true;
+      } else if (tag.slice(0, 3) === "abi") {
+        tags.abi = tag.slice(3);
+      } else if (tag.slice(0, 2) === "uv") {
+        tags.uv = tag.slice(2);
+      } else if (tag.slice(0, 4) === "armv") {
+        tags.armv = tag.slice(4);
+      } else if (tag === "glibc" || tag === "musl") {
+        tags.libc = tag;
+      } else {
+        continue;
+      }
+      tags.specificity++;
+    }
+    return tags;
+  }
+  function matchTags(runtime2, abi2) {
+    return function(tags) {
+      if (tags == null)
+        return false;
+      if (tags.runtime && tags.runtime !== runtime2 && !runtimeAgnostic(tags))
+        return false;
+      if (tags.abi && tags.abi !== abi2 && !tags.napi)
+        return false;
+      if (tags.uv && tags.uv !== uv)
+        return false;
+      if (tags.armv && tags.armv !== armv)
+        return false;
+      if (tags.libc && tags.libc !== libc)
+        return false;
+      return true;
+    };
+  }
+  function runtimeAgnostic(tags) {
+    return tags.runtime === "node" && tags.napi;
+  }
+  function compareTags(runtime2) {
+    return function(a, b) {
+      if (a.runtime !== b.runtime) {
+        return a.runtime === runtime2 ? -1 : 1;
+      } else if (a.abi !== b.abi) {
+        return a.abi ? -1 : 1;
+      } else if (a.specificity !== b.specificity) {
+        return a.specificity > b.specificity ? -1 : 1;
+      } else {
+        return 0;
+      }
+    };
+  }
+  function isNwjs() {
+    return !!(process.versions && process.versions.nw);
+  }
+  function isElectron() {
+    if (process.versions && process.versions.electron)
+      return true;
+    if (process.env.ELECTRON_RUN_AS_NODE)
+      return true;
+    return typeof window !== "undefined" && window.process && window.process.type === "renderer";
+  }
+  function isAlpine(platform2) {
+    return platform2 === "linux" && fs.existsSync("/etc/alpine-release");
+  }
+  load.parseTags = parseTags;
+  load.matchTags = matchTags;
+  load.compareTags = compareTags;
+  load.parseTuple = parseTuple;
+  load.matchTuple = matchTuple;
+  load.compareTuples = compareTuples;
+});
+
+// ../../node_modules/.bun/node-gyp-build@4.8.4/node_modules/node-gyp-build/index.js
+var require_node_gyp_build2 = __commonJS((exports, module) => {
+  var runtimeRequire = typeof __webpack_require__ === "function" ? __non_webpack_require__ : __require;
+  if (typeof runtimeRequire.addon === "function") {
+    module.exports = runtimeRequire.addon.bind(runtimeRequire);
+  } else {
+    module.exports = require_node_gyp_build();
+  }
+});
+
+// ../../node_modules/.bun/argon2@0.45.1/node_modules/argon2/argon2.cjs
+var require_argon2 = __commonJS((exports, module) => {
+  var __dirname = "/Users/farismohammed/Documents/crm-platform/node_modules/.bun/argon2@0.45.1/node_modules/argon2";
+  var { randomBytes, timingSafeEqual } = __require("crypto");
+  var { promisify } = __require("util");
+  var { deserialize, serialize } = require_format();
+  var gypBuild = require_node_gyp_build2();
+  var { hash: bindingsHash } = gypBuild(__dirname);
+  var generateSalt = promisify(randomBytes);
+  var argon2d = 0;
+  var argon2i = 1;
+  var argon2id = 2;
+  exports.argon2d = argon2d;
+  exports.argon2i = argon2i;
+  exports.argon2id = argon2id;
+  var types = Object.freeze({ argon2d, argon2i, argon2id });
+  var names = Object.freeze({
+    [types.argon2d]: "argon2d",
+    [types.argon2i]: "argon2i",
+    [types.argon2id]: "argon2id"
+  });
+  var defaults = {
+    hashLength: 32,
+    memoryCost: 1 << 16,
+    parallelism: 4,
+    timeCost: 3,
+    type: argon2id,
+    version: 19
+  };
+  async function hash(password, options) {
+    const { raw, salt: _salt, ...rest } = { ...defaults, ...options };
+    if (rest.hashLength > 2 ** 32 - 1) {
+      throw new RangeError("Hash length is too large");
+    }
+    if (rest.memoryCost > 2 ** 32 - 1) {
+      throw new RangeError("Memory cost is too large");
+    }
+    if (rest.timeCost > 2 ** 32 - 1) {
+      throw new RangeError("Time cost is too large");
+    }
+    if (rest.parallelism > 2 ** 24 - 1) {
+      throw new RangeError("Parallelism is too large");
+    }
+    const salt = _salt ?? await generateSalt(16);
+    const {
+      hashLength,
+      secret = Buffer.alloc(0),
+      type,
+      version,
+      memoryCost: m,
+      timeCost: t,
+      parallelism: p,
+      associatedData: data = Buffer.alloc(0)
+    } = rest;
+    const result = await bindingsHash({
+      data,
+      hashLength,
+      m,
+      p,
+      password: Buffer.from(password),
+      salt,
+      secret,
+      t,
+      type,
+      version
+    });
+    if (raw) {
+      return result;
+    }
+    const params = { m, p, t };
+    if (data.byteLength > 0) {
+      params.data = data;
+    }
+    return serialize({
+      hash: result,
+      id: names[type],
+      params,
+      salt,
+      version
+    });
+  }
+  exports.hash = hash;
+  function needsRehash(digest, options = {}) {
+    const { memoryCost, timeCost, parallelism, version } = {
+      ...defaults,
+      ...options
+    };
+    const {
+      version: v,
+      params: { m, t, p }
+    } = deserialize(digest);
+    return Number(v) !== Number(version) || Number(m) !== Number(memoryCost) || Number(t) !== Number(timeCost) || Number(p) !== Number(parallelism);
+  }
+  exports.needsRehash = needsRehash;
+  async function verify(digest, password, options = {}) {
+    const { id, ...rest } = deserialize(digest);
+    if (!(id in types)) {
+      return false;
+    }
+    const {
+      version = 16,
+      params: { m, t, p, data = "" },
+      salt,
+      hash: actual
+    } = rest;
+    const { secret = Buffer.alloc(0) } = options;
+    const expected = await bindingsHash({
+      data: Buffer.from(data, "base64"),
+      hashLength: actual.byteLength,
+      m: Number(m),
+      p: Number(p),
+      password: Buffer.from(password),
+      salt,
+      secret,
+      t: Number(t),
+      type: types[id],
+      version: Number(version)
+    });
+    return timingSafeEqual(expected, actual);
+  }
+  exports.verify = verify;
+});
+
+// ../../node_modules/.bun/jws@4.0.1/node_modules/jws/lib/data-stream.js
+var require_data_stream = __commonJS((exports, module) => {
+  var Buffer2 = require_safe_buffer().Buffer;
+  var Stream = __require("stream");
+  var util = __require("util");
+  function DataStream(data) {
+    this.buffer = null;
+    this.writable = true;
+    this.readable = true;
+    if (!data) {
+      this.buffer = Buffer2.alloc(0);
+      return this;
+    }
+    if (typeof data.pipe === "function") {
+      this.buffer = Buffer2.alloc(0);
+      data.pipe(this);
+      return this;
+    }
+    if (data.length || typeof data === "object") {
+      this.buffer = data;
+      this.writable = false;
+      process.nextTick(function() {
+        this.emit("end", data);
+        this.readable = false;
+        this.emit("close");
+      }.bind(this));
+      return this;
+    }
+    throw new TypeError("Unexpected data type (" + typeof data + ")");
+  }
+  util.inherits(DataStream, Stream);
+  DataStream.prototype.write = function write(data) {
+    this.buffer = Buffer2.concat([this.buffer, Buffer2.from(data)]);
+    this.emit("data", data);
+  };
+  DataStream.prototype.end = function end(data) {
+    if (data)
+      this.write(data);
+    this.emit("end", data);
+    this.emit("close");
+    this.writable = false;
+    this.readable = false;
+  };
+  module.exports = DataStream;
+});
+
+// ../../node_modules/.bun/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js
+var require_param_bytes_for_alg = __commonJS((exports, module) => {
+  function getParamSize(keySize) {
+    var result = (keySize / 8 | 0) + (keySize % 8 === 0 ? 0 : 1);
+    return result;
+  }
+  var paramBytesForAlg = {
+    ES256: getParamSize(256),
+    ES384: getParamSize(384),
+    ES512: getParamSize(521)
+  };
+  function getParamBytesForAlg(alg) {
+    var paramBytes = paramBytesForAlg[alg];
+    if (paramBytes) {
+      return paramBytes;
+    }
+    throw new Error('Unknown algorithm "' + alg + '"');
+  }
+  module.exports = getParamBytesForAlg;
+});
+
+// ../../node_modules/.bun/ecdsa-sig-formatter@1.0.11/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js
+var require_ecdsa_sig_formatter = __commonJS((exports, module) => {
+  var Buffer2 = require_safe_buffer().Buffer;
+  var getParamBytesForAlg = require_param_bytes_for_alg();
+  var MAX_OCTET = 128;
+  var CLASS_UNIVERSAL = 0;
+  var PRIMITIVE_BIT = 32;
+  var TAG_SEQ = 16;
+  var TAG_INT = 2;
+  var ENCODED_TAG_SEQ = TAG_SEQ | PRIMITIVE_BIT | CLASS_UNIVERSAL << 6;
+  var ENCODED_TAG_INT = TAG_INT | CLASS_UNIVERSAL << 6;
+  function base64Url(base64) {
+    return base64.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  }
+  function signatureAsBuffer(signature) {
+    if (Buffer2.isBuffer(signature)) {
+      return signature;
+    } else if (typeof signature === "string") {
+      return Buffer2.from(signature, "base64");
+    }
+    throw new TypeError("ECDSA signature must be a Base64 string or a Buffer");
+  }
+  function derToJose(signature, alg) {
+    signature = signatureAsBuffer(signature);
+    var paramBytes = getParamBytesForAlg(alg);
+    var maxEncodedParamLength = paramBytes + 1;
+    var inputLength = signature.length;
+    var offset = 0;
+    if (signature[offset++] !== ENCODED_TAG_SEQ) {
+      throw new Error('Could not find expected "seq"');
+    }
+    var seqLength = signature[offset++];
+    if (seqLength === (MAX_OCTET | 1)) {
+      seqLength = signature[offset++];
+    }
+    if (inputLength - offset < seqLength) {
+      throw new Error('"seq" specified length of "' + seqLength + '", only "' + (inputLength - offset) + '" remaining');
+    }
+    if (signature[offset++] !== ENCODED_TAG_INT) {
+      throw new Error('Could not find expected "int" for "r"');
+    }
+    var rLength = signature[offset++];
+    if (inputLength - offset - 2 < rLength) {
+      throw new Error('"r" specified length of "' + rLength + '", only "' + (inputLength - offset - 2) + '" available');
+    }
+    if (maxEncodedParamLength < rLength) {
+      throw new Error('"r" specified length of "' + rLength + '", max of "' + maxEncodedParamLength + '" is acceptable');
+    }
+    var rOffset = offset;
+    offset += rLength;
+    if (signature[offset++] !== ENCODED_TAG_INT) {
+      throw new Error('Could not find expected "int" for "s"');
+    }
+    var sLength = signature[offset++];
+    if (inputLength - offset !== sLength) {
+      throw new Error('"s" specified length of "' + sLength + '", expected "' + (inputLength - offset) + '"');
+    }
+    if (maxEncodedParamLength < sLength) {
+      throw new Error('"s" specified length of "' + sLength + '", max of "' + maxEncodedParamLength + '" is acceptable');
+    }
+    var sOffset = offset;
+    offset += sLength;
+    if (offset !== inputLength) {
+      throw new Error('Expected to consume entire buffer, but "' + (inputLength - offset) + '" bytes remain');
+    }
+    var rPadding = paramBytes - rLength, sPadding = paramBytes - sLength;
+    var dst = Buffer2.allocUnsafe(rPadding + rLength + sPadding + sLength);
+    for (offset = 0;offset < rPadding; ++offset) {
+      dst[offset] = 0;
+    }
+    signature.copy(dst, offset, rOffset + Math.max(-rPadding, 0), rOffset + rLength);
+    offset = paramBytes;
+    for (var o = offset;offset < o + sPadding; ++offset) {
+      dst[offset] = 0;
+    }
+    signature.copy(dst, offset, sOffset + Math.max(-sPadding, 0), sOffset + sLength);
+    dst = dst.toString("base64");
+    dst = base64Url(dst);
+    return dst;
+  }
+  function countPadding(buf, start, stop) {
+    var padding = 0;
+    while (start + padding < stop && buf[start + padding] === 0) {
+      ++padding;
+    }
+    var needsSign = buf[start + padding] >= MAX_OCTET;
+    if (needsSign) {
+      --padding;
+    }
+    return padding;
+  }
+  function joseToDer(signature, alg) {
+    signature = signatureAsBuffer(signature);
+    var paramBytes = getParamBytesForAlg(alg);
+    var signatureBytes = signature.length;
+    if (signatureBytes !== paramBytes * 2) {
+      throw new TypeError('"' + alg + '" signatures must be "' + paramBytes * 2 + '" bytes, saw "' + signatureBytes + '"');
+    }
+    var rPadding = countPadding(signature, 0, paramBytes);
+    var sPadding = countPadding(signature, paramBytes, signature.length);
+    var rLength = paramBytes - rPadding;
+    var sLength = paramBytes - sPadding;
+    var rsBytes = 1 + 1 + rLength + 1 + 1 + sLength;
+    var shortLength = rsBytes < MAX_OCTET;
+    var dst = Buffer2.allocUnsafe((shortLength ? 2 : 3) + rsBytes);
+    var offset = 0;
+    dst[offset++] = ENCODED_TAG_SEQ;
+    if (shortLength) {
+      dst[offset++] = rsBytes;
+    } else {
+      dst[offset++] = MAX_OCTET | 1;
+      dst[offset++] = rsBytes & 255;
+    }
+    dst[offset++] = ENCODED_TAG_INT;
+    dst[offset++] = rLength;
+    if (rPadding < 0) {
+      dst[offset++] = 0;
+      offset += signature.copy(dst, offset, 0, paramBytes);
+    } else {
+      offset += signature.copy(dst, offset, rPadding, paramBytes);
+    }
+    dst[offset++] = ENCODED_TAG_INT;
+    dst[offset++] = sLength;
+    if (sPadding < 0) {
+      dst[offset++] = 0;
+      signature.copy(dst, offset, paramBytes);
+    } else {
+      signature.copy(dst, offset, paramBytes + sPadding);
+    }
+    return dst;
+  }
+  module.exports = {
+    derToJose,
+    joseToDer
+  };
+});
+
+// ../../node_modules/.bun/buffer-equal-constant-time@1.0.1/node_modules/buffer-equal-constant-time/index.js
+var require_buffer_equal_constant_time = __commonJS((exports, module) => {
+  var Buffer2 = __require("buffer").Buffer;
+  var SlowBuffer = __require("buffer").SlowBuffer;
+  module.exports = bufferEq;
+  function bufferEq(a, b) {
+    if (!Buffer2.isBuffer(a) || !Buffer2.isBuffer(b)) {
+      return false;
+    }
+    if (a.length !== b.length) {
+      return false;
+    }
+    var c = 0;
+    for (var i = 0;i < a.length; i++) {
+      c |= a[i] ^ b[i];
+    }
+    return c === 0;
+  }
+  bufferEq.install = function() {
+    Buffer2.prototype.equal = SlowBuffer.prototype.equal = function equal(that) {
+      return bufferEq(this, that);
+    };
+  };
+  var origBufEqual = Buffer2.prototype.equal;
+  var origSlowBufEqual = SlowBuffer.prototype.equal;
+  bufferEq.restore = function() {
+    Buffer2.prototype.equal = origBufEqual;
+    SlowBuffer.prototype.equal = origSlowBufEqual;
+  };
+});
+
+// ../../node_modules/.bun/jwa@2.0.1/node_modules/jwa/index.js
+var require_jwa = __commonJS((exports, module) => {
+  var Buffer2 = require_safe_buffer().Buffer;
+  var crypto3 = __require("crypto");
+  var formatEcdsa = require_ecdsa_sig_formatter();
+  var util = __require("util");
+  var MSG_INVALID_ALGORITHM = `"%s" is not a valid algorithm.
+  Supported algorithms are:
+  "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" and "none".`;
+  var MSG_INVALID_SECRET = "secret must be a string or buffer";
+  var MSG_INVALID_VERIFIER_KEY = "key must be a string or a buffer";
+  var MSG_INVALID_SIGNER_KEY = "key must be a string, a buffer or an object";
+  var supportsKeyObjects = typeof crypto3.createPublicKey === "function";
+  if (supportsKeyObjects) {
+    MSG_INVALID_VERIFIER_KEY += " or a KeyObject";
+    MSG_INVALID_SECRET += "or a KeyObject";
+  }
+  function checkIsPublicKey(key) {
+    if (Buffer2.isBuffer(key)) {
+      return;
+    }
+    if (typeof key === "string") {
+      return;
+    }
+    if (!supportsKeyObjects) {
+      throw typeError(MSG_INVALID_VERIFIER_KEY);
+    }
+    if (typeof key !== "object") {
+      throw typeError(MSG_INVALID_VERIFIER_KEY);
+    }
+    if (typeof key.type !== "string") {
+      throw typeError(MSG_INVALID_VERIFIER_KEY);
+    }
+    if (typeof key.asymmetricKeyType !== "string") {
+      throw typeError(MSG_INVALID_VERIFIER_KEY);
+    }
+    if (typeof key.export !== "function") {
+      throw typeError(MSG_INVALID_VERIFIER_KEY);
+    }
+  }
+  function checkIsPrivateKey(key) {
+    if (Buffer2.isBuffer(key)) {
+      return;
+    }
+    if (typeof key === "string") {
+      return;
+    }
+    if (typeof key === "object") {
+      return;
+    }
+    throw typeError(MSG_INVALID_SIGNER_KEY);
+  }
+  function checkIsSecretKey(key) {
+    if (Buffer2.isBuffer(key)) {
+      return;
+    }
+    if (typeof key === "string") {
+      return key;
+    }
+    if (!supportsKeyObjects) {
+      throw typeError(MSG_INVALID_SECRET);
+    }
+    if (typeof key !== "object") {
+      throw typeError(MSG_INVALID_SECRET);
+    }
+    if (key.type !== "secret") {
+      throw typeError(MSG_INVALID_SECRET);
+    }
+    if (typeof key.export !== "function") {
+      throw typeError(MSG_INVALID_SECRET);
+    }
+  }
+  function fromBase64(base64) {
+    return base64.replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  }
+  function toBase64(base64url) {
+    base64url = base64url.toString();
+    var padding = 4 - base64url.length % 4;
+    if (padding !== 4) {
+      for (var i = 0;i < padding; ++i) {
+        base64url += "=";
+      }
+    }
+    return base64url.replace(/\-/g, "+").replace(/_/g, "/");
+  }
+  function typeError(template) {
+    var args = [].slice.call(arguments, 1);
+    var errMsg = util.format.bind(util, template).apply(null, args);
+    return new TypeError(errMsg);
+  }
+  function bufferOrString(obj) {
+    return Buffer2.isBuffer(obj) || typeof obj === "string";
+  }
+  function normalizeInput(thing) {
+    if (!bufferOrString(thing))
+      thing = JSON.stringify(thing);
+    return thing;
+  }
+  function createHmacSigner(bits) {
+    return function sign(thing, secret) {
+      checkIsSecretKey(secret);
+      thing = normalizeInput(thing);
+      var hmac = crypto3.createHmac("sha" + bits, secret);
+      var sig = (hmac.update(thing), hmac.digest("base64"));
+      return fromBase64(sig);
+    };
+  }
+  var bufferEqual;
+  var timingSafeEqual = "timingSafeEqual" in crypto3 ? function timingSafeEqual2(a, b) {
+    if (a.byteLength !== b.byteLength) {
+      return false;
+    }
+    return crypto3.timingSafeEqual(a, b);
+  } : function timingSafeEqual2(a, b) {
+    if (!bufferEqual) {
+      bufferEqual = require_buffer_equal_constant_time();
+    }
+    return bufferEqual(a, b);
+  };
+  function createHmacVerifier(bits) {
+    return function verify(thing, signature, secret) {
+      var computedSig = createHmacSigner(bits)(thing, secret);
+      return timingSafeEqual(Buffer2.from(signature), Buffer2.from(computedSig));
+    };
+  }
+  function createKeySigner(bits) {
+    return function sign(thing, privateKey) {
+      checkIsPrivateKey(privateKey);
+      thing = normalizeInput(thing);
+      var signer = crypto3.createSign("RSA-SHA" + bits);
+      var sig = (signer.update(thing), signer.sign(privateKey, "base64"));
+      return fromBase64(sig);
+    };
+  }
+  function createKeyVerifier(bits) {
+    return function verify(thing, signature, publicKey) {
+      checkIsPublicKey(publicKey);
+      thing = normalizeInput(thing);
+      signature = toBase64(signature);
+      var verifier = crypto3.createVerify("RSA-SHA" + bits);
+      verifier.update(thing);
+      return verifier.verify(publicKey, signature, "base64");
+    };
+  }
+  function createPSSKeySigner(bits) {
+    return function sign(thing, privateKey) {
+      checkIsPrivateKey(privateKey);
+      thing = normalizeInput(thing);
+      var signer = crypto3.createSign("RSA-SHA" + bits);
+      var sig = (signer.update(thing), signer.sign({
+        key: privateKey,
+        padding: crypto3.constants.RSA_PKCS1_PSS_PADDING,
+        saltLength: crypto3.constants.RSA_PSS_SALTLEN_DIGEST
+      }, "base64"));
+      return fromBase64(sig);
+    };
+  }
+  function createPSSKeyVerifier(bits) {
+    return function verify(thing, signature, publicKey) {
+      checkIsPublicKey(publicKey);
+      thing = normalizeInput(thing);
+      signature = toBase64(signature);
+      var verifier = crypto3.createVerify("RSA-SHA" + bits);
+      verifier.update(thing);
+      return verifier.verify({
+        key: publicKey,
+        padding: crypto3.constants.RSA_PKCS1_PSS_PADDING,
+        saltLength: crypto3.constants.RSA_PSS_SALTLEN_DIGEST
+      }, signature, "base64");
+    };
+  }
+  function createECDSASigner(bits) {
+    var inner = createKeySigner(bits);
+    return function sign() {
+      var signature = inner.apply(null, arguments);
+      signature = formatEcdsa.derToJose(signature, "ES" + bits);
+      return signature;
+    };
+  }
+  function createECDSAVerifer(bits) {
+    var inner = createKeyVerifier(bits);
+    return function verify(thing, signature, publicKey) {
+      signature = formatEcdsa.joseToDer(signature, "ES" + bits).toString("base64");
+      var result = inner(thing, signature, publicKey);
+      return result;
+    };
+  }
+  function createNoneSigner() {
+    return function sign() {
+      return "";
+    };
+  }
+  function createNoneVerifier() {
+    return function verify(thing, signature) {
+      return signature === "";
+    };
+  }
+  module.exports = function jwa(algorithm) {
+    var signerFactories = {
+      hs: createHmacSigner,
+      rs: createKeySigner,
+      ps: createPSSKeySigner,
+      es: createECDSASigner,
+      none: createNoneSigner
+    };
+    var verifierFactories = {
+      hs: createHmacVerifier,
+      rs: createKeyVerifier,
+      ps: createPSSKeyVerifier,
+      es: createECDSAVerifer,
+      none: createNoneVerifier
+    };
+    var match = algorithm.match(/^(RS|PS|ES|HS)(256|384|512)$|^(none)$/);
+    if (!match)
+      throw typeError(MSG_INVALID_ALGORITHM, algorithm);
+    var algo = (match[1] || match[3]).toLowerCase();
+    var bits = match[2];
+    return {
+      sign: signerFactories[algo](bits),
+      verify: verifierFactories[algo](bits)
+    };
+  };
+});
+
+// ../../node_modules/.bun/jws@4.0.1/node_modules/jws/lib/tostring.js
+var require_tostring = __commonJS((exports, module) => {
+  var Buffer2 = __require("buffer").Buffer;
+  module.exports = function toString(obj) {
+    if (typeof obj === "string")
+      return obj;
+    if (typeof obj === "number" || Buffer2.isBuffer(obj))
+      return obj.toString();
+    return JSON.stringify(obj);
+  };
+});
+
+// ../../node_modules/.bun/jws@4.0.1/node_modules/jws/lib/sign-stream.js
+var require_sign_stream = __commonJS((exports, module) => {
+  var Buffer2 = require_safe_buffer().Buffer;
+  var DataStream = require_data_stream();
+  var jwa = require_jwa();
+  var Stream = __require("stream");
+  var toString = require_tostring();
+  var util = __require("util");
+  function base64url(string, encoding) {
+    return Buffer2.from(string, encoding).toString("base64").replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  }
+  function jwsSecuredInput(header, payload, encoding) {
+    encoding = encoding || "utf8";
+    var encodedHeader = base64url(toString(header), "binary");
+    var encodedPayload = base64url(toString(payload), encoding);
+    return util.format("%s.%s", encodedHeader, encodedPayload);
+  }
+  function jwsSign(opts) {
+    var header = opts.header;
+    var payload = opts.payload;
+    var secretOrKey = opts.secret || opts.privateKey;
+    var encoding = opts.encoding;
+    var algo = jwa(header.alg);
+    var securedInput = jwsSecuredInput(header, payload, encoding);
+    var signature = algo.sign(securedInput, secretOrKey);
+    return util.format("%s.%s", securedInput, signature);
+  }
+  function SignStream(opts) {
+    var secret = opts.secret;
+    secret = secret == null ? opts.privateKey : secret;
+    secret = secret == null ? opts.key : secret;
+    if (/^hs/i.test(opts.header.alg) === true && secret == null) {
+      throw new TypeError("secret must be a string or buffer or a KeyObject");
+    }
+    var secretStream = new DataStream(secret);
+    this.readable = true;
+    this.header = opts.header;
+    this.encoding = opts.encoding;
+    this.secret = this.privateKey = this.key = secretStream;
+    this.payload = new DataStream(opts.payload);
+    this.secret.once("close", function() {
+      if (!this.payload.writable && this.readable)
+        this.sign();
+    }.bind(this));
+    this.payload.once("close", function() {
+      if (!this.secret.writable && this.readable)
+        this.sign();
+    }.bind(this));
+  }
+  util.inherits(SignStream, Stream);
+  SignStream.prototype.sign = function sign() {
+    try {
+      var signature = jwsSign({
+        header: this.header,
+        payload: this.payload.buffer,
+        secret: this.secret.buffer,
+        encoding: this.encoding
+      });
+      this.emit("done", signature);
+      this.emit("data", signature);
+      this.emit("end");
+      this.readable = false;
+      return signature;
+    } catch (e) {
+      this.readable = false;
+      this.emit("error", e);
+      this.emit("close");
+    }
+  };
+  SignStream.sign = jwsSign;
+  module.exports = SignStream;
+});
+
+// ../../node_modules/.bun/jws@4.0.1/node_modules/jws/lib/verify-stream.js
+var require_verify_stream = __commonJS((exports, module) => {
+  var Buffer2 = require_safe_buffer().Buffer;
+  var DataStream = require_data_stream();
+  var jwa = require_jwa();
+  var Stream = __require("stream");
+  var toString = require_tostring();
+  var util = __require("util");
+  var JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
+  function isObject(thing) {
+    return Object.prototype.toString.call(thing) === "[object Object]";
+  }
+  function safeJsonParse(thing) {
+    if (isObject(thing))
+      return thing;
+    try {
+      return JSON.parse(thing);
+    } catch (e) {
+      return;
+    }
+  }
+  function headerFromJWS(jwsSig) {
+    var encodedHeader = jwsSig.split(".", 1)[0];
+    return safeJsonParse(Buffer2.from(encodedHeader, "base64").toString("binary"));
+  }
+  function securedInputFromJWS(jwsSig) {
+    return jwsSig.split(".", 2).join(".");
+  }
+  function signatureFromJWS(jwsSig) {
+    return jwsSig.split(".")[2];
+  }
+  function payloadFromJWS(jwsSig, encoding) {
+    encoding = encoding || "utf8";
+    var payload = jwsSig.split(".")[1];
+    return Buffer2.from(payload, "base64").toString(encoding);
+  }
+  function isValidJws(string) {
+    return JWS_REGEX.test(string) && !!headerFromJWS(string);
+  }
+  function jwsVerify(jwsSig, algorithm, secretOrKey) {
+    if (!algorithm) {
+      var err = new Error("Missing algorithm parameter for jws.verify");
+      err.code = "MISSING_ALGORITHM";
+      throw err;
+    }
+    jwsSig = toString(jwsSig);
+    var signature = signatureFromJWS(jwsSig);
+    var securedInput = securedInputFromJWS(jwsSig);
+    var algo = jwa(algorithm);
+    return algo.verify(securedInput, signature, secretOrKey);
+  }
+  function jwsDecode(jwsSig, opts) {
+    opts = opts || {};
+    jwsSig = toString(jwsSig);
+    if (!isValidJws(jwsSig))
+      return null;
+    var header = headerFromJWS(jwsSig);
+    if (!header)
+      return null;
+    var payload = payloadFromJWS(jwsSig);
+    if (header.typ === "JWT" || opts.json)
+      payload = JSON.parse(payload, opts.encoding);
+    return {
+      header,
+      payload,
+      signature: signatureFromJWS(jwsSig)
+    };
+  }
+  function VerifyStream(opts) {
+    opts = opts || {};
+    var secretOrKey = opts.secret;
+    secretOrKey = secretOrKey == null ? opts.publicKey : secretOrKey;
+    secretOrKey = secretOrKey == null ? opts.key : secretOrKey;
+    if (/^hs/i.test(opts.algorithm) === true && secretOrKey == null) {
+      throw new TypeError("secret must be a string or buffer or a KeyObject");
+    }
+    var secretStream = new DataStream(secretOrKey);
+    this.readable = true;
+    this.algorithm = opts.algorithm;
+    this.encoding = opts.encoding;
+    this.secret = this.publicKey = this.key = secretStream;
+    this.signature = new DataStream(opts.signature);
+    this.secret.once("close", function() {
+      if (!this.signature.writable && this.readable)
+        this.verify();
+    }.bind(this));
+    this.signature.once("close", function() {
+      if (!this.secret.writable && this.readable)
+        this.verify();
+    }.bind(this));
+  }
+  util.inherits(VerifyStream, Stream);
+  VerifyStream.prototype.verify = function verify() {
+    try {
+      var valid = jwsVerify(this.signature.buffer, this.algorithm, this.key.buffer);
+      var obj = jwsDecode(this.signature.buffer, this.encoding);
+      this.emit("done", valid, obj);
+      this.emit("data", valid);
+      this.emit("end");
+      this.readable = false;
+      return valid;
+    } catch (e) {
+      this.readable = false;
+      this.emit("error", e);
+      this.emit("close");
+    }
+  };
+  VerifyStream.decode = jwsDecode;
+  VerifyStream.isValid = isValidJws;
+  VerifyStream.verify = jwsVerify;
+  module.exports = VerifyStream;
+});
+
+// ../../node_modules/.bun/jws@4.0.1/node_modules/jws/index.js
+var require_jws = __commonJS((exports) => {
+  var SignStream = require_sign_stream();
+  var VerifyStream = require_verify_stream();
+  var ALGORITHMS = [
+    "HS256",
+    "HS384",
+    "HS512",
+    "RS256",
+    "RS384",
+    "RS512",
+    "PS256",
+    "PS384",
+    "PS512",
+    "ES256",
+    "ES384",
+    "ES512"
+  ];
+  exports.ALGORITHMS = ALGORITHMS;
+  exports.sign = SignStream.sign;
+  exports.verify = VerifyStream.verify;
+  exports.decode = VerifyStream.decode;
+  exports.isValid = VerifyStream.isValid;
+  exports.createSign = function createSign(opts) {
+    return new SignStream(opts);
+  };
+  exports.createVerify = function createVerify(opts) {
+    return new VerifyStream(opts);
+  };
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/decode.js
+var require_decode = __commonJS((exports, module) => {
+  var jws = require_jws();
+  module.exports = function(jwt, options) {
+    options = options || {};
+    var decoded = jws.decode(jwt, options);
+    if (!decoded) {
+      return null;
+    }
+    var payload = decoded.payload;
+    if (typeof payload === "string") {
+      try {
+        var obj = JSON.parse(payload);
+        if (obj !== null && typeof obj === "object") {
+          payload = obj;
+        }
+      } catch (e) {}
+    }
+    if (options.complete === true) {
+      return {
+        header: decoded.header,
+        payload,
+        signature: decoded.signature
+      };
+    }
+    return payload;
+  };
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/JsonWebTokenError.js
+var require_JsonWebTokenError = __commonJS((exports, module) => {
+  var JsonWebTokenError = function(message, error) {
+    Error.call(this, message);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+    this.name = "JsonWebTokenError";
+    this.message = message;
+    if (error)
+      this.inner = error;
+  };
+  JsonWebTokenError.prototype = Object.create(Error.prototype);
+  JsonWebTokenError.prototype.constructor = JsonWebTokenError;
+  module.exports = JsonWebTokenError;
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/NotBeforeError.js
+var require_NotBeforeError = __commonJS((exports, module) => {
+  var JsonWebTokenError = require_JsonWebTokenError();
+  var NotBeforeError = function(message, date) {
+    JsonWebTokenError.call(this, message);
+    this.name = "NotBeforeError";
+    this.date = date;
+  };
+  NotBeforeError.prototype = Object.create(JsonWebTokenError.prototype);
+  NotBeforeError.prototype.constructor = NotBeforeError;
+  module.exports = NotBeforeError;
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/TokenExpiredError.js
+var require_TokenExpiredError = __commonJS((exports, module) => {
+  var JsonWebTokenError = require_JsonWebTokenError();
+  var TokenExpiredError = function(message, expiredAt) {
+    JsonWebTokenError.call(this, message);
+    this.name = "TokenExpiredError";
+    this.expiredAt = expiredAt;
+  };
+  TokenExpiredError.prototype = Object.create(JsonWebTokenError.prototype);
+  TokenExpiredError.prototype.constructor = TokenExpiredError;
+  module.exports = TokenExpiredError;
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/timespan.js
+var require_timespan = __commonJS((exports, module) => {
+  var ms = require_ms2();
+  module.exports = function(time, iat) {
+    var timestamp = iat || Math.floor(Date.now() / 1000);
+    if (typeof time === "string") {
+      var milliseconds = ms(time);
+      if (typeof milliseconds === "undefined") {
+        return;
+      }
+      return Math.floor(timestamp + milliseconds / 1000);
+    } else if (typeof time === "number") {
+      return timestamp + time;
+    } else {
+      return;
+    }
+  };
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/constants.js
+var require_constants3 = __commonJS((exports, module) => {
+  var SEMVER_SPEC_VERSION = "2.0.0";
+  var MAX_LENGTH = 256;
+  var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+  var MAX_SAFE_COMPONENT_LENGTH = 16;
+  var MAX_SAFE_BUILD_LENGTH = MAX_LENGTH - 6;
+  var RELEASE_TYPES = [
+    "major",
+    "premajor",
+    "minor",
+    "preminor",
+    "patch",
+    "prepatch",
+    "prerelease"
+  ];
+  module.exports = {
+    MAX_LENGTH,
+    MAX_SAFE_COMPONENT_LENGTH,
+    MAX_SAFE_BUILD_LENGTH,
+    MAX_SAFE_INTEGER,
+    RELEASE_TYPES,
+    SEMVER_SPEC_VERSION,
+    FLAG_INCLUDE_PRERELEASE: 1,
+    FLAG_LOOSE: 2
+  };
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/debug.js
+var require_debug3 = __commonJS((exports, module) => {
+  var debug7 = typeof process === "object" && process.env && process.env.NODE_DEBUG && /\bsemver\b/i.test(process.env.NODE_DEBUG) ? (...args) => console.error("SEMVER", ...args) : () => {};
+  module.exports = debug7;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/re.js
+var require_re = __commonJS((exports, module) => {
+  var {
+    MAX_SAFE_COMPONENT_LENGTH,
+    MAX_SAFE_BUILD_LENGTH,
+    MAX_LENGTH
+  } = require_constants3();
+  var debug7 = require_debug3();
+  exports = module.exports = {};
+  var re = exports.re = [];
+  var safeRe = exports.safeRe = [];
+  var src = exports.src = [];
+  var safeSrc = exports.safeSrc = [];
+  var t = exports.t = {};
+  var R = 0;
+  var LETTERDASHNUMBER = "[a-zA-Z0-9-]";
+  var safeRegexReplacements = [
+    ["\\s", 1],
+    ["\\d", MAX_LENGTH],
+    [LETTERDASHNUMBER, MAX_SAFE_BUILD_LENGTH]
+  ];
+  var makeSafeRegex = (value) => {
+    for (const [token, max] of safeRegexReplacements) {
+      value = value.split(`${token}*`).join(`${token}{0,${max}}`).split(`${token}+`).join(`${token}{1,${max}}`);
+    }
+    return value;
+  };
+  var createToken = (name, value, isGlobal) => {
+    const safe = makeSafeRegex(value);
+    const index = R++;
+    debug7(name, index, value);
+    t[name] = index;
+    src[index] = value;
+    safeSrc[index] = safe;
+    re[index] = new RegExp(value, isGlobal ? "g" : undefined);
+    safeRe[index] = new RegExp(safe, isGlobal ? "g" : undefined);
+  };
+  createToken("NUMERICIDENTIFIER", "0|[1-9]\\d*");
+  createToken("NUMERICIDENTIFIERLOOSE", "\\d+");
+  createToken("NONNUMERICIDENTIFIER", `\\d*[a-zA-Z-]${LETTERDASHNUMBER}*`);
+  createToken("MAINVERSION", `(${src[t.NUMERICIDENTIFIER]})\\.` + `(${src[t.NUMERICIDENTIFIER]})\\.` + `(${src[t.NUMERICIDENTIFIER]})`);
+  createToken("MAINVERSIONLOOSE", `(${src[t.NUMERICIDENTIFIERLOOSE]})\\.` + `(${src[t.NUMERICIDENTIFIERLOOSE]})\\.` + `(${src[t.NUMERICIDENTIFIERLOOSE]})`);
+  createToken("PRERELEASEIDENTIFIER", `(?:${src[t.NONNUMERICIDENTIFIER]}|${src[t.NUMERICIDENTIFIER]})`);
+  createToken("PRERELEASEIDENTIFIERLOOSE", `(?:${src[t.NONNUMERICIDENTIFIER]}|${src[t.NUMERICIDENTIFIERLOOSE]})`);
+  createToken("PRERELEASE", `(?:-(${src[t.PRERELEASEIDENTIFIER]}(?:\\.${src[t.PRERELEASEIDENTIFIER]})*))`);
+  createToken("PRERELEASELOOSE", `(?:-?(${src[t.PRERELEASEIDENTIFIERLOOSE]}(?:\\.${src[t.PRERELEASEIDENTIFIERLOOSE]})*))`);
+  createToken("BUILDIDENTIFIER", `${LETTERDASHNUMBER}+`);
+  createToken("BUILD", `(?:\\+(${src[t.BUILDIDENTIFIER]}(?:\\.${src[t.BUILDIDENTIFIER]})*))`);
+  createToken("FULLPLAIN", `v?${src[t.MAINVERSION]}${src[t.PRERELEASE]}?${src[t.BUILD]}?`);
+  createToken("FULL", `^${src[t.FULLPLAIN]}$`);
+  createToken("LOOSEPLAIN", `[v=\\s]*${src[t.MAINVERSIONLOOSE]}${src[t.PRERELEASELOOSE]}?${src[t.BUILD]}?`);
+  createToken("LOOSE", `^${src[t.LOOSEPLAIN]}$`);
+  createToken("GTLT", "((?:<|>)?=?)");
+  createToken("XRANGEIDENTIFIERLOOSE", `${src[t.NUMERICIDENTIFIERLOOSE]}|x|X|\\*`);
+  createToken("XRANGEIDENTIFIER", `${src[t.NUMERICIDENTIFIER]}|x|X|\\*`);
+  createToken("XRANGEPLAIN", `[v=\\s]*(${src[t.XRANGEIDENTIFIER]})` + `(?:\\.(${src[t.XRANGEIDENTIFIER]})` + `(?:\\.(${src[t.XRANGEIDENTIFIER]})` + `(?:${src[t.PRERELEASE]})?${src[t.BUILD]}?` + `)?)?`);
+  createToken("XRANGEPLAINLOOSE", `[v=\\s]*(${src[t.XRANGEIDENTIFIERLOOSE]})` + `(?:\\.(${src[t.XRANGEIDENTIFIERLOOSE]})` + `(?:\\.(${src[t.XRANGEIDENTIFIERLOOSE]})` + `(?:${src[t.PRERELEASELOOSE]})?${src[t.BUILD]}?` + `)?)?`);
+  createToken("XRANGE", `^${src[t.GTLT]}\\s*${src[t.XRANGEPLAIN]}$`);
+  createToken("XRANGELOOSE", `^${src[t.GTLT]}\\s*${src[t.XRANGEPLAINLOOSE]}$`);
+  createToken("COERCEPLAIN", `${"(^|[^\\d])" + "(\\d{1,"}${MAX_SAFE_COMPONENT_LENGTH}})` + `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?` + `(?:\\.(\\d{1,${MAX_SAFE_COMPONENT_LENGTH}}))?`);
+  createToken("COERCE", `${src[t.COERCEPLAIN]}(?:$|[^\\d])`);
+  createToken("COERCEFULL", src[t.COERCEPLAIN] + `(?:${src[t.PRERELEASE]})?` + `(?:${src[t.BUILD]})?` + `(?:$|[^\\d])`);
+  createToken("COERCERTL", src[t.COERCE], true);
+  createToken("COERCERTLFULL", src[t.COERCEFULL], true);
+  createToken("LONETILDE", "(?:~>?)");
+  createToken("TILDETRIM", `(\\s*)${src[t.LONETILDE]}\\s+`, true);
+  exports.tildeTrimReplace = "$1~";
+  createToken("TILDE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAIN]}$`);
+  createToken("TILDELOOSE", `^${src[t.LONETILDE]}${src[t.XRANGEPLAINLOOSE]}$`);
+  createToken("LONECARET", "(?:\\^)");
+  createToken("CARETTRIM", `(\\s*)${src[t.LONECARET]}\\s+`, true);
+  exports.caretTrimReplace = "$1^";
+  createToken("CARET", `^${src[t.LONECARET]}${src[t.XRANGEPLAIN]}$`);
+  createToken("CARETLOOSE", `^${src[t.LONECARET]}${src[t.XRANGEPLAINLOOSE]}$`);
+  createToken("COMPARATORLOOSE", `^${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]})$|^$`);
+  createToken("COMPARATOR", `^${src[t.GTLT]}\\s*(${src[t.FULLPLAIN]})$|^$`);
+  createToken("COMPARATORTRIM", `(\\s*)${src[t.GTLT]}\\s*(${src[t.LOOSEPLAIN]}|${src[t.XRANGEPLAIN]})`, true);
+  exports.comparatorTrimReplace = "$1$2$3";
+  createToken("HYPHENRANGE", `^\\s*(${src[t.XRANGEPLAIN]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAIN]})` + `\\s*$`);
+  createToken("HYPHENRANGELOOSE", `^\\s*(${src[t.XRANGEPLAINLOOSE]})` + `\\s+-\\s+` + `(${src[t.XRANGEPLAINLOOSE]})` + `\\s*$`);
+  createToken("STAR", "(<|>)?=?\\s*\\*");
+  createToken("GTE0", "^\\s*>=\\s*0\\.0\\.0\\s*$");
+  createToken("GTE0PRE", "^\\s*>=\\s*0\\.0\\.0-0\\s*$");
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/parse-options.js
+var require_parse_options = __commonJS((exports, module) => {
+  var looseOption = Object.freeze({ loose: true });
+  var emptyOpts = Object.freeze({});
+  var parseOptions = (options) => {
+    if (!options) {
+      return emptyOpts;
+    }
+    if (typeof options !== "object") {
+      return looseOption;
+    }
+    return options;
+  };
+  module.exports = parseOptions;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/identifiers.js
+var require_identifiers = __commonJS((exports, module) => {
+  var numeric = /^[0-9]+$/;
+  var compareIdentifiers = (a, b) => {
+    if (typeof a === "number" && typeof b === "number") {
+      return a === b ? 0 : a < b ? -1 : 1;
+    }
+    const anum = numeric.test(a);
+    const bnum = numeric.test(b);
+    if (anum && bnum) {
+      a = +a;
+      b = +b;
+    }
+    return a === b ? 0 : anum && !bnum ? -1 : bnum && !anum ? 1 : a < b ? -1 : 1;
+  };
+  var rcompareIdentifiers = (a, b) => compareIdentifiers(b, a);
+  module.exports = {
+    compareIdentifiers,
+    rcompareIdentifiers
+  };
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/classes/semver.js
+var require_semver = __commonJS((exports, module) => {
+  var debug7 = require_debug3();
+  var { MAX_LENGTH, MAX_SAFE_INTEGER } = require_constants3();
+  var { safeRe: re, t } = require_re();
+  var parseOptions = require_parse_options();
+  var { compareIdentifiers } = require_identifiers();
+  var isPrereleaseIdentifier = (prerelease, identifier) => {
+    const identifiers = identifier.split(".");
+    if (identifiers.length > prerelease.length) {
+      return false;
+    }
+    for (let i = 0;i < identifiers.length; i++) {
+      if (compareIdentifiers(prerelease[i], identifiers[i]) !== 0) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  class SemVer {
+    constructor(version, options) {
+      options = parseOptions(options);
+      if (version instanceof SemVer) {
+        if (version.loose === !!options.loose && version.includePrerelease === !!options.includePrerelease) {
+          return version;
+        } else {
+          version = version.version;
+        }
+      } else if (typeof version !== "string") {
+        throw new TypeError(`Invalid version. Must be a string. Got type "${typeof version}".`);
+      }
+      if (version.length > MAX_LENGTH) {
+        throw new TypeError(`version is longer than ${MAX_LENGTH} characters`);
+      }
+      debug7("SemVer", version, options);
+      this.options = options;
+      this.loose = !!options.loose;
+      this.includePrerelease = !!options.includePrerelease;
+      const m = version.trim().match(options.loose ? re[t.LOOSE] : re[t.FULL]);
+      if (!m) {
+        throw new TypeError(`Invalid Version: ${version}`);
+      }
+      this.raw = version;
+      this.major = +m[1];
+      this.minor = +m[2];
+      this.patch = +m[3];
+      if (this.major > MAX_SAFE_INTEGER || this.major < 0) {
+        throw new TypeError("Invalid major version");
+      }
+      if (this.minor > MAX_SAFE_INTEGER || this.minor < 0) {
+        throw new TypeError("Invalid minor version");
+      }
+      if (this.patch > MAX_SAFE_INTEGER || this.patch < 0) {
+        throw new TypeError("Invalid patch version");
+      }
+      if (!m[4]) {
+        this.prerelease = [];
+      } else {
+        this.prerelease = m[4].split(".").map((id) => {
+          if (/^[0-9]+$/.test(id)) {
+            const num = +id;
+            if (num >= 0 && num < MAX_SAFE_INTEGER) {
+              return num;
+            }
+          }
+          return id;
+        });
+      }
+      this.build = m[5] ? m[5].split(".") : [];
+      this.format();
+    }
+    format() {
+      this.version = `${this.major}.${this.minor}.${this.patch}`;
+      if (this.prerelease.length) {
+        this.version += `-${this.prerelease.join(".")}`;
+      }
+      return this.version;
+    }
+    toString() {
+      return this.version;
+    }
+    compare(other) {
+      debug7("SemVer.compare", this.version, this.options, other);
+      if (!(other instanceof SemVer)) {
+        if (typeof other === "string" && other === this.version) {
+          return 0;
+        }
+        other = new SemVer(other, this.options);
+      }
+      if (other.version === this.version) {
+        return 0;
+      }
+      return this.compareMain(other) || this.comparePre(other);
+    }
+    compareMain(other) {
+      if (!(other instanceof SemVer)) {
+        other = new SemVer(other, this.options);
+      }
+      if (this.major < other.major) {
+        return -1;
+      }
+      if (this.major > other.major) {
+        return 1;
+      }
+      if (this.minor < other.minor) {
+        return -1;
+      }
+      if (this.minor > other.minor) {
+        return 1;
+      }
+      if (this.patch < other.patch) {
+        return -1;
+      }
+      if (this.patch > other.patch) {
+        return 1;
+      }
+      return 0;
+    }
+    comparePre(other) {
+      if (!(other instanceof SemVer)) {
+        other = new SemVer(other, this.options);
+      }
+      if (this.prerelease.length && !other.prerelease.length) {
+        return -1;
+      } else if (!this.prerelease.length && other.prerelease.length) {
+        return 1;
+      } else if (!this.prerelease.length && !other.prerelease.length) {
+        return 0;
+      }
+      let i = 0;
+      do {
+        const a = this.prerelease[i];
+        const b = other.prerelease[i];
+        debug7("prerelease compare", i, a, b);
+        if (a === undefined && b === undefined) {
+          return 0;
+        } else if (b === undefined) {
+          return 1;
+        } else if (a === undefined) {
+          return -1;
+        } else if (a === b) {
+          continue;
+        } else {
+          return compareIdentifiers(a, b);
+        }
+      } while (++i);
+    }
+    compareBuild(other) {
+      if (!(other instanceof SemVer)) {
+        other = new SemVer(other, this.options);
+      }
+      let i = 0;
+      do {
+        const a = this.build[i];
+        const b = other.build[i];
+        debug7("build compare", i, a, b);
+        if (a === undefined && b === undefined) {
+          return 0;
+        } else if (b === undefined) {
+          return 1;
+        } else if (a === undefined) {
+          return -1;
+        } else if (a === b) {
+          continue;
+        } else {
+          return compareIdentifiers(a, b);
+        }
+      } while (++i);
+    }
+    inc(release, identifier, identifierBase) {
+      if (release.startsWith("pre")) {
+        if (!identifier && identifierBase === false) {
+          throw new Error("invalid increment argument: identifier is empty");
+        }
+        if (identifier) {
+          const match = `-${identifier}`.match(this.options.loose ? re[t.PRERELEASELOOSE] : re[t.PRERELEASE]);
+          if (!match || match[1] !== identifier) {
+            throw new Error(`invalid identifier: ${identifier}`);
+          }
+        }
+      }
+      switch (release) {
+        case "premajor":
+          this.prerelease.length = 0;
+          this.patch = 0;
+          this.minor = 0;
+          this.major++;
+          this.inc("pre", identifier, identifierBase);
+          break;
+        case "preminor":
+          this.prerelease.length = 0;
+          this.patch = 0;
+          this.minor++;
+          this.inc("pre", identifier, identifierBase);
+          break;
+        case "prepatch":
+          this.prerelease.length = 0;
+          this.inc("patch", identifier, identifierBase);
+          this.inc("pre", identifier, identifierBase);
+          break;
+        case "prerelease":
+          if (this.prerelease.length === 0) {
+            this.inc("patch", identifier, identifierBase);
+          }
+          this.inc("pre", identifier, identifierBase);
+          break;
+        case "release":
+          if (this.prerelease.length === 0) {
+            throw new Error(`version ${this.raw} is not a prerelease`);
+          }
+          this.prerelease.length = 0;
+          break;
+        case "major":
+          if (this.minor !== 0 || this.patch !== 0 || this.prerelease.length === 0) {
+            this.major++;
+          }
+          this.minor = 0;
+          this.patch = 0;
+          this.prerelease = [];
+          break;
+        case "minor":
+          if (this.patch !== 0 || this.prerelease.length === 0) {
+            this.minor++;
+          }
+          this.patch = 0;
+          this.prerelease = [];
+          break;
+        case "patch":
+          if (this.prerelease.length === 0) {
+            this.patch++;
+          }
+          this.prerelease = [];
+          break;
+        case "pre": {
+          const base = Number(identifierBase) ? 1 : 0;
+          if (this.prerelease.length === 0) {
+            this.prerelease = [base];
+          } else {
+            let i = this.prerelease.length;
+            while (--i >= 0) {
+              if (typeof this.prerelease[i] === "number") {
+                this.prerelease[i]++;
+                i = -2;
+              }
+            }
+            if (i === -1) {
+              if (identifier === this.prerelease.join(".") && identifierBase === false) {
+                throw new Error("invalid increment argument: identifier already exists");
+              }
+              this.prerelease.push(base);
+            }
+          }
+          if (identifier) {
+            let prerelease = [identifier, base];
+            if (identifierBase === false) {
+              prerelease = [identifier];
+            }
+            if (isPrereleaseIdentifier(this.prerelease, identifier)) {
+              const prereleaseBase = this.prerelease[identifier.split(".").length];
+              if (isNaN(prereleaseBase)) {
+                this.prerelease = prerelease;
+              }
+            } else {
+              this.prerelease = prerelease;
+            }
+          }
+          break;
+        }
+        default:
+          throw new Error(`invalid increment argument: ${release}`);
+      }
+      this.raw = this.format();
+      if (this.build.length) {
+        this.raw += `+${this.build.join(".")}`;
+      }
+      return this;
+    }
+  }
+  module.exports = SemVer;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/parse.js
+var require_parse4 = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var parse = (version, options, throwErrors = false) => {
+    if (version instanceof SemVer) {
+      return version;
+    }
+    try {
+      return new SemVer(version, options);
+    } catch (er) {
+      if (!throwErrors) {
+        return null;
+      }
+      throw er;
+    }
+  };
+  module.exports = parse;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/valid.js
+var require_valid = __commonJS((exports, module) => {
+  var parse = require_parse4();
+  var valid = (version, options) => {
+    const v = parse(version, options);
+    return v ? v.version : null;
+  };
+  module.exports = valid;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/clean.js
+var require_clean = __commonJS((exports, module) => {
+  var parse = require_parse4();
+  var clean = (version, options) => {
+    const s = parse(version.trim().replace(/^[=v]+/, ""), options);
+    return s ? s.version : null;
+  };
+  module.exports = clean;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/inc.js
+var require_inc = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var inc = (version, release, options, identifier, identifierBase) => {
+    if (typeof options === "string") {
+      identifierBase = identifier;
+      identifier = options;
+      options = undefined;
+    }
+    try {
+      return new SemVer(version instanceof SemVer ? version.version : version, options).inc(release, identifier, identifierBase).version;
+    } catch (er) {
+      return null;
+    }
+  };
+  module.exports = inc;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/diff.js
+var require_diff = __commonJS((exports, module) => {
+  var parse = require_parse4();
+  var diff = (version1, version2) => {
+    const v1 = parse(version1, null, true);
+    const v2 = parse(version2, null, true);
+    const comparison = v1.compare(v2);
+    if (comparison === 0) {
+      return null;
+    }
+    const v1Higher = comparison > 0;
+    const highVersion = v1Higher ? v1 : v2;
+    const lowVersion = v1Higher ? v2 : v1;
+    const highHasPre = !!highVersion.prerelease.length;
+    const lowHasPre = !!lowVersion.prerelease.length;
+    if (lowHasPre && !highHasPre) {
+      if (!lowVersion.patch && !lowVersion.minor) {
+        return "major";
+      }
+      if (lowVersion.compareMain(highVersion) === 0) {
+        if (lowVersion.minor && !lowVersion.patch) {
+          return "minor";
+        }
+        return "patch";
+      }
+    }
+    const prefix = highHasPre ? "pre" : "";
+    if (v1.major !== v2.major) {
+      return prefix + "major";
+    }
+    if (v1.minor !== v2.minor) {
+      return prefix + "minor";
+    }
+    if (v1.patch !== v2.patch) {
+      return prefix + "patch";
+    }
+    return "prerelease";
+  };
+  module.exports = diff;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/major.js
+var require_major = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var major = (a, loose) => new SemVer(a, loose).major;
+  module.exports = major;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/minor.js
+var require_minor = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var minor = (a, loose) => new SemVer(a, loose).minor;
+  module.exports = minor;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/patch.js
+var require_patch = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var patch = (a, loose) => new SemVer(a, loose).patch;
+  module.exports = patch;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/prerelease.js
+var require_prerelease = __commonJS((exports, module) => {
+  var parse = require_parse4();
+  var prerelease = (version, options) => {
+    const parsed = parse(version, options);
+    return parsed && parsed.prerelease.length ? parsed.prerelease : null;
+  };
+  module.exports = prerelease;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/compare.js
+var require_compare = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var compare = (a, b, loose) => new SemVer(a, loose).compare(new SemVer(b, loose));
+  module.exports = compare;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/rcompare.js
+var require_rcompare = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var rcompare = (a, b, loose) => compare(b, a, loose);
+  module.exports = rcompare;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/compare-loose.js
+var require_compare_loose = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var compareLoose = (a, b) => compare(a, b, true);
+  module.exports = compareLoose;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/compare-build.js
+var require_compare_build = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var compareBuild = (a, b, loose) => {
+    const versionA = new SemVer(a, loose);
+    const versionB = new SemVer(b, loose);
+    return versionA.compare(versionB) || versionA.compareBuild(versionB);
+  };
+  module.exports = compareBuild;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/sort.js
+var require_sort = __commonJS((exports, module) => {
+  var compareBuild = require_compare_build();
+  var sort = (list, loose) => list.sort((a, b) => compareBuild(a, b, loose));
+  module.exports = sort;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/rsort.js
+var require_rsort = __commonJS((exports, module) => {
+  var compareBuild = require_compare_build();
+  var rsort = (list, loose) => list.sort((a, b) => compareBuild(b, a, loose));
+  module.exports = rsort;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/gt.js
+var require_gt = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var gt = (a, b, loose) => compare(a, b, loose) > 0;
+  module.exports = gt;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/lt.js
+var require_lt = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var lt = (a, b, loose) => compare(a, b, loose) < 0;
+  module.exports = lt;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/eq.js
+var require_eq = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var eq = (a, b, loose) => compare(a, b, loose) === 0;
+  module.exports = eq;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/neq.js
+var require_neq = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var neq = (a, b, loose) => compare(a, b, loose) !== 0;
+  module.exports = neq;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/gte.js
+var require_gte = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var gte = (a, b, loose) => compare(a, b, loose) >= 0;
+  module.exports = gte;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/lte.js
+var require_lte = __commonJS((exports, module) => {
+  var compare = require_compare();
+  var lte = (a, b, loose) => compare(a, b, loose) <= 0;
+  module.exports = lte;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/cmp.js
+var require_cmp = __commonJS((exports, module) => {
+  var eq = require_eq();
+  var neq = require_neq();
+  var gt = require_gt();
+  var gte = require_gte();
+  var lt = require_lt();
+  var lte = require_lte();
+  var cmp = (a, op, b, loose) => {
+    switch (op) {
+      case "===":
+        if (typeof a === "object") {
+          a = a.version;
+        }
+        if (typeof b === "object") {
+          b = b.version;
+        }
+        return a === b;
+      case "!==":
+        if (typeof a === "object") {
+          a = a.version;
+        }
+        if (typeof b === "object") {
+          b = b.version;
+        }
+        return a !== b;
+      case "":
+      case "=":
+      case "==":
+        return eq(a, b, loose);
+      case "!=":
+        return neq(a, b, loose);
+      case ">":
+        return gt(a, b, loose);
+      case ">=":
+        return gte(a, b, loose);
+      case "<":
+        return lt(a, b, loose);
+      case "<=":
+        return lte(a, b, loose);
+      default:
+        throw new TypeError(`Invalid operator: ${op}`);
+    }
+  };
+  module.exports = cmp;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/coerce.js
+var require_coerce = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var parse = require_parse4();
+  var { safeRe: re, t } = require_re();
+  var coerce = (version, options) => {
+    if (version instanceof SemVer) {
+      return version;
+    }
+    if (typeof version === "number") {
+      version = String(version);
+    }
+    if (typeof version !== "string") {
+      return null;
+    }
+    options = options || {};
+    let match = null;
+    if (!options.rtl) {
+      match = version.match(options.includePrerelease ? re[t.COERCEFULL] : re[t.COERCE]);
+    } else {
+      const coerceRtlRegex = options.includePrerelease ? re[t.COERCERTLFULL] : re[t.COERCERTL];
+      let next;
+      while ((next = coerceRtlRegex.exec(version)) && (!match || match.index + match[0].length !== version.length)) {
+        if (!match || next.index + next[0].length !== match.index + match[0].length) {
+          match = next;
+        }
+        coerceRtlRegex.lastIndex = next.index + next[1].length + next[2].length;
+      }
+      coerceRtlRegex.lastIndex = -1;
+    }
+    if (match === null) {
+      return null;
+    }
+    const major = match[2];
+    const minor = match[3] || "0";
+    const patch = match[4] || "0";
+    const prerelease = options.includePrerelease && match[5] ? `-${match[5]}` : "";
+    const build = options.includePrerelease && match[6] ? `+${match[6]}` : "";
+    return parse(`${major}.${minor}.${patch}${prerelease}${build}`, options);
+  };
+  module.exports = coerce;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/truncate.js
+var require_truncate = __commonJS((exports, module) => {
+  var parse = require_parse4();
+  var constants = require_constants3();
+  var SemVer = require_semver();
+  var truncate = (version, truncation, options) => {
+    if (!constants.RELEASE_TYPES.includes(truncation)) {
+      return null;
+    }
+    const clonedVersion = cloneInputVersion(version, options);
+    return clonedVersion && doTruncation(clonedVersion, truncation);
+  };
+  var cloneInputVersion = (version, options) => {
+    const versionStringToParse = version instanceof SemVer ? version.version : version;
+    return parse(versionStringToParse, options);
+  };
+  var doTruncation = (version, truncation) => {
+    if (isPrerelease(truncation)) {
+      return version.version;
+    }
+    version.prerelease = [];
+    switch (truncation) {
+      case "major":
+        version.minor = 0;
+        version.patch = 0;
+        break;
+      case "minor":
+        version.patch = 0;
+        break;
+    }
+    return version.format();
+  };
+  var isPrerelease = (type) => {
+    return type.startsWith("pre");
+  };
+  module.exports = truncate;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/internal/lrucache.js
+var require_lrucache = __commonJS((exports, module) => {
+  class LRUCache {
+    constructor() {
+      this.max = 1000;
+      this.map = new Map;
+    }
+    get(key) {
+      const value = this.map.get(key);
+      if (value === undefined) {
+        return;
+      } else {
+        this.map.delete(key);
+        this.map.set(key, value);
+        return value;
+      }
+    }
+    delete(key) {
+      return this.map.delete(key);
+    }
+    set(key, value) {
+      const deleted = this.delete(key);
+      if (!deleted && value !== undefined) {
+        if (this.map.size >= this.max) {
+          const firstKey = this.map.keys().next().value;
+          this.delete(firstKey);
+        }
+        this.map.set(key, value);
+      }
+      return this;
+    }
+  }
+  module.exports = LRUCache;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/classes/range.js
+var require_range2 = __commonJS((exports, module) => {
+  var SPACE_CHARACTERS = /\s+/g;
+
+  class Range {
+    constructor(range, options) {
+      options = parseOptions(options);
+      if (range instanceof Range) {
+        if (range.loose === !!options.loose && range.includePrerelease === !!options.includePrerelease) {
+          return range;
+        } else {
+          return new Range(range.raw, options);
+        }
+      }
+      if (range instanceof Comparator) {
+        this.raw = range.value;
+        this.set = [[range]];
+        this.formatted = undefined;
+        return this;
+      }
+      this.options = options;
+      this.loose = !!options.loose;
+      this.includePrerelease = !!options.includePrerelease;
+      this.raw = range.trim().replace(SPACE_CHARACTERS, " ");
+      this.set = this.raw.split("||").map((r) => this.parseRange(r.trim())).filter((c) => c.length);
+      if (!this.set.length) {
+        throw new TypeError(`Invalid SemVer Range: ${this.raw}`);
+      }
+      if (this.set.length > 1) {
+        const first = this.set[0];
+        this.set = this.set.filter((c) => !isNullSet(c[0]));
+        if (this.set.length === 0) {
+          this.set = [first];
+        } else if (this.set.length > 1) {
+          for (const c of this.set) {
+            if (c.length === 1 && isAny(c[0])) {
+              this.set = [c];
+              break;
+            }
+          }
+        }
+      }
+      this.formatted = undefined;
+    }
+    get range() {
+      if (this.formatted === undefined) {
+        this.formatted = "";
+        for (let i = 0;i < this.set.length; i++) {
+          if (i > 0) {
+            this.formatted += "||";
+          }
+          const comps = this.set[i];
+          for (let k = 0;k < comps.length; k++) {
+            if (k > 0) {
+              this.formatted += " ";
+            }
+            this.formatted += comps[k].toString().trim();
+          }
+        }
+      }
+      return this.formatted;
+    }
+    format() {
+      return this.range;
+    }
+    toString() {
+      return this.range;
+    }
+    parseRange(range) {
+      range = range.replace(BUILDSTRIPRE, "");
+      const memoOpts = (this.options.includePrerelease && FLAG_INCLUDE_PRERELEASE) | (this.options.loose && FLAG_LOOSE);
+      const memoKey = memoOpts + ":" + range;
+      const cached = cache.get(memoKey);
+      if (cached) {
+        return cached;
+      }
+      const loose = this.options.loose;
+      const hr = loose ? re[t.HYPHENRANGELOOSE] : re[t.HYPHENRANGE];
+      range = range.replace(hr, hyphenReplace(this.options.includePrerelease));
+      debug7("hyphen replace", range);
+      range = range.replace(re[t.COMPARATORTRIM], comparatorTrimReplace);
+      debug7("comparator trim", range);
+      range = range.replace(re[t.TILDETRIM], tildeTrimReplace);
+      debug7("tilde trim", range);
+      range = range.replace(re[t.CARETTRIM], caretTrimReplace);
+      debug7("caret trim", range);
+      let rangeList = range.split(" ").map((comp) => parseComparator(comp, this.options)).join(" ").split(/\s+/).map((comp) => replaceGTE0(comp, this.options));
+      if (loose) {
+        rangeList = rangeList.filter((comp) => {
+          debug7("loose invalid filter", comp, this.options);
+          return !!comp.match(re[t.COMPARATORLOOSE]);
+        });
+      }
+      debug7("range list", rangeList);
+      const rangeMap = new Map;
+      const comparators = rangeList.map((comp) => new Comparator(comp, this.options));
+      for (const comp of comparators) {
+        if (isNullSet(comp)) {
+          return [comp];
+        }
+        rangeMap.set(comp.value, comp);
+      }
+      if (rangeMap.size > 1 && rangeMap.has("")) {
+        rangeMap.delete("");
+      }
+      const result = [...rangeMap.values()];
+      cache.set(memoKey, result);
+      return result;
+    }
+    intersects(range, options) {
+      if (!(range instanceof Range)) {
+        throw new TypeError("a Range is required");
+      }
+      return this.set.some((thisComparators) => {
+        return isSatisfiable(thisComparators, options) && range.set.some((rangeComparators) => {
+          return isSatisfiable(rangeComparators, options) && thisComparators.every((thisComparator) => {
+            return rangeComparators.every((rangeComparator) => {
+              return thisComparator.intersects(rangeComparator, options);
+            });
+          });
+        });
+      });
+    }
+    test(version) {
+      if (!version) {
+        return false;
+      }
+      if (typeof version === "string") {
+        try {
+          version = new SemVer(version, this.options);
+        } catch (er) {
+          return false;
+        }
+      }
+      for (let i = 0;i < this.set.length; i++) {
+        if (testSet(this.set[i], version, this.options)) {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  module.exports = Range;
+  var LRU = require_lrucache();
+  var cache = new LRU;
+  var parseOptions = require_parse_options();
+  var Comparator = require_comparator();
+  var debug7 = require_debug3();
+  var SemVer = require_semver();
+  var {
+    safeRe: re,
+    src,
+    t,
+    comparatorTrimReplace,
+    tildeTrimReplace,
+    caretTrimReplace
+  } = require_re();
+  var { FLAG_INCLUDE_PRERELEASE, FLAG_LOOSE } = require_constants3();
+  var BUILDSTRIPRE = new RegExp(src[t.BUILD], "g");
+  var isNullSet = (c) => c.value === "<0.0.0-0";
+  var isAny = (c) => c.value === "";
+  var isSatisfiable = (comparators, options) => {
+    let result = true;
+    const remainingComparators = comparators.slice();
+    let testComparator = remainingComparators.pop();
+    while (result && remainingComparators.length) {
+      result = remainingComparators.every((otherComparator) => {
+        return testComparator.intersects(otherComparator, options);
+      });
+      testComparator = remainingComparators.pop();
+    }
+    return result;
+  };
+  var parseComparator = (comp, options) => {
+    comp = comp.replace(re[t.BUILD], "");
+    debug7("comp", comp, options);
+    comp = replaceCarets(comp, options);
+    debug7("caret", comp);
+    comp = replaceTildes(comp, options);
+    debug7("tildes", comp);
+    comp = replaceXRanges(comp, options);
+    debug7("xrange", comp);
+    comp = replaceStars(comp, options);
+    debug7("stars", comp);
+    return comp;
+  };
+  var isX = (id) => !id || id.toLowerCase() === "x" || id === "*";
+  var invalidXRangeOrder = (M, m, p) => isX(M) && !isX(m) || isX(m) && p && !isX(p);
+  var replaceTildes = (comp, options) => {
+    return comp.trim().split(/\s+/).map((c) => replaceTilde(c, options)).join(" ");
+  };
+  var replaceTilde = (comp, options) => {
+    const r = options.loose ? re[t.TILDELOOSE] : re[t.TILDE];
+    const z = options.includePrerelease ? "-0" : "";
+    return comp.replace(r, (_, M, m, p, pr) => {
+      debug7("tilde", comp, _, M, m, p, pr);
+      let ret;
+      if (isX(M)) {
+        ret = "";
+      } else if (isX(m)) {
+        ret = `>=${M}.0.0${z} <${+M + 1}.0.0-0`;
+      } else if (isX(p)) {
+        ret = `>=${M}.${m}.0${z} <${M}.${+m + 1}.0-0`;
+      } else if (pr) {
+        debug7("replaceTilde pr", pr);
+        ret = `>=${M}.${m}.${p}-${pr} <${M}.${+m + 1}.0-0`;
+      } else {
+        ret = `>=${M}.${m}.${p} <${M}.${+m + 1}.0-0`;
+      }
+      debug7("tilde return", ret);
+      return ret;
+    });
+  };
+  var replaceCarets = (comp, options) => {
+    return comp.trim().split(/\s+/).map((c) => replaceCaret(c, options)).join(" ");
+  };
+  var replaceCaret = (comp, options) => {
+    debug7("caret", comp, options);
+    const r = options.loose ? re[t.CARETLOOSE] : re[t.CARET];
+    const z = options.includePrerelease ? "-0" : "";
+    return comp.replace(r, (_, M, m, p, pr) => {
+      debug7("caret", comp, _, M, m, p, pr);
+      let ret;
+      if (isX(M)) {
+        ret = "";
+      } else if (isX(m)) {
+        ret = `>=${M}.0.0${z} <${+M + 1}.0.0-0`;
+      } else if (isX(p)) {
+        if (M === "0") {
+          ret = `>=${M}.${m}.0${z} <${M}.${+m + 1}.0-0`;
+        } else {
+          ret = `>=${M}.${m}.0${z} <${+M + 1}.0.0-0`;
+        }
+      } else if (pr) {
+        debug7("replaceCaret pr", pr);
+        if (M === "0") {
+          if (m === "0") {
+            ret = `>=${M}.${m}.${p}-${pr} <${M}.${m}.${+p + 1}-0`;
+          } else {
+            ret = `>=${M}.${m}.${p}-${pr} <${M}.${+m + 1}.0-0`;
+          }
+        } else {
+          ret = `>=${M}.${m}.${p}-${pr} <${+M + 1}.0.0-0`;
+        }
+      } else {
+        debug7("no pr");
+        if (M === "0") {
+          if (m === "0") {
+            ret = `>=${M}.${m}.${p} <${M}.${m}.${+p + 1}-0`;
+          } else {
+            ret = `>=${M}.${m}.${p} <${M}.${+m + 1}.0-0`;
+          }
+        } else {
+          ret = `>=${M}.${m}.${p} <${+M + 1}.0.0-0`;
+        }
+      }
+      debug7("caret return", ret);
+      return ret;
+    });
+  };
+  var replaceXRanges = (comp, options) => {
+    debug7("replaceXRanges", comp, options);
+    return comp.split(/\s+/).map((c) => replaceXRange(c, options)).join(" ");
+  };
+  var replaceXRange = (comp, options) => {
+    comp = comp.trim();
+    const r = options.loose ? re[t.XRANGELOOSE] : re[t.XRANGE];
+    return comp.replace(r, (ret, gtlt, M, m, p, pr) => {
+      debug7("xRange", comp, ret, gtlt, M, m, p, pr);
+      if (invalidXRangeOrder(M, m, p)) {
+        return comp;
+      }
+      const xM = isX(M);
+      const xm = xM || isX(m);
+      const xp = xm || isX(p);
+      const anyX = xp;
+      if (gtlt === "=" && anyX) {
+        gtlt = "";
+      }
+      pr = options.includePrerelease ? "-0" : "";
+      if (xM) {
+        if (gtlt === ">" || gtlt === "<") {
+          ret = "<0.0.0-0";
+        } else {
+          ret = "*";
+        }
+      } else if (gtlt && anyX) {
+        if (xm) {
+          m = 0;
+        }
+        p = 0;
+        if (gtlt === ">") {
+          gtlt = ">=";
+          if (xm) {
+            M = +M + 1;
+            m = 0;
+            p = 0;
+          } else {
+            m = +m + 1;
+            p = 0;
+          }
+        } else if (gtlt === "<=") {
+          gtlt = "<";
+          if (xm) {
+            M = +M + 1;
+          } else {
+            m = +m + 1;
+          }
+        }
+        if (gtlt === "<") {
+          pr = "-0";
+        }
+        ret = `${gtlt + M}.${m}.${p}${pr}`;
+      } else if (xm) {
+        ret = `>=${M}.0.0${pr} <${+M + 1}.0.0-0`;
+      } else if (xp) {
+        ret = `>=${M}.${m}.0${pr} <${M}.${+m + 1}.0-0`;
+      }
+      debug7("xRange return", ret);
+      return ret;
+    });
+  };
+  var replaceStars = (comp, options) => {
+    debug7("replaceStars", comp, options);
+    return comp.trim().replace(re[t.STAR], "");
+  };
+  var replaceGTE0 = (comp, options) => {
+    debug7("replaceGTE0", comp, options);
+    return comp.trim().replace(re[options.includePrerelease ? t.GTE0PRE : t.GTE0], "");
+  };
+  var hyphenReplace = (incPr) => ($0, from, fM, fm, fp, fpr, fb, to, tM, tm, tp, tpr) => {
+    if (isX(fM)) {
+      from = "";
+    } else if (isX(fm)) {
+      from = `>=${fM}.0.0${incPr ? "-0" : ""}`;
+    } else if (isX(fp)) {
+      from = `>=${fM}.${fm}.0${incPr ? "-0" : ""}`;
+    } else if (fpr) {
+      from = `>=${from}`;
+    } else {
+      from = `>=${from}${incPr ? "-0" : ""}`;
+    }
+    if (isX(tM)) {
+      to = "";
+    } else if (isX(tm)) {
+      to = `<${+tM + 1}.0.0-0`;
+    } else if (isX(tp)) {
+      to = `<${tM}.${+tm + 1}.0-0`;
+    } else if (tpr) {
+      to = `<=${tM}.${tm}.${tp}-${tpr}`;
+    } else if (incPr) {
+      to = `<${tM}.${tm}.${+tp + 1}-0`;
+    } else {
+      to = `<=${to}`;
+    }
+    return `${from} ${to}`.trim();
+  };
+  var testSet = (set, version, options) => {
+    for (let i = 0;i < set.length; i++) {
+      if (!set[i].test(version)) {
+        return false;
+      }
+    }
+    if (version.prerelease.length && !options.includePrerelease) {
+      for (let i = 0;i < set.length; i++) {
+        debug7(set[i].semver);
+        if (set[i].semver === Comparator.ANY) {
+          continue;
+        }
+        if (set[i].semver.prerelease.length > 0) {
+          const allowed = set[i].semver;
+          if (allowed.major === version.major && allowed.minor === version.minor && allowed.patch === version.patch) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return true;
+  };
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/classes/comparator.js
+var require_comparator = __commonJS((exports, module) => {
+  var ANY = Symbol("SemVer ANY");
+
+  class Comparator {
+    static get ANY() {
+      return ANY;
+    }
+    constructor(comp, options) {
+      options = parseOptions(options);
+      if (comp instanceof Comparator) {
+        if (comp.loose === !!options.loose) {
+          return comp;
+        } else {
+          comp = comp.value;
+        }
+      }
+      comp = comp.trim().split(/\s+/).join(" ");
+      debug7("comparator", comp, options);
+      this.options = options;
+      this.loose = !!options.loose;
+      this.parse(comp);
+      if (this.semver === ANY) {
+        this.value = "";
+      } else {
+        this.value = this.operator + this.semver.version;
+      }
+      debug7("comp", this);
+    }
+    parse(comp) {
+      const r = this.options.loose ? re[t.COMPARATORLOOSE] : re[t.COMPARATOR];
+      const m = comp.match(r);
+      if (!m) {
+        throw new TypeError(`Invalid comparator: ${comp}`);
+      }
+      this.operator = m[1] !== undefined ? m[1] : "";
+      if (this.operator === "=") {
+        this.operator = "";
+      }
+      if (!m[2]) {
+        this.semver = ANY;
+      } else {
+        this.semver = new SemVer(m[2], this.options.loose);
+      }
+    }
+    toString() {
+      return this.value;
+    }
+    test(version) {
+      debug7("Comparator.test", version, this.options.loose);
+      if (this.semver === ANY || version === ANY) {
+        return true;
+      }
+      if (typeof version === "string") {
+        try {
+          version = new SemVer(version, this.options);
+        } catch (er) {
+          return false;
+        }
+      }
+      return cmp(version, this.operator, this.semver, this.options);
+    }
+    intersects(comp, options) {
+      if (!(comp instanceof Comparator)) {
+        throw new TypeError("a Comparator is required");
+      }
+      if (this.operator === "") {
+        if (this.value === "") {
+          return true;
+        }
+        return new Range(comp.value, options).test(this.value);
+      } else if (comp.operator === "") {
+        if (comp.value === "") {
+          return true;
+        }
+        return new Range(this.value, options).test(comp.semver);
+      }
+      options = parseOptions(options);
+      if (options.includePrerelease && (this.value === "<0.0.0-0" || comp.value === "<0.0.0-0")) {
+        return false;
+      }
+      if (!options.includePrerelease && (this.value.startsWith("<0.0.0") || comp.value.startsWith("<0.0.0"))) {
+        return false;
+      }
+      if (this.operator.startsWith(">") && comp.operator.startsWith(">")) {
+        return true;
+      }
+      if (this.operator.startsWith("<") && comp.operator.startsWith("<")) {
+        return true;
+      }
+      if (this.semver.version === comp.semver.version && this.operator.includes("=") && comp.operator.includes("=")) {
+        return true;
+      }
+      if (cmp(this.semver, "<", comp.semver, options) && this.operator.startsWith(">") && comp.operator.startsWith("<")) {
+        return true;
+      }
+      if (cmp(this.semver, ">", comp.semver, options) && this.operator.startsWith("<") && comp.operator.startsWith(">")) {
+        return true;
+      }
+      return false;
+    }
+  }
+  module.exports = Comparator;
+  var parseOptions = require_parse_options();
+  var { safeRe: re, t } = require_re();
+  var cmp = require_cmp();
+  var debug7 = require_debug3();
+  var SemVer = require_semver();
+  var Range = require_range2();
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/functions/satisfies.js
+var require_satisfies = __commonJS((exports, module) => {
+  var Range = require_range2();
+  var satisfies = (version, range, options) => {
+    try {
+      range = new Range(range, options);
+    } catch (er) {
+      return false;
+    }
+    return range.test(version);
+  };
+  module.exports = satisfies;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/to-comparators.js
+var require_to_comparators = __commonJS((exports, module) => {
+  var Range = require_range2();
+  var toComparators = (range, options) => new Range(range, options).set.map((comp) => comp.map((c) => c.value).join(" ").trim().split(" "));
+  module.exports = toComparators;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/max-satisfying.js
+var require_max_satisfying = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var Range = require_range2();
+  var maxSatisfying = (versions, range, options) => {
+    let max = null;
+    let maxSV = null;
+    let rangeObj = null;
+    try {
+      rangeObj = new Range(range, options);
+    } catch (er) {
+      return null;
+    }
+    versions.forEach((v) => {
+      if (rangeObj.test(v)) {
+        if (!max || maxSV.compare(v) === -1) {
+          max = v;
+          maxSV = new SemVer(max, options);
+        }
+      }
+    });
+    return max;
+  };
+  module.exports = maxSatisfying;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/min-satisfying.js
+var require_min_satisfying = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var Range = require_range2();
+  var minSatisfying = (versions, range, options) => {
+    let min = null;
+    let minSV = null;
+    let rangeObj = null;
+    try {
+      rangeObj = new Range(range, options);
+    } catch (er) {
+      return null;
+    }
+    versions.forEach((v) => {
+      if (rangeObj.test(v)) {
+        if (!min || minSV.compare(v) === 1) {
+          min = v;
+          minSV = new SemVer(min, options);
+        }
+      }
+    });
+    return min;
+  };
+  module.exports = minSatisfying;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/min-version.js
+var require_min_version = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var Range = require_range2();
+  var gt = require_gt();
+  var minVersion = (range, loose) => {
+    range = new Range(range, loose);
+    let minver = new SemVer("0.0.0");
+    if (range.test(minver)) {
+      return minver;
+    }
+    minver = new SemVer("0.0.0-0");
+    if (range.test(minver)) {
+      return minver;
+    }
+    minver = null;
+    for (let i = 0;i < range.set.length; ++i) {
+      const comparators = range.set[i];
+      let setMin = null;
+      comparators.forEach((comparator) => {
+        const compver = new SemVer(comparator.semver.version);
+        switch (comparator.operator) {
+          case ">":
+            if (compver.prerelease.length === 0) {
+              compver.patch++;
+            } else {
+              compver.prerelease.push(0);
+            }
+            compver.raw = compver.format();
+          case "":
+          case ">=":
+            if (!setMin || gt(compver, setMin)) {
+              setMin = compver;
+            }
+            break;
+          case "<":
+          case "<=":
+            break;
+          default:
+            throw new Error(`Unexpected operation: ${comparator.operator}`);
+        }
+      });
+      if (setMin && (!minver || gt(minver, setMin))) {
+        minver = setMin;
+      }
+    }
+    if (minver && range.test(minver)) {
+      return minver;
+    }
+    return null;
+  };
+  module.exports = minVersion;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/valid.js
+var require_valid2 = __commonJS((exports, module) => {
+  var Range = require_range2();
+  var validRange = (range, options) => {
+    try {
+      return new Range(range, options).range || "*";
+    } catch (er) {
+      return null;
+    }
+  };
+  module.exports = validRange;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/outside.js
+var require_outside = __commonJS((exports, module) => {
+  var SemVer = require_semver();
+  var Comparator = require_comparator();
+  var { ANY } = Comparator;
+  var Range = require_range2();
+  var satisfies = require_satisfies();
+  var gt = require_gt();
+  var lt = require_lt();
+  var lte = require_lte();
+  var gte = require_gte();
+  var outside = (version, range, hilo, options) => {
+    version = new SemVer(version, options);
+    range = new Range(range, options);
+    let gtfn, ltefn, ltfn, comp, ecomp;
+    switch (hilo) {
+      case ">":
+        gtfn = gt;
+        ltefn = lte;
+        ltfn = lt;
+        comp = ">";
+        ecomp = ">=";
+        break;
+      case "<":
+        gtfn = lt;
+        ltefn = gte;
+        ltfn = gt;
+        comp = "<";
+        ecomp = "<=";
+        break;
+      default:
+        throw new TypeError('Must provide a hilo val of "<" or ">"');
+    }
+    if (satisfies(version, range, options)) {
+      return false;
+    }
+    for (let i = 0;i < range.set.length; ++i) {
+      const comparators = range.set[i];
+      let high = null;
+      let low = null;
+      comparators.forEach((comparator) => {
+        if (comparator.semver === ANY) {
+          comparator = new Comparator(">=0.0.0");
+        }
+        high = high || comparator;
+        low = low || comparator;
+        if (gtfn(comparator.semver, high.semver, options)) {
+          high = comparator;
+        } else if (ltfn(comparator.semver, low.semver, options)) {
+          low = comparator;
+        }
+      });
+      if (high.operator === comp || high.operator === ecomp) {
+        return false;
+      }
+      if ((!low.operator || low.operator === comp) && ltefn(version, low.semver)) {
+        return false;
+      } else if (low.operator === ecomp && ltfn(version, low.semver)) {
+        return false;
+      }
+    }
+    return true;
+  };
+  module.exports = outside;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/gtr.js
+var require_gtr = __commonJS((exports, module) => {
+  var outside = require_outside();
+  var gtr = (version, range, options) => outside(version, range, ">", options);
+  module.exports = gtr;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/ltr.js
+var require_ltr = __commonJS((exports, module) => {
+  var outside = require_outside();
+  var ltr = (version, range, options) => outside(version, range, "<", options);
+  module.exports = ltr;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/intersects.js
+var require_intersects = __commonJS((exports, module) => {
+  var Range = require_range2();
+  var intersects = (r1, r2, options) => {
+    r1 = new Range(r1, options);
+    r2 = new Range(r2, options);
+    return r1.intersects(r2, options);
+  };
+  module.exports = intersects;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/simplify.js
+var require_simplify = __commonJS((exports, module) => {
+  var satisfies = require_satisfies();
+  var compare = require_compare();
+  module.exports = (versions, range, options) => {
+    const set = [];
+    let first = null;
+    let prev = null;
+    const v = versions.sort((a, b) => compare(a, b, options));
+    for (const version of v) {
+      const included = satisfies(version, range, options);
+      if (included) {
+        prev = version;
+        if (!first) {
+          first = version;
+        }
+      } else {
+        if (prev) {
+          set.push([first, prev]);
+        }
+        prev = null;
+        first = null;
+      }
+    }
+    if (first) {
+      set.push([first, null]);
+    }
+    const ranges = [];
+    for (const [min, max] of set) {
+      if (min === max) {
+        ranges.push(min);
+      } else if (!max && min === v[0]) {
+        ranges.push("*");
+      } else if (!max) {
+        ranges.push(`>=${min}`);
+      } else if (min === v[0]) {
+        ranges.push(`<=${max}`);
+      } else {
+        ranges.push(`${min} - ${max}`);
+      }
+    }
+    const simplified = ranges.join(" || ");
+    const original = typeof range.raw === "string" ? range.raw : String(range);
+    return simplified.length < original.length ? simplified : range;
+  };
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/ranges/subset.js
+var require_subset = __commonJS((exports, module) => {
+  var Range = require_range2();
+  var Comparator = require_comparator();
+  var { ANY } = Comparator;
+  var satisfies = require_satisfies();
+  var compare = require_compare();
+  var subset = (sub, dom, options = {}) => {
+    if (sub === dom) {
+      return true;
+    }
+    sub = new Range(sub, options);
+    dom = new Range(dom, options);
+    let sawNonNull = false;
+    OUTER:
+      for (const simpleSub of sub.set) {
+        for (const simpleDom of dom.set) {
+          const isSub = simpleSubset(simpleSub, simpleDom, options);
+          sawNonNull = sawNonNull || isSub !== null;
+          if (isSub) {
+            continue OUTER;
+          }
+        }
+        if (sawNonNull) {
+          return false;
+        }
+      }
+    return true;
+  };
+  var minimumVersionWithPreRelease = [new Comparator(">=0.0.0-0")];
+  var minimumVersion = [new Comparator(">=0.0.0")];
+  var simpleSubset = (sub, dom, options) => {
+    if (sub === dom) {
+      return true;
+    }
+    if (sub.length === 1 && sub[0].semver === ANY) {
+      if (dom.length === 1 && dom[0].semver === ANY) {
+        return true;
+      } else if (options.includePrerelease) {
+        sub = minimumVersionWithPreRelease;
+      } else {
+        sub = minimumVersion;
+      }
+    }
+    if (dom.length === 1 && dom[0].semver === ANY) {
+      if (options.includePrerelease) {
+        return true;
+      } else {
+        dom = minimumVersion;
+      }
+    }
+    const eqSet = new Set;
+    let gt, lt;
+    for (const c of sub) {
+      if (c.operator === ">" || c.operator === ">=") {
+        gt = higherGT(gt, c, options);
+      } else if (c.operator === "<" || c.operator === "<=") {
+        lt = lowerLT(lt, c, options);
+      } else {
+        eqSet.add(c.semver);
+      }
+    }
+    if (eqSet.size > 1) {
+      return null;
+    }
+    let gtltComp;
+    if (gt && lt) {
+      gtltComp = compare(gt.semver, lt.semver, options);
+      if (gtltComp > 0) {
+        return null;
+      } else if (gtltComp === 0 && (gt.operator !== ">=" || lt.operator !== "<=")) {
+        return null;
+      }
+    }
+    for (const eq of eqSet) {
+      if (gt && !satisfies(eq, String(gt), options)) {
+        return null;
+      }
+      if (lt && !satisfies(eq, String(lt), options)) {
+        return null;
+      }
+      for (const c of dom) {
+        if (!satisfies(eq, String(c), options)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    let higher, lower;
+    let hasDomLT, hasDomGT;
+    let needDomLTPre = lt && !options.includePrerelease && lt.semver.prerelease.length ? lt.semver : false;
+    let needDomGTPre = gt && !options.includePrerelease && gt.semver.prerelease.length ? gt.semver : false;
+    if (needDomLTPre && needDomLTPre.prerelease.length === 1 && lt.operator === "<" && needDomLTPre.prerelease[0] === 0) {
+      needDomLTPre = false;
+    }
+    for (const c of dom) {
+      hasDomGT = hasDomGT || c.operator === ">" || c.operator === ">=";
+      hasDomLT = hasDomLT || c.operator === "<" || c.operator === "<=";
+      if (gt) {
+        if (needDomGTPre) {
+          if (c.semver.prerelease && c.semver.prerelease.length && c.semver.major === needDomGTPre.major && c.semver.minor === needDomGTPre.minor && c.semver.patch === needDomGTPre.patch) {
+            needDomGTPre = false;
+          }
+        }
+        if (c.operator === ">" || c.operator === ">=") {
+          higher = higherGT(gt, c, options);
+          if (higher === c && higher !== gt) {
+            return false;
+          }
+        } else if (gt.operator === ">=" && !c.test(gt.semver)) {
+          return false;
+        }
+      }
+      if (lt) {
+        if (needDomLTPre) {
+          if (c.semver.prerelease && c.semver.prerelease.length && c.semver.major === needDomLTPre.major && c.semver.minor === needDomLTPre.minor && c.semver.patch === needDomLTPre.patch) {
+            needDomLTPre = false;
+          }
+        }
+        if (c.operator === "<" || c.operator === "<=") {
+          lower = lowerLT(lt, c, options);
+          if (lower === c && lower !== lt) {
+            return false;
+          }
+        } else if (lt.operator === "<=" && !c.test(lt.semver)) {
+          return false;
+        }
+      }
+      if (!c.operator && (lt || gt) && gtltComp !== 0) {
+        return false;
+      }
+    }
+    if (gt && hasDomLT && !lt && gtltComp !== 0) {
+      return false;
+    }
+    if (lt && hasDomGT && !gt && gtltComp !== 0) {
+      return false;
+    }
+    if (needDomGTPre || needDomLTPre) {
+      return false;
+    }
+    return true;
+  };
+  var higherGT = (a, b, options) => {
+    if (!a) {
+      return b;
+    }
+    const comp = compare(a.semver, b.semver, options);
+    return comp > 0 ? a : comp < 0 ? b : b.operator === ">" && a.operator === ">=" ? b : a;
+  };
+  var lowerLT = (a, b, options) => {
+    if (!a) {
+      return b;
+    }
+    const comp = compare(a.semver, b.semver, options);
+    return comp < 0 ? a : comp > 0 ? b : b.operator === "<" && a.operator === "<=" ? b : a;
+  };
+  module.exports = subset;
+});
+
+// ../../node_modules/.bun/semver@7.8.5/node_modules/semver/index.js
+var require_semver2 = __commonJS((exports, module) => {
+  var internalRe = require_re();
+  var constants = require_constants3();
+  var SemVer = require_semver();
+  var identifiers = require_identifiers();
+  var parse = require_parse4();
+  var valid = require_valid();
+  var clean = require_clean();
+  var inc = require_inc();
+  var diff = require_diff();
+  var major = require_major();
+  var minor = require_minor();
+  var patch = require_patch();
+  var prerelease = require_prerelease();
+  var compare = require_compare();
+  var rcompare = require_rcompare();
+  var compareLoose = require_compare_loose();
+  var compareBuild = require_compare_build();
+  var sort = require_sort();
+  var rsort = require_rsort();
+  var gt = require_gt();
+  var lt = require_lt();
+  var eq = require_eq();
+  var neq = require_neq();
+  var gte = require_gte();
+  var lte = require_lte();
+  var cmp = require_cmp();
+  var coerce = require_coerce();
+  var truncate = require_truncate();
+  var Comparator = require_comparator();
+  var Range = require_range2();
+  var satisfies = require_satisfies();
+  var toComparators = require_to_comparators();
+  var maxSatisfying = require_max_satisfying();
+  var minSatisfying = require_min_satisfying();
+  var minVersion = require_min_version();
+  var validRange = require_valid2();
+  var outside = require_outside();
+  var gtr = require_gtr();
+  var ltr = require_ltr();
+  var intersects = require_intersects();
+  var simplifyRange = require_simplify();
+  var subset = require_subset();
+  module.exports = {
+    parse,
+    valid,
+    clean,
+    inc,
+    diff,
+    major,
+    minor,
+    patch,
+    prerelease,
+    compare,
+    rcompare,
+    compareLoose,
+    compareBuild,
+    sort,
+    rsort,
+    gt,
+    lt,
+    eq,
+    neq,
+    gte,
+    lte,
+    cmp,
+    coerce,
+    truncate,
+    Comparator,
+    Range,
+    satisfies,
+    toComparators,
+    maxSatisfying,
+    minSatisfying,
+    minVersion,
+    validRange,
+    outside,
+    gtr,
+    ltr,
+    intersects,
+    simplifyRange,
+    subset,
+    SemVer,
+    re: internalRe.re,
+    src: internalRe.src,
+    tokens: internalRe.t,
+    SEMVER_SPEC_VERSION: constants.SEMVER_SPEC_VERSION,
+    RELEASE_TYPES: constants.RELEASE_TYPES,
+    compareIdentifiers: identifiers.compareIdentifiers,
+    rcompareIdentifiers: identifiers.rcompareIdentifiers
+  };
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/asymmetricKeyDetailsSupported.js
+var require_asymmetricKeyDetailsSupported = __commonJS((exports, module) => {
+  var semver = require_semver2();
+  module.exports = semver.satisfies(process.version, ">=15.7.0");
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/rsaPssKeyDetailsSupported.js
+var require_rsaPssKeyDetailsSupported = __commonJS((exports, module) => {
+  var semver = require_semver2();
+  module.exports = semver.satisfies(process.version, ">=16.9.0");
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/validateAsymmetricKey.js
+var require_validateAsymmetricKey = __commonJS((exports, module) => {
+  var ASYMMETRIC_KEY_DETAILS_SUPPORTED = require_asymmetricKeyDetailsSupported();
+  var RSA_PSS_KEY_DETAILS_SUPPORTED = require_rsaPssKeyDetailsSupported();
+  var allowedAlgorithmsForKeys = {
+    ec: ["ES256", "ES384", "ES512"],
+    rsa: ["RS256", "PS256", "RS384", "PS384", "RS512", "PS512"],
+    "rsa-pss": ["PS256", "PS384", "PS512"]
+  };
+  var allowedCurves = {
+    ES256: "prime256v1",
+    ES384: "secp384r1",
+    ES512: "secp521r1"
+  };
+  module.exports = function(algorithm, key) {
+    if (!algorithm || !key)
+      return;
+    const keyType = key.asymmetricKeyType;
+    if (!keyType)
+      return;
+    const allowedAlgorithms = allowedAlgorithmsForKeys[keyType];
+    if (!allowedAlgorithms) {
+      throw new Error(`Unknown key type "${keyType}".`);
+    }
+    if (!allowedAlgorithms.includes(algorithm)) {
+      throw new Error(`"alg" parameter for "${keyType}" key type must be one of: ${allowedAlgorithms.join(", ")}.`);
+    }
+    if (ASYMMETRIC_KEY_DETAILS_SUPPORTED) {
+      switch (keyType) {
+        case "ec":
+          const keyCurve = key.asymmetricKeyDetails.namedCurve;
+          const allowedCurve = allowedCurves[algorithm];
+          if (keyCurve !== allowedCurve) {
+            throw new Error(`"alg" parameter "${algorithm}" requires curve "${allowedCurve}".`);
+          }
+          break;
+        case "rsa-pss":
+          if (RSA_PSS_KEY_DETAILS_SUPPORTED) {
+            const length = parseInt(algorithm.slice(-3), 10);
+            const { hashAlgorithm, mgf1HashAlgorithm, saltLength } = key.asymmetricKeyDetails;
+            if (hashAlgorithm !== `sha${length}` || mgf1HashAlgorithm !== hashAlgorithm) {
+              throw new Error(`Invalid key for this operation, its RSA-PSS parameters do not meet the requirements of "alg" ${algorithm}.`);
+            }
+            if (saltLength !== undefined && saltLength > length >> 3) {
+              throw new Error(`Invalid key for this operation, its RSA-PSS parameter saltLength does not meet the requirements of "alg" ${algorithm}.`);
+            }
+          }
+          break;
+      }
+    }
+  };
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/lib/psSupported.js
+var require_psSupported = __commonJS((exports, module) => {
+  var semver = require_semver2();
+  module.exports = semver.satisfies(process.version, "^6.12.0 || >=8.0.0");
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/verify.js
+var require_verify = __commonJS((exports, module) => {
+  var JsonWebTokenError = require_JsonWebTokenError();
+  var NotBeforeError = require_NotBeforeError();
+  var TokenExpiredError = require_TokenExpiredError();
+  var decode = require_decode();
+  var timespan = require_timespan();
+  var validateAsymmetricKey = require_validateAsymmetricKey();
+  var PS_SUPPORTED = require_psSupported();
+  var jws = require_jws();
+  var { KeyObject, createSecretKey, createPublicKey } = __require("crypto");
+  var PUB_KEY_ALGS = ["RS256", "RS384", "RS512"];
+  var EC_KEY_ALGS = ["ES256", "ES384", "ES512"];
+  var RSA_KEY_ALGS = ["RS256", "RS384", "RS512"];
+  var HS_ALGS = ["HS256", "HS384", "HS512"];
+  if (PS_SUPPORTED) {
+    PUB_KEY_ALGS.splice(PUB_KEY_ALGS.length, 0, "PS256", "PS384", "PS512");
+    RSA_KEY_ALGS.splice(RSA_KEY_ALGS.length, 0, "PS256", "PS384", "PS512");
+  }
+  module.exports = function(jwtString, secretOrPublicKey, options, callback) {
+    if (typeof options === "function" && !callback) {
+      callback = options;
+      options = {};
+    }
+    if (!options) {
+      options = {};
+    }
+    options = Object.assign({}, options);
+    let done;
+    if (callback) {
+      done = callback;
+    } else {
+      done = function(err, data) {
+        if (err)
+          throw err;
+        return data;
+      };
+    }
+    if (options.clockTimestamp && typeof options.clockTimestamp !== "number") {
+      return done(new JsonWebTokenError("clockTimestamp must be a number"));
+    }
+    if (options.nonce !== undefined && (typeof options.nonce !== "string" || options.nonce.trim() === "")) {
+      return done(new JsonWebTokenError("nonce must be a non-empty string"));
+    }
+    if (options.allowInvalidAsymmetricKeyTypes !== undefined && typeof options.allowInvalidAsymmetricKeyTypes !== "boolean") {
+      return done(new JsonWebTokenError("allowInvalidAsymmetricKeyTypes must be a boolean"));
+    }
+    const clockTimestamp = options.clockTimestamp || Math.floor(Date.now() / 1000);
+    if (!jwtString) {
+      return done(new JsonWebTokenError("jwt must be provided"));
+    }
+    if (typeof jwtString !== "string") {
+      return done(new JsonWebTokenError("jwt must be a string"));
+    }
+    const parts = jwtString.split(".");
+    if (parts.length !== 3) {
+      return done(new JsonWebTokenError("jwt malformed"));
+    }
+    let decodedToken;
+    try {
+      decodedToken = decode(jwtString, { complete: true });
+    } catch (err) {
+      return done(err);
+    }
+    if (!decodedToken) {
+      return done(new JsonWebTokenError("invalid token"));
+    }
+    const header = decodedToken.header;
+    let getSecret;
+    if (typeof secretOrPublicKey === "function") {
+      if (!callback) {
+        return done(new JsonWebTokenError("verify must be called asynchronous if secret or public key is provided as a callback"));
+      }
+      getSecret = secretOrPublicKey;
+    } else {
+      getSecret = function(header2, secretCallback) {
+        return secretCallback(null, secretOrPublicKey);
+      };
+    }
+    return getSecret(header, function(err, secretOrPublicKey2) {
+      if (err) {
+        return done(new JsonWebTokenError("error in secret or public key callback: " + err.message));
+      }
+      const hasSignature = parts[2].trim() !== "";
+      if (!hasSignature && secretOrPublicKey2) {
+        return done(new JsonWebTokenError("jwt signature is required"));
+      }
+      if (hasSignature && !secretOrPublicKey2) {
+        return done(new JsonWebTokenError("secret or public key must be provided"));
+      }
+      if (!hasSignature && !options.algorithms) {
+        return done(new JsonWebTokenError('please specify "none" in "algorithms" to verify unsigned tokens'));
+      }
+      if (secretOrPublicKey2 != null && !(secretOrPublicKey2 instanceof KeyObject)) {
+        try {
+          secretOrPublicKey2 = createPublicKey(secretOrPublicKey2);
+        } catch (_) {
+          try {
+            secretOrPublicKey2 = createSecretKey(typeof secretOrPublicKey2 === "string" ? Buffer.from(secretOrPublicKey2) : secretOrPublicKey2);
+          } catch (_2) {
+            return done(new JsonWebTokenError("secretOrPublicKey is not valid key material"));
+          }
+        }
+      }
+      if (!options.algorithms) {
+        if (secretOrPublicKey2.type === "secret") {
+          options.algorithms = HS_ALGS;
+        } else if (["rsa", "rsa-pss"].includes(secretOrPublicKey2.asymmetricKeyType)) {
+          options.algorithms = RSA_KEY_ALGS;
+        } else if (secretOrPublicKey2.asymmetricKeyType === "ec") {
+          options.algorithms = EC_KEY_ALGS;
+        } else {
+          options.algorithms = PUB_KEY_ALGS;
+        }
+      }
+      if (options.algorithms.indexOf(decodedToken.header.alg) === -1) {
+        return done(new JsonWebTokenError("invalid algorithm"));
+      }
+      if (header.alg.startsWith("HS") && secretOrPublicKey2.type !== "secret") {
+        return done(new JsonWebTokenError(`secretOrPublicKey must be a symmetric key when using ${header.alg}`));
+      } else if (/^(?:RS|PS|ES)/.test(header.alg) && secretOrPublicKey2.type !== "public") {
+        return done(new JsonWebTokenError(`secretOrPublicKey must be an asymmetric key when using ${header.alg}`));
+      }
+      if (!options.allowInvalidAsymmetricKeyTypes) {
+        try {
+          validateAsymmetricKey(header.alg, secretOrPublicKey2);
+        } catch (e) {
+          return done(e);
+        }
+      }
+      let valid;
+      try {
+        valid = jws.verify(jwtString, decodedToken.header.alg, secretOrPublicKey2);
+      } catch (e) {
+        return done(e);
+      }
+      if (!valid) {
+        return done(new JsonWebTokenError("invalid signature"));
+      }
+      const payload = decodedToken.payload;
+      if (typeof payload.nbf !== "undefined" && !options.ignoreNotBefore) {
+        if (typeof payload.nbf !== "number") {
+          return done(new JsonWebTokenError("invalid nbf value"));
+        }
+        if (payload.nbf > clockTimestamp + (options.clockTolerance || 0)) {
+          return done(new NotBeforeError("jwt not active", new Date(payload.nbf * 1000)));
+        }
+      }
+      if (typeof payload.exp !== "undefined" && !options.ignoreExpiration) {
+        if (typeof payload.exp !== "number") {
+          return done(new JsonWebTokenError("invalid exp value"));
+        }
+        if (clockTimestamp >= payload.exp + (options.clockTolerance || 0)) {
+          return done(new TokenExpiredError("jwt expired", new Date(payload.exp * 1000)));
+        }
+      }
+      if (options.audience) {
+        const audiences = Array.isArray(options.audience) ? options.audience : [options.audience];
+        const target = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+        const match = target.some(function(targetAudience) {
+          return audiences.some(function(audience) {
+            return audience instanceof RegExp ? audience.test(targetAudience) : audience === targetAudience;
+          });
+        });
+        if (!match) {
+          return done(new JsonWebTokenError("jwt audience invalid. expected: " + audiences.join(" or ")));
+        }
+      }
+      if (options.issuer) {
+        const invalid_issuer = typeof options.issuer === "string" && payload.iss !== options.issuer || Array.isArray(options.issuer) && options.issuer.indexOf(payload.iss) === -1;
+        if (invalid_issuer) {
+          return done(new JsonWebTokenError("jwt issuer invalid. expected: " + options.issuer));
+        }
+      }
+      if (options.subject) {
+        if (payload.sub !== options.subject) {
+          return done(new JsonWebTokenError("jwt subject invalid. expected: " + options.subject));
+        }
+      }
+      if (options.jwtid) {
+        if (payload.jti !== options.jwtid) {
+          return done(new JsonWebTokenError("jwt jwtid invalid. expected: " + options.jwtid));
+        }
+      }
+      if (options.nonce) {
+        if (payload.nonce !== options.nonce) {
+          return done(new JsonWebTokenError("jwt nonce invalid. expected: " + options.nonce));
+        }
+      }
+      if (options.maxAge) {
+        if (typeof payload.iat !== "number") {
+          return done(new JsonWebTokenError("iat required when maxAge is specified"));
+        }
+        const maxAgeTimestamp = timespan(options.maxAge, payload.iat);
+        if (typeof maxAgeTimestamp === "undefined") {
+          return done(new JsonWebTokenError('"maxAge" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+        }
+        if (clockTimestamp >= maxAgeTimestamp + (options.clockTolerance || 0)) {
+          return done(new TokenExpiredError("maxAge exceeded", new Date(maxAgeTimestamp * 1000)));
+        }
+      }
+      if (options.complete === true) {
+        const signature = decodedToken.signature;
+        return done(null, {
+          header,
+          payload,
+          signature
+        });
+      }
+      return done(null, payload);
+    });
+  };
+});
+
+// ../../node_modules/.bun/lodash.includes@4.3.0/node_modules/lodash.includes/index.js
+var require_lodash2 = __commonJS((exports, module) => {
+  var INFINITY = 1 / 0;
+  var MAX_SAFE_INTEGER = 9007199254740991;
+  var MAX_INTEGER = 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+  var NAN = 0 / 0;
+  var argsTag = "[object Arguments]";
+  var funcTag = "[object Function]";
+  var genTag = "[object GeneratorFunction]";
+  var stringTag = "[object String]";
+  var symbolTag = "[object Symbol]";
+  var reTrim = /^\s+|\s+$/g;
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+  var reIsBinary = /^0b[01]+$/i;
+  var reIsOctal = /^0o[0-7]+$/i;
+  var reIsUint = /^(?:0|[1-9]\d*)$/;
+  var freeParseInt = parseInt;
+  function arrayMap(array, iteratee) {
+    var index = -1, length = array ? array.length : 0, result = Array(length);
+    while (++index < length) {
+      result[index] = iteratee(array[index], index, array);
+    }
+    return result;
+  }
+  function baseFindIndex(array, predicate, fromIndex, fromRight) {
+    var length = array.length, index = fromIndex + (fromRight ? 1 : -1);
+    while (fromRight ? index-- : ++index < length) {
+      if (predicate(array[index], index, array)) {
+        return index;
+      }
+    }
+    return -1;
+  }
+  function baseIndexOf(array, value, fromIndex) {
+    if (value !== value) {
+      return baseFindIndex(array, baseIsNaN, fromIndex);
+    }
+    var index = fromIndex - 1, length = array.length;
+    while (++index < length) {
+      if (array[index] === value) {
+        return index;
+      }
+    }
+    return -1;
+  }
+  function baseIsNaN(value) {
+    return value !== value;
+  }
+  function baseTimes(n, iteratee) {
+    var index = -1, result = Array(n);
+    while (++index < n) {
+      result[index] = iteratee(index);
+    }
+    return result;
+  }
+  function baseValues(object, props) {
+    return arrayMap(props, function(key) {
+      return object[key];
+    });
+  }
+  function overArg(func, transform) {
+    return function(arg) {
+      return func(transform(arg));
+    };
+  }
+  var objectProto = Object.prototype;
+  var hasOwnProperty = objectProto.hasOwnProperty;
+  var objectToString = objectProto.toString;
+  var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+  var nativeKeys = overArg(Object.keys, Object);
+  var nativeMax = Math.max;
+  function arrayLikeKeys(value, inherited) {
+    var result = isArray(value) || isArguments(value) ? baseTimes(value.length, String) : [];
+    var length = result.length, skipIndexes = !!length;
+    for (var key in value) {
+      if ((inherited || hasOwnProperty.call(value, key)) && !(skipIndexes && (key == "length" || isIndex(key, length)))) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+  function baseKeys(object) {
+    if (!isPrototype(object)) {
+      return nativeKeys(object);
+    }
+    var result = [];
+    for (var key in Object(object)) {
+      if (hasOwnProperty.call(object, key) && key != "constructor") {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+  function isIndex(value, length) {
+    length = length == null ? MAX_SAFE_INTEGER : length;
+    return !!length && (typeof value == "number" || reIsUint.test(value)) && (value > -1 && value % 1 == 0 && value < length);
+  }
+  function isPrototype(value) {
+    var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto;
+    return value === proto;
+  }
+  function includes(collection, value, fromIndex, guard) {
+    collection = isArrayLike(collection) ? collection : values(collection);
+    fromIndex = fromIndex && !guard ? toInteger(fromIndex) : 0;
+    var length = collection.length;
+    if (fromIndex < 0) {
+      fromIndex = nativeMax(length + fromIndex, 0);
+    }
+    return isString(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf(collection, value, fromIndex) > -1;
+  }
+  function isArguments(value) {
+    return isArrayLikeObject(value) && hasOwnProperty.call(value, "callee") && (!propertyIsEnumerable.call(value, "callee") || objectToString.call(value) == argsTag);
+  }
+  var isArray = Array.isArray;
+  function isArrayLike(value) {
+    return value != null && isLength(value.length) && !isFunction(value);
+  }
+  function isArrayLikeObject(value) {
+    return isObjectLike(value) && isArrayLike(value);
+  }
+  function isFunction(value) {
+    var tag = isObject(value) ? objectToString.call(value) : "";
+    return tag == funcTag || tag == genTag;
+  }
+  function isLength(value) {
+    return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+  }
+  function isObject(value) {
+    var type = typeof value;
+    return !!value && (type == "object" || type == "function");
+  }
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isString(value) {
+    return typeof value == "string" || !isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag;
+  }
+  function isSymbol(value) {
+    return typeof value == "symbol" || isObjectLike(value) && objectToString.call(value) == symbolTag;
+  }
+  function toFinite(value) {
+    if (!value) {
+      return value === 0 ? value : 0;
+    }
+    value = toNumber(value);
+    if (value === INFINITY || value === -INFINITY) {
+      var sign = value < 0 ? -1 : 1;
+      return sign * MAX_INTEGER;
+    }
+    return value === value ? value : 0;
+  }
+  function toInteger(value) {
+    var result = toFinite(value), remainder = result % 1;
+    return result === result ? remainder ? result - remainder : result : 0;
+  }
+  function toNumber(value) {
+    if (typeof value == "number") {
+      return value;
+    }
+    if (isSymbol(value)) {
+      return NAN;
+    }
+    if (isObject(value)) {
+      var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+      value = isObject(other) ? other + "" : other;
+    }
+    if (typeof value != "string") {
+      return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, "");
+    var isBinary = reIsBinary.test(value);
+    return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+  }
+  function keys(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+  }
+  function values(object) {
+    return object ? baseValues(object, keys(object)) : [];
+  }
+  module.exports = includes;
+});
+
+// ../../node_modules/.bun/lodash.isboolean@3.0.3/node_modules/lodash.isboolean/index.js
+var require_lodash3 = __commonJS((exports, module) => {
+  var boolTag = "[object Boolean]";
+  var objectProto = Object.prototype;
+  var objectToString = objectProto.toString;
+  function isBoolean(value) {
+    return value === true || value === false || isObjectLike(value) && objectToString.call(value) == boolTag;
+  }
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  module.exports = isBoolean;
+});
+
+// ../../node_modules/.bun/lodash.isinteger@4.0.4/node_modules/lodash.isinteger/index.js
+var require_lodash4 = __commonJS((exports, module) => {
+  var INFINITY = 1 / 0;
+  var MAX_INTEGER = 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+  var NAN = 0 / 0;
+  var symbolTag = "[object Symbol]";
+  var reTrim = /^\s+|\s+$/g;
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+  var reIsBinary = /^0b[01]+$/i;
+  var reIsOctal = /^0o[0-7]+$/i;
+  var freeParseInt = parseInt;
+  var objectProto = Object.prototype;
+  var objectToString = objectProto.toString;
+  function isInteger(value) {
+    return typeof value == "number" && value == toInteger(value);
+  }
+  function isObject(value) {
+    var type = typeof value;
+    return !!value && (type == "object" || type == "function");
+  }
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isSymbol(value) {
+    return typeof value == "symbol" || isObjectLike(value) && objectToString.call(value) == symbolTag;
+  }
+  function toFinite(value) {
+    if (!value) {
+      return value === 0 ? value : 0;
+    }
+    value = toNumber(value);
+    if (value === INFINITY || value === -INFINITY) {
+      var sign = value < 0 ? -1 : 1;
+      return sign * MAX_INTEGER;
+    }
+    return value === value ? value : 0;
+  }
+  function toInteger(value) {
+    var result = toFinite(value), remainder = result % 1;
+    return result === result ? remainder ? result - remainder : result : 0;
+  }
+  function toNumber(value) {
+    if (typeof value == "number") {
+      return value;
+    }
+    if (isSymbol(value)) {
+      return NAN;
+    }
+    if (isObject(value)) {
+      var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+      value = isObject(other) ? other + "" : other;
+    }
+    if (typeof value != "string") {
+      return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, "");
+    var isBinary = reIsBinary.test(value);
+    return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+  }
+  module.exports = isInteger;
+});
+
+// ../../node_modules/.bun/lodash.isnumber@3.0.3/node_modules/lodash.isnumber/index.js
+var require_lodash5 = __commonJS((exports, module) => {
+  var numberTag = "[object Number]";
+  var objectProto = Object.prototype;
+  var objectToString = objectProto.toString;
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isNumber(value) {
+    return typeof value == "number" || isObjectLike(value) && objectToString.call(value) == numberTag;
+  }
+  module.exports = isNumber;
+});
+
+// ../../node_modules/.bun/lodash.isplainobject@4.0.6/node_modules/lodash.isplainobject/index.js
+var require_lodash6 = __commonJS((exports, module) => {
+  var objectTag = "[object Object]";
+  function isHostObject(value) {
+    var result = false;
+    if (value != null && typeof value.toString != "function") {
+      try {
+        result = !!(value + "");
+      } catch (e) {}
+    }
+    return result;
+  }
+  function overArg(func, transform) {
+    return function(arg) {
+      return func(transform(arg));
+    };
+  }
+  var funcProto = Function.prototype;
+  var objectProto = Object.prototype;
+  var funcToString = funcProto.toString;
+  var hasOwnProperty = objectProto.hasOwnProperty;
+  var objectCtorString = funcToString.call(Object);
+  var objectToString = objectProto.toString;
+  var getPrototype = overArg(Object.getPrototypeOf, Object);
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isPlainObject2(value) {
+    if (!isObjectLike(value) || objectToString.call(value) != objectTag || isHostObject(value)) {
+      return false;
+    }
+    var proto = getPrototype(value);
+    if (proto === null) {
+      return true;
+    }
+    var Ctor = hasOwnProperty.call(proto, "constructor") && proto.constructor;
+    return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString;
+  }
+  module.exports = isPlainObject2;
+});
+
+// ../../node_modules/.bun/lodash.isstring@4.0.1/node_modules/lodash.isstring/index.js
+var require_lodash7 = __commonJS((exports, module) => {
+  var stringTag = "[object String]";
+  var objectProto = Object.prototype;
+  var objectToString = objectProto.toString;
+  var isArray = Array.isArray;
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isString(value) {
+    return typeof value == "string" || !isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag;
+  }
+  module.exports = isString;
+});
+
+// ../../node_modules/.bun/lodash.once@4.1.1/node_modules/lodash.once/index.js
+var require_lodash8 = __commonJS((exports, module) => {
+  var FUNC_ERROR_TEXT = "Expected a function";
+  var INFINITY = 1 / 0;
+  var MAX_INTEGER = 179769313486231570000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+  var NAN = 0 / 0;
+  var symbolTag = "[object Symbol]";
+  var reTrim = /^\s+|\s+$/g;
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+  var reIsBinary = /^0b[01]+$/i;
+  var reIsOctal = /^0o[0-7]+$/i;
+  var freeParseInt = parseInt;
+  var objectProto = Object.prototype;
+  var objectToString = objectProto.toString;
+  function before(n, func) {
+    var result;
+    if (typeof func != "function") {
+      throw new TypeError(FUNC_ERROR_TEXT);
+    }
+    n = toInteger(n);
+    return function() {
+      if (--n > 0) {
+        result = func.apply(this, arguments);
+      }
+      if (n <= 1) {
+        func = undefined;
+      }
+      return result;
+    };
+  }
+  function once(func) {
+    return before(2, func);
+  }
+  function isObject(value) {
+    var type = typeof value;
+    return !!value && (type == "object" || type == "function");
+  }
+  function isObjectLike(value) {
+    return !!value && typeof value == "object";
+  }
+  function isSymbol(value) {
+    return typeof value == "symbol" || isObjectLike(value) && objectToString.call(value) == symbolTag;
+  }
+  function toFinite(value) {
+    if (!value) {
+      return value === 0 ? value : 0;
+    }
+    value = toNumber(value);
+    if (value === INFINITY || value === -INFINITY) {
+      var sign = value < 0 ? -1 : 1;
+      return sign * MAX_INTEGER;
+    }
+    return value === value ? value : 0;
+  }
+  function toInteger(value) {
+    var result = toFinite(value), remainder = result % 1;
+    return result === result ? remainder ? result - remainder : result : 0;
+  }
+  function toNumber(value) {
+    if (typeof value == "number") {
+      return value;
+    }
+    if (isSymbol(value)) {
+      return NAN;
+    }
+    if (isObject(value)) {
+      var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+      value = isObject(other) ? other + "" : other;
+    }
+    if (typeof value != "string") {
+      return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, "");
+    var isBinary = reIsBinary.test(value);
+    return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+  }
+  module.exports = once;
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/sign.js
+var require_sign2 = __commonJS((exports, module) => {
+  var timespan = require_timespan();
+  var PS_SUPPORTED = require_psSupported();
+  var validateAsymmetricKey = require_validateAsymmetricKey();
+  var jws = require_jws();
+  var includes = require_lodash2();
+  var isBoolean = require_lodash3();
+  var isInteger = require_lodash4();
+  var isNumber = require_lodash5();
+  var isPlainObject2 = require_lodash6();
+  var isString = require_lodash7();
+  var once = require_lodash8();
+  var { KeyObject, createSecretKey, createPrivateKey } = __require("crypto");
+  var SUPPORTED_ALGS = ["RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "HS256", "HS384", "HS512", "none"];
+  if (PS_SUPPORTED) {
+    SUPPORTED_ALGS.splice(3, 0, "PS256", "PS384", "PS512");
+  }
+  var sign_options_schema = {
+    expiresIn: { isValid: function(value) {
+      return isInteger(value) || isString(value) && value;
+    }, message: '"expiresIn" should be a number of seconds or string representing a timespan' },
+    notBefore: { isValid: function(value) {
+      return isInteger(value) || isString(value) && value;
+    }, message: '"notBefore" should be a number of seconds or string representing a timespan' },
+    audience: { isValid: function(value) {
+      return isString(value) || Array.isArray(value);
+    }, message: '"audience" must be a string or array' },
+    algorithm: { isValid: includes.bind(null, SUPPORTED_ALGS), message: '"algorithm" must be a valid string enum value' },
+    header: { isValid: isPlainObject2, message: '"header" must be an object' },
+    encoding: { isValid: isString, message: '"encoding" must be a string' },
+    issuer: { isValid: isString, message: '"issuer" must be a string' },
+    subject: { isValid: isString, message: '"subject" must be a string' },
+    jwtid: { isValid: isString, message: '"jwtid" must be a string' },
+    noTimestamp: { isValid: isBoolean, message: '"noTimestamp" must be a boolean' },
+    keyid: { isValid: isString, message: '"keyid" must be a string' },
+    mutatePayload: { isValid: isBoolean, message: '"mutatePayload" must be a boolean' },
+    allowInsecureKeySizes: { isValid: isBoolean, message: '"allowInsecureKeySizes" must be a boolean' },
+    allowInvalidAsymmetricKeyTypes: { isValid: isBoolean, message: '"allowInvalidAsymmetricKeyTypes" must be a boolean' }
+  };
+  var registered_claims_schema = {
+    iat: { isValid: isNumber, message: '"iat" should be a number of seconds' },
+    exp: { isValid: isNumber, message: '"exp" should be a number of seconds' },
+    nbf: { isValid: isNumber, message: '"nbf" should be a number of seconds' }
+  };
+  function validate(schema, allowUnknown, object, parameterName) {
+    if (!isPlainObject2(object)) {
+      throw new Error('Expected "' + parameterName + '" to be a plain object.');
+    }
+    Object.keys(object).forEach(function(key) {
+      const validator = schema[key];
+      if (!validator) {
+        if (!allowUnknown) {
+          throw new Error('"' + key + '" is not allowed in "' + parameterName + '"');
+        }
+        return;
+      }
+      if (!validator.isValid(object[key])) {
+        throw new Error(validator.message);
+      }
+    });
+  }
+  function validateOptions(options) {
+    return validate(sign_options_schema, false, options, "options");
+  }
+  function validatePayload(payload) {
+    return validate(registered_claims_schema, true, payload, "payload");
+  }
+  var options_to_payload = {
+    audience: "aud",
+    issuer: "iss",
+    subject: "sub",
+    jwtid: "jti"
+  };
+  var options_for_objects = [
+    "expiresIn",
+    "notBefore",
+    "noTimestamp",
+    "audience",
+    "issuer",
+    "subject",
+    "jwtid"
+  ];
+  module.exports = function(payload, secretOrPrivateKey, options, callback) {
+    if (typeof options === "function") {
+      callback = options;
+      options = {};
+    } else {
+      options = options || {};
+    }
+    const isObjectPayload = typeof payload === "object" && !Buffer.isBuffer(payload);
+    const header = Object.assign({
+      alg: options.algorithm || "HS256",
+      typ: isObjectPayload ? "JWT" : undefined,
+      kid: options.keyid
+    }, options.header);
+    function failure(err) {
+      if (callback) {
+        return callback(err);
+      }
+      throw err;
+    }
+    if (!secretOrPrivateKey && options.algorithm !== "none") {
+      return failure(new Error("secretOrPrivateKey must have a value"));
+    }
+    if (secretOrPrivateKey != null && !(secretOrPrivateKey instanceof KeyObject)) {
+      try {
+        secretOrPrivateKey = createPrivateKey(secretOrPrivateKey);
+      } catch (_) {
+        try {
+          secretOrPrivateKey = createSecretKey(typeof secretOrPrivateKey === "string" ? Buffer.from(secretOrPrivateKey) : secretOrPrivateKey);
+        } catch (_2) {
+          return failure(new Error("secretOrPrivateKey is not valid key material"));
+        }
+      }
+    }
+    if (header.alg.startsWith("HS") && secretOrPrivateKey.type !== "secret") {
+      return failure(new Error(`secretOrPrivateKey must be a symmetric key when using ${header.alg}`));
+    } else if (/^(?:RS|PS|ES)/.test(header.alg)) {
+      if (secretOrPrivateKey.type !== "private") {
+        return failure(new Error(`secretOrPrivateKey must be an asymmetric key when using ${header.alg}`));
+      }
+      if (!options.allowInsecureKeySizes && !header.alg.startsWith("ES") && secretOrPrivateKey.asymmetricKeyDetails !== undefined && secretOrPrivateKey.asymmetricKeyDetails.modulusLength < 2048) {
+        return failure(new Error(`secretOrPrivateKey has a minimum key size of 2048 bits for ${header.alg}`));
+      }
+    }
+    if (typeof payload === "undefined") {
+      return failure(new Error("payload is required"));
+    } else if (isObjectPayload) {
+      try {
+        validatePayload(payload);
+      } catch (error) {
+        return failure(error);
+      }
+      if (!options.mutatePayload) {
+        payload = Object.assign({}, payload);
+      }
+    } else {
+      const invalid_options = options_for_objects.filter(function(opt) {
+        return typeof options[opt] !== "undefined";
+      });
+      if (invalid_options.length > 0) {
+        return failure(new Error("invalid " + invalid_options.join(",") + " option for " + typeof payload + " payload"));
+      }
+    }
+    if (typeof payload.exp !== "undefined" && typeof options.expiresIn !== "undefined") {
+      return failure(new Error('Bad "options.expiresIn" option the payload already has an "exp" property.'));
+    }
+    if (typeof payload.nbf !== "undefined" && typeof options.notBefore !== "undefined") {
+      return failure(new Error('Bad "options.notBefore" option the payload already has an "nbf" property.'));
+    }
+    try {
+      validateOptions(options);
+    } catch (error) {
+      return failure(error);
+    }
+    if (!options.allowInvalidAsymmetricKeyTypes) {
+      try {
+        validateAsymmetricKey(header.alg, secretOrPrivateKey);
+      } catch (error) {
+        return failure(error);
+      }
+    }
+    const timestamp = payload.iat || Math.floor(Date.now() / 1000);
+    if (options.noTimestamp) {
+      delete payload.iat;
+    } else if (isObjectPayload) {
+      payload.iat = timestamp;
+    }
+    if (typeof options.notBefore !== "undefined") {
+      try {
+        payload.nbf = timespan(options.notBefore, timestamp);
+      } catch (err) {
+        return failure(err);
+      }
+      if (typeof payload.nbf === "undefined") {
+        return failure(new Error('"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+      }
+    }
+    if (typeof options.expiresIn !== "undefined" && typeof payload === "object") {
+      try {
+        payload.exp = timespan(options.expiresIn, timestamp);
+      } catch (err) {
+        return failure(err);
+      }
+      if (typeof payload.exp === "undefined") {
+        return failure(new Error('"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+      }
+    }
+    Object.keys(options_to_payload).forEach(function(key) {
+      const claim = options_to_payload[key];
+      if (typeof options[key] !== "undefined") {
+        if (typeof payload[claim] !== "undefined") {
+          return failure(new Error('Bad "options.' + key + '" option. The payload already has an "' + claim + '" property.'));
+        }
+        payload[claim] = options[key];
+      }
+    });
+    const encoding = options.encoding || "utf8";
+    if (typeof callback === "function") {
+      callback = callback && once(callback);
+      jws.createSign({
+        header,
+        privateKey: secretOrPrivateKey,
+        payload,
+        encoding
+      }).once("error", callback).once("done", function(signature) {
+        if (!options.allowInsecureKeySizes && /^(?:RS|PS)/.test(header.alg) && signature.length < 256) {
+          return callback(new Error(`secretOrPrivateKey has a minimum key size of 2048 bits for ${header.alg}`));
+        }
+        callback(null, signature);
+      });
+    } else {
+      let signature = jws.sign({ header, payload, secret: secretOrPrivateKey, encoding });
+      if (!options.allowInsecureKeySizes && /^(?:RS|PS)/.test(header.alg) && signature.length < 256) {
+        throw new Error(`secretOrPrivateKey has a minimum key size of 2048 bits for ${header.alg}`);
+      }
+      return signature;
+    }
+  };
+});
+
+// ../../node_modules/.bun/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js
+var require_jsonwebtoken = __commonJS((exports, module) => {
+  module.exports = {
+    decode: require_decode(),
+    verify: require_verify(),
+    sign: require_sign2(),
+    JsonWebTokenError: require_JsonWebTokenError(),
+    NotBeforeError: require_NotBeforeError(),
+    TokenExpiredError: require_TokenExpiredError()
+  };
+});
+
+// ../../node_modules/.bun/requires-port@1.0.0/node_modules/requires-port/index.js
+var require_requires_port = __commonJS((exports, module) => {
+  module.exports = function required(port, protocol) {
+    protocol = protocol.split(":")[0];
+    port = +port;
+    if (!port)
+      return false;
+    switch (protocol) {
+      case "http":
+      case "ws":
+        return port !== 80;
+      case "https":
+      case "wss":
+        return port !== 443;
+      case "ftp":
+        return port !== 21;
+      case "gopher":
+        return port !== 70;
+      case "file":
+        return false;
+    }
+    return port !== 0;
+  };
+});
+
+// ../../node_modules/.bun/querystringify@2.2.0/node_modules/querystringify/index.js
+var require_querystringify = __commonJS((exports) => {
+  var has = Object.prototype.hasOwnProperty;
+  var undef;
+  function decode(input) {
+    try {
+      return decodeURIComponent(input.replace(/\+/g, " "));
+    } catch (e) {
+      return null;
+    }
+  }
+  function encode(input) {
+    try {
+      return encodeURIComponent(input);
+    } catch (e) {
+      return null;
+    }
+  }
+  function querystring(query) {
+    var parser = /([^=?#&]+)=?([^&]*)/g, result = {}, part;
+    while (part = parser.exec(query)) {
+      var key = decode(part[1]), value = decode(part[2]);
+      if (key === null || value === null || key in result)
+        continue;
+      result[key] = value;
+    }
+    return result;
+  }
+  function querystringify(obj, prefix) {
+    prefix = prefix || "";
+    var pairs = [], value, key;
+    if (typeof prefix !== "string")
+      prefix = "?";
+    for (key in obj) {
+      if (has.call(obj, key)) {
+        value = obj[key];
+        if (!value && (value === null || value === undef || isNaN(value))) {
+          value = "";
+        }
+        key = encode(key);
+        value = encode(value);
+        if (key === null || value === null)
+          continue;
+        pairs.push(key + "=" + value);
+      }
+    }
+    return pairs.length ? prefix + pairs.join("&") : "";
+  }
+  exports.stringify = querystringify;
+  exports.parse = querystring;
+});
+
+// ../../node_modules/.bun/url-parse@1.5.10/node_modules/url-parse/index.js
+var require_url_parse = __commonJS((exports, module) => {
+  var required = require_requires_port();
+  var qs = require_querystringify();
+  var controlOrWhitespace = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/;
+  var CRHTLF = /[\n\r\t]/g;
+  var slashes = /^[A-Za-z][A-Za-z0-9+-.]*:\/\//;
+  var port = /:\d+$/;
+  var protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\\/]+)?([\S\s]*)/i;
+  var windowsDriveLetter = /^[a-zA-Z]:/;
+  function trimLeft(str) {
+    return (str ? str : "").toString().replace(controlOrWhitespace, "");
+  }
+  var rules = [
+    ["#", "hash"],
+    ["?", "query"],
+    function sanitize2(address, url) {
+      return isSpecial(url.protocol) ? address.replace(/\\/g, "/") : address;
+    },
+    ["/", "pathname"],
+    ["@", "auth", 1],
+    [NaN, "host", undefined, 1, 1],
+    [/:(\d*)$/, "port", undefined, 1],
+    [NaN, "hostname", undefined, 1, 1]
+  ];
+  var ignore = { hash: 1, query: 1 };
+  function lolcation(loc) {
+    var globalVar;
+    if (typeof window !== "undefined")
+      globalVar = window;
+    else if (typeof global !== "undefined")
+      globalVar = global;
+    else if (typeof self !== "undefined")
+      globalVar = self;
+    else
+      globalVar = {};
+    var location = globalVar.location || {};
+    loc = loc || location;
+    var finaldestination = {}, type = typeof loc, key;
+    if (loc.protocol === "blob:") {
+      finaldestination = new Url(unescape(loc.pathname), {});
+    } else if (type === "string") {
+      finaldestination = new Url(loc, {});
+      for (key in ignore)
+        delete finaldestination[key];
+    } else if (type === "object") {
+      for (key in loc) {
+        if (key in ignore)
+          continue;
+        finaldestination[key] = loc[key];
+      }
+      if (finaldestination.slashes === undefined) {
+        finaldestination.slashes = slashes.test(loc.href);
+      }
+    }
+    return finaldestination;
+  }
+  function isSpecial(scheme) {
+    return scheme === "file:" || scheme === "ftp:" || scheme === "http:" || scheme === "https:" || scheme === "ws:" || scheme === "wss:";
+  }
+  function extractProtocol(address, location) {
+    address = trimLeft(address);
+    address = address.replace(CRHTLF, "");
+    location = location || {};
+    var match = protocolre.exec(address);
+    var protocol = match[1] ? match[1].toLowerCase() : "";
+    var forwardSlashes = !!match[2];
+    var otherSlashes = !!match[3];
+    var slashesCount = 0;
+    var rest;
+    if (forwardSlashes) {
+      if (otherSlashes) {
+        rest = match[2] + match[3] + match[4];
+        slashesCount = match[2].length + match[3].length;
+      } else {
+        rest = match[2] + match[4];
+        slashesCount = match[2].length;
+      }
+    } else {
+      if (otherSlashes) {
+        rest = match[3] + match[4];
+        slashesCount = match[3].length;
+      } else {
+        rest = match[4];
+      }
+    }
+    if (protocol === "file:") {
+      if (slashesCount >= 2) {
+        rest = rest.slice(2);
+      }
+    } else if (isSpecial(protocol)) {
+      rest = match[4];
+    } else if (protocol) {
+      if (forwardSlashes) {
+        rest = rest.slice(2);
+      }
+    } else if (slashesCount >= 2 && isSpecial(location.protocol)) {
+      rest = match[4];
+    }
+    return {
+      protocol,
+      slashes: forwardSlashes || isSpecial(protocol),
+      slashesCount,
+      rest
+    };
+  }
+  function resolve(relative, base) {
+    if (relative === "")
+      return base;
+    var path = (base || "/").split("/").slice(0, -1).concat(relative.split("/")), i = path.length, last = path[i - 1], unshift = false, up = 0;
+    while (i--) {
+      if (path[i] === ".") {
+        path.splice(i, 1);
+      } else if (path[i] === "..") {
+        path.splice(i, 1);
+        up++;
+      } else if (up) {
+        if (i === 0)
+          unshift = true;
+        path.splice(i, 1);
+        up--;
+      }
+    }
+    if (unshift)
+      path.unshift("");
+    if (last === "." || last === "..")
+      path.push("");
+    return path.join("/");
+  }
+  function Url(address, location, parser) {
+    address = trimLeft(address);
+    address = address.replace(CRHTLF, "");
+    if (!(this instanceof Url)) {
+      return new Url(address, location, parser);
+    }
+    var relative, extracted, parse, instruction, index, key, instructions = rules.slice(), type = typeof location, url = this, i = 0;
+    if (type !== "object" && type !== "string") {
+      parser = location;
+      location = null;
+    }
+    if (parser && typeof parser !== "function")
+      parser = qs.parse;
+    location = lolcation(location);
+    extracted = extractProtocol(address || "", location);
+    relative = !extracted.protocol && !extracted.slashes;
+    url.slashes = extracted.slashes || relative && location.slashes;
+    url.protocol = extracted.protocol || location.protocol || "";
+    address = extracted.rest;
+    if (extracted.protocol === "file:" && (extracted.slashesCount !== 2 || windowsDriveLetter.test(address)) || !extracted.slashes && (extracted.protocol || extracted.slashesCount < 2 || !isSpecial(url.protocol))) {
+      instructions[3] = [/(.*)/, "pathname"];
+    }
+    for (;i < instructions.length; i++) {
+      instruction = instructions[i];
+      if (typeof instruction === "function") {
+        address = instruction(address, url);
+        continue;
+      }
+      parse = instruction[0];
+      key = instruction[1];
+      if (parse !== parse) {
+        url[key] = address;
+      } else if (typeof parse === "string") {
+        index = parse === "@" ? address.lastIndexOf(parse) : address.indexOf(parse);
+        if (~index) {
+          if (typeof instruction[2] === "number") {
+            url[key] = address.slice(0, index);
+            address = address.slice(index + instruction[2]);
+          } else {
+            url[key] = address.slice(index);
+            address = address.slice(0, index);
+          }
+        }
+      } else if (index = parse.exec(address)) {
+        url[key] = index[1];
+        address = address.slice(0, index.index);
+      }
+      url[key] = url[key] || (relative && instruction[3] ? location[key] || "" : "");
+      if (instruction[4])
+        url[key] = url[key].toLowerCase();
+    }
+    if (parser)
+      url.query = parser(url.query);
+    if (relative && location.slashes && url.pathname.charAt(0) !== "/" && (url.pathname !== "" || location.pathname !== "")) {
+      url.pathname = resolve(url.pathname, location.pathname);
+    }
+    if (url.pathname.charAt(0) !== "/" && isSpecial(url.protocol)) {
+      url.pathname = "/" + url.pathname;
+    }
+    if (!required(url.port, url.protocol)) {
+      url.host = url.hostname;
+      url.port = "";
+    }
+    url.username = url.password = "";
+    if (url.auth) {
+      index = url.auth.indexOf(":");
+      if (~index) {
+        url.username = url.auth.slice(0, index);
+        url.username = encodeURIComponent(decodeURIComponent(url.username));
+        url.password = url.auth.slice(index + 1);
+        url.password = encodeURIComponent(decodeURIComponent(url.password));
+      } else {
+        url.username = encodeURIComponent(decodeURIComponent(url.auth));
+      }
+      url.auth = url.password ? url.username + ":" + url.password : url.username;
+    }
+    url.origin = url.protocol !== "file:" && isSpecial(url.protocol) && url.host ? url.protocol + "//" + url.host : "null";
+    url.href = url.toString();
+  }
+  function set(part, value, fn) {
+    var url = this;
+    switch (part) {
+      case "query":
+        if (typeof value === "string" && value.length) {
+          value = (fn || qs.parse)(value);
+        }
+        url[part] = value;
+        break;
+      case "port":
+        url[part] = value;
+        if (!required(value, url.protocol)) {
+          url.host = url.hostname;
+          url[part] = "";
+        } else if (value) {
+          url.host = url.hostname + ":" + value;
+        }
+        break;
+      case "hostname":
+        url[part] = value;
+        if (url.port)
+          value += ":" + url.port;
+        url.host = value;
+        break;
+      case "host":
+        url[part] = value;
+        if (port.test(value)) {
+          value = value.split(":");
+          url.port = value.pop();
+          url.hostname = value.join(":");
+        } else {
+          url.hostname = value;
+          url.port = "";
+        }
+        break;
+      case "protocol":
+        url.protocol = value.toLowerCase();
+        url.slashes = !fn;
+        break;
+      case "pathname":
+      case "hash":
+        if (value) {
+          var char = part === "pathname" ? "/" : "#";
+          url[part] = value.charAt(0) !== char ? char + value : value;
+        } else {
+          url[part] = value;
+        }
+        break;
+      case "username":
+      case "password":
+        url[part] = encodeURIComponent(value);
+        break;
+      case "auth":
+        var index = value.indexOf(":");
+        if (~index) {
+          url.username = value.slice(0, index);
+          url.username = encodeURIComponent(decodeURIComponent(url.username));
+          url.password = value.slice(index + 1);
+          url.password = encodeURIComponent(decodeURIComponent(url.password));
+        } else {
+          url.username = encodeURIComponent(decodeURIComponent(value));
+        }
+    }
+    for (var i = 0;i < rules.length; i++) {
+      var ins = rules[i];
+      if (ins[4])
+        url[ins[1]] = url[ins[1]].toLowerCase();
+    }
+    url.auth = url.password ? url.username + ":" + url.password : url.username;
+    url.origin = url.protocol !== "file:" && isSpecial(url.protocol) && url.host ? url.protocol + "//" + url.host : "null";
+    url.href = url.toString();
+    return url;
+  }
+  function toString(stringify) {
+    if (!stringify || typeof stringify !== "function")
+      stringify = qs.stringify;
+    var query, url = this, host = url.host, protocol = url.protocol;
+    if (protocol && protocol.charAt(protocol.length - 1) !== ":")
+      protocol += ":";
+    var result = protocol + (url.protocol && url.slashes || isSpecial(url.protocol) ? "//" : "");
+    if (url.username) {
+      result += url.username;
+      if (url.password)
+        result += ":" + url.password;
+      result += "@";
+    } else if (url.password) {
+      result += ":" + url.password;
+      result += "@";
+    } else if (url.protocol !== "file:" && isSpecial(url.protocol) && !host && url.pathname !== "/") {
+      result += "@";
+    }
+    if (host[host.length - 1] === ":" || port.test(url.hostname) && !url.port) {
+      host += ":";
+    }
+    result += host + url.pathname;
+    query = typeof url.query === "object" ? stringify(url.query) : url.query;
+    if (query)
+      result += query.charAt(0) !== "?" ? "?" + query : query;
+    if (url.hash)
+      result += url.hash;
+    return result;
+  }
+  Url.prototype = { set, toString };
+  Url.extractProtocol = extractProtocol;
+  Url.location = lolcation;
+  Url.trimLeft = trimLeft;
+  Url.qs = qs;
+  module.exports = Url;
+});
+
+// ../../node_modules/.bun/buffer-more-ints@1.0.0/node_modules/buffer-more-ints/buffer-more-ints.js
+var require_buffer_more_ints = __commonJS((exports, module) => {
+  var SHIFT_LEFT_32 = (1 << 16) * (1 << 16);
+  var SHIFT_RIGHT_32 = 1 / SHIFT_LEFT_32;
+  var MAX_INT = 9007199254740991;
+  function isContiguousInt(val) {
+    return val <= MAX_INT && val >= -MAX_INT;
+  }
+  function assertContiguousInt(val) {
+    if (!isContiguousInt(val)) {
+      throw new TypeError("number cannot be represented as a contiguous integer");
+    }
+  }
+  exports.isContiguousInt = isContiguousInt;
+  exports.assertContiguousInt = assertContiguousInt;
+  ["UInt", "Int"].forEach(function(sign) {
+    var suffix = sign + "8";
+    exports["read" + suffix] = Buffer.prototype["read" + suffix].call;
+    exports["write" + suffix] = Buffer.prototype["write" + suffix].call;
+    ["16", "32"].forEach(function(size) {
+      ["LE", "BE"].forEach(function(endian) {
+        var suffix2 = sign + size + endian;
+        var read = Buffer.prototype["read" + suffix2];
+        exports["read" + suffix2] = function(buf, offset) {
+          return read.call(buf, offset);
+        };
+        var write = Buffer.prototype["write" + suffix2];
+        exports["write" + suffix2] = function(buf, val, offset) {
+          return write.call(buf, val, offset);
+        };
+      });
+    });
+  });
+  function check_value(val, min, max) {
+    val = +val;
+    if (typeof val != "number" || val < min || val > max || Math.floor(val) !== val) {
+      throw new TypeError('"value" argument is out of bounds');
+    }
+    return val;
+  }
+  function check_bounds(buf, offset, len) {
+    if (offset < 0 || offset + len > buf.length) {
+      throw new RangeError("Index out of range");
+    }
+  }
+  function readUInt24BE(buf, offset) {
+    return buf.readUInt8(offset) << 16 | buf.readUInt16BE(offset + 1);
+  }
+  exports.readUInt24BE = readUInt24BE;
+  function writeUInt24BE(buf, val, offset) {
+    val = check_value(val, 0, 16777215);
+    check_bounds(buf, offset, 3);
+    buf.writeUInt8(val >>> 16, offset);
+    buf.writeUInt16BE(val & 65535, offset + 1);
+  }
+  exports.writeUInt24BE = writeUInt24BE;
+  function readUInt40BE(buf, offset) {
+    return (buf.readUInt8(offset) || 0) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 1);
+  }
+  exports.readUInt40BE = readUInt40BE;
+  function writeUInt40BE(buf, val, offset) {
+    val = check_value(val, 0, 1099511627775);
+    check_bounds(buf, offset, 5);
+    buf.writeUInt8(Math.floor(val * SHIFT_RIGHT_32), offset);
+    buf.writeInt32BE(val & -1, offset + 1);
+  }
+  exports.writeUInt40BE = writeUInt40BE;
+  function readUInt48BE(buf, offset) {
+    return buf.readUInt16BE(offset) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 2);
+  }
+  exports.readUInt48BE = readUInt48BE;
+  function writeUInt48BE(buf, val, offset) {
+    val = check_value(val, 0, 281474976710655);
+    check_bounds(buf, offset, 6);
+    buf.writeUInt16BE(Math.floor(val * SHIFT_RIGHT_32), offset);
+    buf.writeInt32BE(val & -1, offset + 2);
+  }
+  exports.writeUInt48BE = writeUInt48BE;
+  function readUInt56BE(buf, offset) {
+    return ((buf.readUInt8(offset) || 0) << 16 | buf.readUInt16BE(offset + 1)) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 3);
+  }
+  exports.readUInt56BE = readUInt56BE;
+  function writeUInt56BE(buf, val, offset) {
+    val = check_value(val, 0, 72057594037927940);
+    check_bounds(buf, offset, 7);
+    if (val < 72057594037927940) {
+      var hi = Math.floor(val * SHIFT_RIGHT_32);
+      buf.writeUInt8(hi >>> 16, offset);
+      buf.writeUInt16BE(hi & 65535, offset + 1);
+      buf.writeInt32BE(val & -1, offset + 3);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+    }
+  }
+  exports.writeUInt56BE = writeUInt56BE;
+  function readUInt64BE(buf, offset) {
+    return buf.readUInt32BE(offset) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 4);
+  }
+  exports.readUInt64BE = readUInt64BE;
+  function writeUInt64BE(buf, val, offset) {
+    val = check_value(val, 0, 18446744073709552000);
+    check_bounds(buf, offset, 8);
+    if (val < 18446744073709552000) {
+      buf.writeUInt32BE(Math.floor(val * SHIFT_RIGHT_32), offset);
+      buf.writeInt32BE(val & -1, offset + 4);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+      buf[offset + 7] = 255;
+    }
+  }
+  exports.writeUInt64BE = writeUInt64BE;
+  function readUInt24LE(buf, offset) {
+    return buf.readUInt8(offset + 2) << 16 | buf.readUInt16LE(offset);
+  }
+  exports.readUInt24LE = readUInt24LE;
+  function writeUInt24LE(buf, val, offset) {
+    val = check_value(val, 0, 16777215);
+    check_bounds(buf, offset, 3);
+    buf.writeUInt16LE(val & 65535, offset);
+    buf.writeUInt8(val >>> 16, offset + 2);
+  }
+  exports.writeUInt24LE = writeUInt24LE;
+  function readUInt40LE(buf, offset) {
+    return (buf.readUInt8(offset + 4) || 0) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readUInt40LE = readUInt40LE;
+  function writeUInt40LE(buf, val, offset) {
+    val = check_value(val, 0, 1099511627775);
+    check_bounds(buf, offset, 5);
+    buf.writeInt32LE(val & -1, offset);
+    buf.writeUInt8(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+  }
+  exports.writeUInt40LE = writeUInt40LE;
+  function readUInt48LE(buf, offset) {
+    return buf.readUInt16LE(offset + 4) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readUInt48LE = readUInt48LE;
+  function writeUInt48LE(buf, val, offset) {
+    val = check_value(val, 0, 281474976710655);
+    check_bounds(buf, offset, 6);
+    buf.writeInt32LE(val & -1, offset);
+    buf.writeUInt16LE(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+  }
+  exports.writeUInt48LE = writeUInt48LE;
+  function readUInt56LE(buf, offset) {
+    return ((buf.readUInt8(offset + 6) || 0) << 16 | buf.readUInt16LE(offset + 4)) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readUInt56LE = readUInt56LE;
+  function writeUInt56LE(buf, val, offset) {
+    val = check_value(val, 0, 72057594037927940);
+    check_bounds(buf, offset, 7);
+    if (val < 72057594037927940) {
+      buf.writeInt32LE(val & -1, offset);
+      var hi = Math.floor(val * SHIFT_RIGHT_32);
+      buf.writeUInt16LE(hi & 65535, offset + 4);
+      buf.writeUInt8(hi >>> 16, offset + 6);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+    }
+  }
+  exports.writeUInt56LE = writeUInt56LE;
+  function readUInt64LE(buf, offset) {
+    return buf.readUInt32LE(offset + 4) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readUInt64LE = readUInt64LE;
+  function writeUInt64LE(buf, val, offset) {
+    val = check_value(val, 0, 18446744073709552000);
+    check_bounds(buf, offset, 8);
+    if (val < 18446744073709552000) {
+      buf.writeInt32LE(val & -1, offset);
+      buf.writeUInt32LE(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+      buf[offset + 7] = 255;
+    }
+  }
+  exports.writeUInt64LE = writeUInt64LE;
+  function readInt24BE(buf, offset) {
+    return (buf.readInt8(offset) << 16) + buf.readUInt16BE(offset + 1);
+  }
+  exports.readInt24BE = readInt24BE;
+  function writeInt24BE(buf, val, offset) {
+    val = check_value(val, -8388608, 8388607);
+    check_bounds(buf, offset, 3);
+    buf.writeInt8(val >> 16, offset);
+    buf.writeUInt16BE(val & 65535, offset + 1);
+  }
+  exports.writeInt24BE = writeInt24BE;
+  function readInt40BE(buf, offset) {
+    return (buf.readInt8(offset) || 0) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 1);
+  }
+  exports.readInt40BE = readInt40BE;
+  function writeInt40BE(buf, val, offset) {
+    val = check_value(val, -549755813888, 549755813887);
+    check_bounds(buf, offset, 5);
+    buf.writeInt8(Math.floor(val * SHIFT_RIGHT_32), offset);
+    buf.writeInt32BE(val & -1, offset + 1);
+  }
+  exports.writeInt40BE = writeInt40BE;
+  function readInt48BE(buf, offset) {
+    return buf.readInt16BE(offset) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 2);
+  }
+  exports.readInt48BE = readInt48BE;
+  function writeInt48BE(buf, val, offset) {
+    val = check_value(val, -140737488355328, 140737488355327);
+    check_bounds(buf, offset, 6);
+    buf.writeInt16BE(Math.floor(val * SHIFT_RIGHT_32), offset);
+    buf.writeInt32BE(val & -1, offset + 2);
+  }
+  exports.writeInt48BE = writeInt48BE;
+  function readInt56BE(buf, offset) {
+    return (((buf.readInt8(offset) || 0) << 16) + buf.readUInt16BE(offset + 1)) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 3);
+  }
+  exports.readInt56BE = readInt56BE;
+  function writeInt56BE(buf, val, offset) {
+    val = check_value(val, -576460752303423500, 36028797018963970);
+    check_bounds(buf, offset, 7);
+    if (val < 36028797018963970) {
+      var hi = Math.floor(val * SHIFT_RIGHT_32);
+      buf.writeInt8(hi >> 16, offset);
+      buf.writeUInt16BE(hi & 65535, offset + 1);
+      buf.writeInt32BE(val & -1, offset + 3);
+    } else {
+      buf[offset] = 127;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+    }
+  }
+  exports.writeInt56BE = writeInt56BE;
+  function readInt64BE(buf, offset) {
+    return buf.readInt32BE(offset) * SHIFT_LEFT_32 + buf.readUInt32BE(offset + 4);
+  }
+  exports.readInt64BE = readInt64BE;
+  function writeInt64BE(buf, val, offset) {
+    val = check_value(val, -2361183241434822600000, 9223372036854776000);
+    check_bounds(buf, offset, 8);
+    if (val < 9223372036854776000) {
+      buf.writeInt32BE(Math.floor(val * SHIFT_RIGHT_32), offset);
+      buf.writeInt32BE(val & -1, offset + 4);
+    } else {
+      buf[offset] = 127;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+      buf[offset + 7] = 255;
+    }
+  }
+  exports.writeInt64BE = writeInt64BE;
+  function readInt24LE(buf, offset) {
+    return (buf.readInt8(offset + 2) << 16) + buf.readUInt16LE(offset);
+  }
+  exports.readInt24LE = readInt24LE;
+  function writeInt24LE(buf, val, offset) {
+    val = check_value(val, -8388608, 8388607);
+    check_bounds(buf, offset, 3);
+    buf.writeUInt16LE(val & 65535, offset);
+    buf.writeInt8(val >> 16, offset + 2);
+  }
+  exports.writeInt24LE = writeInt24LE;
+  function readInt40LE(buf, offset) {
+    return (buf.readInt8(offset + 4) || 0) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readInt40LE = readInt40LE;
+  function writeInt40LE(buf, val, offset) {
+    val = check_value(val, -549755813888, 549755813887);
+    check_bounds(buf, offset, 5);
+    buf.writeInt32LE(val & -1, offset);
+    buf.writeInt8(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+  }
+  exports.writeInt40LE = writeInt40LE;
+  function readInt48LE(buf, offset) {
+    return buf.readInt16LE(offset + 4) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readInt48LE = readInt48LE;
+  function writeInt48LE(buf, val, offset) {
+    val = check_value(val, -140737488355328, 140737488355327);
+    check_bounds(buf, offset, 6);
+    buf.writeInt32LE(val & -1, offset);
+    buf.writeInt16LE(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+  }
+  exports.writeInt48LE = writeInt48LE;
+  function readInt56LE(buf, offset) {
+    return (((buf.readInt8(offset + 6) || 0) << 16) + buf.readUInt16LE(offset + 4)) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readInt56LE = readInt56LE;
+  function writeInt56LE(buf, val, offset) {
+    val = check_value(val, -36028797018963970, 36028797018963970);
+    check_bounds(buf, offset, 7);
+    if (val < 36028797018963970) {
+      buf.writeInt32LE(val & -1, offset);
+      var hi = Math.floor(val * SHIFT_RIGHT_32);
+      buf.writeUInt16LE(hi & 65535, offset + 4);
+      buf.writeInt8(hi >> 16, offset + 6);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 127;
+    }
+  }
+  exports.writeInt56LE = writeInt56LE;
+  function readInt64LE(buf, offset) {
+    return buf.readInt32LE(offset + 4) * SHIFT_LEFT_32 + buf.readUInt32LE(offset);
+  }
+  exports.readInt64LE = readInt64LE;
+  function writeInt64LE(buf, val, offset) {
+    val = check_value(val, -9223372036854776000, 9223372036854776000);
+    check_bounds(buf, offset, 8);
+    if (val < 9223372036854776000) {
+      buf.writeInt32LE(val & -1, offset);
+      buf.writeInt32LE(Math.floor(val * SHIFT_RIGHT_32), offset + 4);
+    } else {
+      buf[offset] = 255;
+      buf[offset + 1] = 255;
+      buf[offset + 2] = 255;
+      buf[offset + 3] = 255;
+      buf[offset + 4] = 255;
+      buf[offset + 5] = 255;
+      buf[offset + 6] = 255;
+      buf[offset + 7] = 127;
+    }
+  }
+  exports.writeInt64LE = writeInt64LE;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/codec.js
+var require_codec = __commonJS((exports, module) => {
+  var ints = require_buffer_more_ints();
+  function isFloatingPoint(n) {
+    return n >= 9223372036854776000 || Math.abs(n) < 1125899906842624 && Math.floor(n) !== n;
+  }
+  function encodeTable(buffer, val, offset) {
+    var start = offset;
+    offset += 4;
+    for (var key in val) {
+      if (val[key] !== undefined) {
+        var len = Buffer.byteLength(key);
+        buffer.writeUInt8(len, offset);
+        offset++;
+        buffer.write(key, offset, "utf8");
+        offset += len;
+        offset += encodeFieldValue(buffer, val[key], offset);
+      }
+    }
+    var size = offset - start;
+    buffer.writeUInt32BE(size - 4, start);
+    return size;
+  }
+  function encodeArray(buffer, val, offset) {
+    var start = offset;
+    offset += 4;
+    for (var i = 0, num = val.length;i < num; i++) {
+      offset += encodeFieldValue(buffer, val[i], offset);
+    }
+    var size = offset - start;
+    buffer.writeUInt32BE(size - 4, start);
+    return size;
+  }
+  function encodeFieldValue(buffer, value, offset) {
+    var start = offset;
+    var type = typeof value, val = value;
+    if (value && type === "object" && value.hasOwnProperty("!")) {
+      val = value.value;
+      type = value["!"];
+    }
+    if (type == "number") {
+      if (isFloatingPoint(val)) {
+        type = "double";
+      } else {
+        if (val < 128 && val >= -128) {
+          type = "byte";
+        } else if (val >= -32768 && val < 32768) {
+          type = "short";
+        } else if (val >= -2147483648 && val < 2147483648) {
+          type = "int";
+        } else {
+          type = "long";
+        }
+      }
+    }
+    function tag(t) {
+      buffer.write(t, offset);
+      offset++;
+    }
+    switch (type) {
+      case "string":
+        var len = Buffer.byteLength(val, "utf8");
+        tag("S");
+        buffer.writeUInt32BE(len, offset);
+        offset += 4;
+        buffer.write(val, offset, "utf8");
+        offset += len;
+        break;
+      case "object":
+        if (val === null) {
+          tag("V");
+        } else if (Array.isArray(val)) {
+          tag("A");
+          offset += encodeArray(buffer, val, offset);
+        } else if (Buffer.isBuffer(val)) {
+          tag("x");
+          buffer.writeUInt32BE(val.length, offset);
+          offset += 4;
+          val.copy(buffer, offset);
+          offset += val.length;
+        } else {
+          tag("F");
+          offset += encodeTable(buffer, val, offset);
+        }
+        break;
+      case "boolean":
+        tag("t");
+        buffer.writeUInt8(val ? 1 : 0, offset);
+        offset++;
+        break;
+      case "double":
+      case "float64":
+        tag("d");
+        buffer.writeDoubleBE(val, offset);
+        offset += 8;
+        break;
+      case "byte":
+      case "int8":
+        tag("b");
+        buffer.writeInt8(val, offset);
+        offset++;
+        break;
+      case "unsignedbyte":
+      case "uint8":
+        tag("B");
+        buffer.writeUInt8(val, offset);
+        offset++;
+        break;
+      case "short":
+      case "int16":
+        tag("s");
+        buffer.writeInt16BE(val, offset);
+        offset += 2;
+        break;
+      case "unsignedshort":
+      case "uint16":
+        tag("u");
+        buffer.writeUInt16BE(val, offset);
+        offset += 2;
+        break;
+      case "int":
+      case "int32":
+        tag("I");
+        buffer.writeInt32BE(val, offset);
+        offset += 4;
+        break;
+      case "unsignedint":
+      case "uint32":
+        tag("i");
+        buffer.writeUInt32BE(val, offset);
+        offset += 4;
+        break;
+      case "long":
+      case "int64":
+        tag("l");
+        ints.writeInt64BE(buffer, val, offset);
+        offset += 8;
+        break;
+      case "timestamp":
+        tag("T");
+        ints.writeUInt64BE(buffer, val, offset);
+        offset += 8;
+        break;
+      case "float":
+        tag("f");
+        buffer.writeFloatBE(val, offset);
+        offset += 4;
+        break;
+      case "decimal":
+        tag("D");
+        if (val.hasOwnProperty("places") && val.hasOwnProperty("digits") && val.places >= 0 && val.places < 256) {
+          buffer[offset] = val.places;
+          offset++;
+          buffer.writeUInt32BE(val.digits, offset);
+          offset += 4;
+        } else
+          throw new TypeError("Decimal value must be {'places': 0..255, 'digits': uint32}, " + "got " + JSON.stringify(val));
+        break;
+      default:
+        throw new TypeError("Unknown type to encode: " + type);
+    }
+    return offset - start;
+  }
+  function decodeFields(slice) {
+    var fields = {}, offset = 0, size = slice.length;
+    var len, key, val;
+    function decodeFieldValue() {
+      var tag = String.fromCharCode(slice[offset]);
+      offset++;
+      switch (tag) {
+        case "b":
+          val = slice.readInt8(offset);
+          offset++;
+          break;
+        case "B":
+          val = slice.readUInt8(offset);
+          offset++;
+          break;
+        case "S":
+          len = slice.readUInt32BE(offset);
+          offset += 4;
+          val = slice.toString("utf8", offset, offset + len);
+          offset += len;
+          break;
+        case "I":
+          val = slice.readInt32BE(offset);
+          offset += 4;
+          break;
+        case "i":
+          val = slice.readUInt32BE(offset);
+          offset += 4;
+          break;
+        case "D":
+          var places = slice[offset];
+          offset++;
+          var digits = slice.readUInt32BE(offset);
+          offset += 4;
+          val = { "!": "decimal", value: { places, digits } };
+          break;
+        case "T":
+          val = ints.readUInt64BE(slice, offset);
+          offset += 8;
+          val = { "!": "timestamp", value: val };
+          break;
+        case "F":
+          len = slice.readUInt32BE(offset);
+          offset += 4;
+          val = decodeFields(slice.subarray(offset, offset + len));
+          offset += len;
+          break;
+        case "A":
+          len = slice.readUInt32BE(offset);
+          offset += 4;
+          decodeArray(offset + len);
+          break;
+        case "d":
+          val = slice.readDoubleBE(offset);
+          offset += 8;
+          break;
+        case "f":
+          val = slice.readFloatBE(offset);
+          offset += 4;
+          break;
+        case "l":
+          val = ints.readInt64BE(slice, offset);
+          offset += 8;
+          break;
+        case "s":
+          val = slice.readInt16BE(offset);
+          offset += 2;
+          break;
+        case "u":
+          val = slice.readUInt16BE(offset);
+          offset += 2;
+          break;
+        case "t":
+          val = slice[offset] != 0;
+          offset++;
+          break;
+        case "V":
+          val = null;
+          break;
+        case "x":
+          len = slice.readUInt32BE(offset);
+          offset += 4;
+          val = slice.subarray(offset, offset + len);
+          offset += len;
+          break;
+        default:
+          throw new TypeError('Unexpected type tag "' + tag + '"');
+      }
+    }
+    function decodeArray(until) {
+      var vals = [];
+      while (offset < until) {
+        decodeFieldValue();
+        vals.push(val);
+      }
+      val = vals;
+    }
+    while (offset < size) {
+      len = slice.readUInt8(offset);
+      offset++;
+      key = slice.toString("utf8", offset, offset + len);
+      offset += len;
+      decodeFieldValue();
+      fields[key] = val;
+    }
+    return fields;
+  }
+  exports.encodeTable = encodeTable;
+  exports.decodeFields = decodeFields;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/defs.js
+var require_defs = __commonJS((exports, module) => {
+  function decodeBasicQos(buffer) {
+    var val, offset = 0, fields = {
+      prefetchSize: undefined,
+      prefetchCount: undefined,
+      global: undefined
+    };
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.prefetchSize = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.prefetchCount = val;
+    val = !!(1 & buffer[offset]);
+    fields.global = val;
+    return fields;
+  }
+  function encodeBasicQos(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(19);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932170, 7);
+    offset = 11;
+    val = fields.prefetchSize;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'prefetchSize' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    val = fields.prefetchCount;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'prefetchCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.global;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicQosOk(buffer) {
+    return {};
+  }
+  function encodeBasicQosOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932171, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicConsume(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      consumerTag: undefined,
+      noLocal: undefined,
+      noAck: undefined,
+      exclusive: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.consumerTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.noLocal = val;
+    val = !!(2 & buffer[offset]);
+    fields.noAck = val;
+    val = !!(4 & buffer[offset]);
+    fields.exclusive = val;
+    val = !!(8 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeBasicConsume(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    val = fields.consumerTag;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'consumerTag' is the wrong type; must be a string (up to 255 chars)");
+    var consumerTag_len = Buffer.byteLength(val, "utf8");
+    varyingSize += consumerTag_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932180, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.consumerTag;
+    val === undefined && (val = "");
+    buffer[offset] = consumerTag_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += consumerTag_len;
+    val = fields.noLocal;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.noAck;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    val = fields.exclusive;
+    val === undefined && (val = false);
+    val && (bits += 4);
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 8);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicConsumeOk(buffer) {
+    var val, len, offset = 0, fields = {
+      consumerTag: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.consumerTag = val;
+    return fields;
+  }
+  function encodeBasicConsumeOk(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.consumerTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'consumerTag'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'consumerTag' is the wrong type; must be a string (up to 255 chars)");
+    var consumerTag_len = Buffer.byteLength(val, "utf8");
+    varyingSize += consumerTag_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932181, 7);
+    offset = 11;
+    val = fields.consumerTag;
+    val === undefined && (val = undefined);
+    buffer[offset] = consumerTag_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += consumerTag_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicCancel(buffer) {
+    var val, len, offset = 0, fields = {
+      consumerTag: undefined,
+      nowait: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.consumerTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.nowait = val;
+    return fields;
+  }
+  function encodeBasicCancel(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.consumerTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'consumerTag'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'consumerTag' is the wrong type; must be a string (up to 255 chars)");
+    var consumerTag_len = Buffer.byteLength(val, "utf8");
+    varyingSize += consumerTag_len;
+    var buffer = Buffer.alloc(14 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932190, 7);
+    offset = 11;
+    val = fields.consumerTag;
+    val === undefined && (val = undefined);
+    buffer[offset] = consumerTag_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += consumerTag_len;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicCancelOk(buffer) {
+    var val, len, offset = 0, fields = {
+      consumerTag: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.consumerTag = val;
+    return fields;
+  }
+  function encodeBasicCancelOk(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.consumerTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'consumerTag'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'consumerTag' is the wrong type; must be a string (up to 255 chars)");
+    var consumerTag_len = Buffer.byteLength(val, "utf8");
+    varyingSize += consumerTag_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932191, 7);
+    offset = 11;
+    val = fields.consumerTag;
+    val === undefined && (val = undefined);
+    buffer[offset] = consumerTag_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += consumerTag_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicPublish(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      exchange: undefined,
+      routingKey: undefined,
+      mandatory: undefined,
+      immediate: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    val = !!(1 & buffer[offset]);
+    fields.mandatory = val;
+    val = !!(2 & buffer[offset]);
+    fields.immediate = val;
+    return fields;
+  }
+  function encodeBasicPublish(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.exchange;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932200, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.exchange;
+    val === undefined && (val = "");
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = "");
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    val = fields.mandatory;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.immediate;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicReturn(buffer) {
+    var val, len, offset = 0, fields = {
+      replyCode: undefined,
+      replyText: undefined,
+      exchange: undefined,
+      routingKey: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.replyCode = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.replyText = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    return fields;
+  }
+  function encodeBasicReturn(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.replyText;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'replyText' is the wrong type; must be a string (up to 255 chars)");
+    var replyText_len = Buffer.byteLength(val, "utf8");
+    varyingSize += replyText_len;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'routingKey'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932210, 7);
+    offset = 11;
+    val = fields.replyCode;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'replyCode'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'replyCode' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.replyText;
+    val === undefined && (val = "");
+    buffer[offset] = replyText_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += replyText_len;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = undefined);
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicDeliver(buffer) {
+    var val, len, offset = 0, fields = {
+      consumerTag: undefined,
+      deliveryTag: undefined,
+      redelivered: undefined,
+      exchange: undefined,
+      routingKey: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.consumerTag = val;
+    val = ints.readUInt64BE(buffer, offset);
+    offset += 8;
+    fields.deliveryTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.redelivered = val;
+    offset++;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    return fields;
+  }
+  function encodeBasicDeliver(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.consumerTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'consumerTag'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'consumerTag' is the wrong type; must be a string (up to 255 chars)");
+    var consumerTag_len = Buffer.byteLength(val, "utf8");
+    varyingSize += consumerTag_len;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'routingKey'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    var buffer = Buffer.alloc(24 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932220, 7);
+    offset = 11;
+    val = fields.consumerTag;
+    val === undefined && (val = undefined);
+    buffer[offset] = consumerTag_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += consumerTag_len;
+    val = fields.deliveryTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'deliveryTag'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'deliveryTag' is the wrong type; must be a number (but not NaN)");
+    ints.writeUInt64BE(buffer, val, offset);
+    offset += 8;
+    val = fields.redelivered;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = undefined);
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicGet(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      noAck: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    val = !!(1 & buffer[offset]);
+    fields.noAck = val;
+    return fields;
+  }
+  function encodeBasicGet(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932230, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.noAck;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicGetOk(buffer) {
+    var val, len, offset = 0, fields = {
+      deliveryTag: undefined,
+      redelivered: undefined,
+      exchange: undefined,
+      routingKey: undefined,
+      messageCount: undefined
+    };
+    val = ints.readUInt64BE(buffer, offset);
+    offset += 8;
+    fields.deliveryTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.redelivered = val;
+    offset++;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.messageCount = val;
+    return fields;
+  }
+  function encodeBasicGetOk(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'routingKey'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    var buffer = Buffer.alloc(27 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932231, 7);
+    offset = 11;
+    val = fields.deliveryTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'deliveryTag'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'deliveryTag' is the wrong type; must be a number (but not NaN)");
+    ints.writeUInt64BE(buffer, val, offset);
+    offset += 8;
+    val = fields.redelivered;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = undefined);
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    val = fields.messageCount;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'messageCount'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'messageCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicGetEmpty(buffer) {
+    var val, len, offset = 0, fields = {
+      clusterId: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.clusterId = val;
+    return fields;
+  }
+  function encodeBasicGetEmpty(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.clusterId;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'clusterId' is the wrong type; must be a string (up to 255 chars)");
+    var clusterId_len = Buffer.byteLength(val, "utf8");
+    varyingSize += clusterId_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932232, 7);
+    offset = 11;
+    val = fields.clusterId;
+    val === undefined && (val = "");
+    buffer[offset] = clusterId_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += clusterId_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicAck(buffer) {
+    var val, offset = 0, fields = {
+      deliveryTag: undefined,
+      multiple: undefined
+    };
+    val = ints.readUInt64BE(buffer, offset);
+    offset += 8;
+    fields.deliveryTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.multiple = val;
+    return fields;
+  }
+  function encodeBasicAck(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(21);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932240, 7);
+    offset = 11;
+    val = fields.deliveryTag;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'deliveryTag' is the wrong type; must be a number (but not NaN)");
+    ints.writeUInt64BE(buffer, val, offset);
+    offset += 8;
+    val = fields.multiple;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicReject(buffer) {
+    var val, offset = 0, fields = {
+      deliveryTag: undefined,
+      requeue: undefined
+    };
+    val = ints.readUInt64BE(buffer, offset);
+    offset += 8;
+    fields.deliveryTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.requeue = val;
+    return fields;
+  }
+  function encodeBasicReject(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(21);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932250, 7);
+    offset = 11;
+    val = fields.deliveryTag;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'deliveryTag'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'deliveryTag' is the wrong type; must be a number (but not NaN)");
+    ints.writeUInt64BE(buffer, val, offset);
+    offset += 8;
+    val = fields.requeue;
+    val === undefined && (val = true);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicRecoverAsync(buffer) {
+    var val, fields = {
+      requeue: undefined
+    };
+    val = !!(1 & buffer[0]);
+    fields.requeue = val;
+    return fields;
+  }
+  function encodeBasicRecoverAsync(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(13);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932260, 7);
+    offset = 11;
+    val = fields.requeue;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicRecover(buffer) {
+    var val, fields = {
+      requeue: undefined
+    };
+    val = !!(1 & buffer[0]);
+    fields.requeue = val;
+    return fields;
+  }
+  function encodeBasicRecover(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(13);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932270, 7);
+    offset = 11;
+    val = fields.requeue;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicRecoverOk(buffer) {
+    return {};
+  }
+  function encodeBasicRecoverOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932271, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeBasicNack(buffer) {
+    var val, offset = 0, fields = {
+      deliveryTag: undefined,
+      multiple: undefined,
+      requeue: undefined
+    };
+    val = ints.readUInt64BE(buffer, offset);
+    offset += 8;
+    fields.deliveryTag = val;
+    val = !!(1 & buffer[offset]);
+    fields.multiple = val;
+    val = !!(2 & buffer[offset]);
+    fields.requeue = val;
+    return fields;
+  }
+  function encodeBasicNack(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(21);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932280, 7);
+    offset = 11;
+    val = fields.deliveryTag;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'deliveryTag' is the wrong type; must be a number (but not NaN)");
+    ints.writeUInt64BE(buffer, val, offset);
+    offset += 8;
+    val = fields.multiple;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.requeue;
+    val === undefined && (val = true);
+    val && (bits += 2);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionStart(buffer) {
+    var val, len, offset = 0, fields = {
+      versionMajor: undefined,
+      versionMinor: undefined,
+      serverProperties: undefined,
+      mechanisms: undefined,
+      locales: undefined
+    };
+    val = buffer[offset];
+    offset++;
+    fields.versionMajor = val;
+    val = buffer[offset];
+    offset++;
+    fields.versionMinor = val;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.serverProperties = val;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.mechanisms = val;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.locales = val;
+    return fields;
+  }
+  function encodeConnectionStart(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0, scratchOffset = 0;
+    val = fields.serverProperties;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'serverProperties'");
+    if (typeof val != "object")
+      throw new TypeError("Field 'serverProperties' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var serverProperties_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += serverProperties_encoded.length;
+    val = fields.mechanisms;
+    if (val === undefined)
+      val = Buffer.from("PLAIN");
+    else if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'mechanisms' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    val = fields.locales;
+    if (val === undefined)
+      val = Buffer.from("en_US");
+    else if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'locales' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    var buffer = Buffer.alloc(22 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655370, 7);
+    offset = 11;
+    val = fields.versionMajor;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'versionMajor' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt8(val, offset);
+    offset++;
+    val = fields.versionMinor;
+    if (val === undefined)
+      val = 9;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'versionMinor' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt8(val, offset);
+    offset++;
+    offset += serverProperties_encoded.copy(buffer, offset);
+    val = fields.mechanisms;
+    val === undefined && (val = Buffer.from("PLAIN"));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    val = fields.locales;
+    val === undefined && (val = Buffer.from("en_US"));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionStartOk(buffer) {
+    var val, len, offset = 0, fields = {
+      clientProperties: undefined,
+      mechanism: undefined,
+      response: undefined,
+      locale: undefined
+    };
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.clientProperties = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.mechanism = val;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.response = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.locale = val;
+    return fields;
+  }
+  function encodeConnectionStartOk(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0, scratchOffset = 0;
+    val = fields.clientProperties;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'clientProperties'");
+    if (typeof val != "object")
+      throw new TypeError("Field 'clientProperties' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var clientProperties_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += clientProperties_encoded.length;
+    val = fields.mechanism;
+    if (val === undefined)
+      val = "PLAIN";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'mechanism' is the wrong type; must be a string (up to 255 chars)");
+    var mechanism_len = Buffer.byteLength(val, "utf8");
+    varyingSize += mechanism_len;
+    val = fields.response;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'response'");
+    if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'response' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    val = fields.locale;
+    if (val === undefined)
+      val = "en_US";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'locale' is the wrong type; must be a string (up to 255 chars)");
+    var locale_len = Buffer.byteLength(val, "utf8");
+    varyingSize += locale_len;
+    var buffer = Buffer.alloc(18 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655371, 7);
+    offset = 11;
+    offset += clientProperties_encoded.copy(buffer, offset);
+    val = fields.mechanism;
+    val === undefined && (val = "PLAIN");
+    buffer[offset] = mechanism_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += mechanism_len;
+    val = fields.response;
+    val === undefined && (val = Buffer.from(undefined));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    val = fields.locale;
+    val === undefined && (val = "en_US");
+    buffer[offset] = locale_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += locale_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionSecure(buffer) {
+    var val, len, offset = 0, fields = {
+      challenge: undefined
+    };
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.challenge = val;
+    return fields;
+  }
+  function encodeConnectionSecure(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0;
+    val = fields.challenge;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'challenge'");
+    if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'challenge' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655380, 7);
+    offset = 11;
+    val = fields.challenge;
+    val === undefined && (val = Buffer.from(undefined));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionSecureOk(buffer) {
+    var val, len, offset = 0, fields = {
+      response: undefined
+    };
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.response = val;
+    return fields;
+  }
+  function encodeConnectionSecureOk(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0;
+    val = fields.response;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'response'");
+    if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'response' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655381, 7);
+    offset = 11;
+    val = fields.response;
+    val === undefined && (val = Buffer.from(undefined));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionTune(buffer) {
+    var val, offset = 0, fields = {
+      channelMax: undefined,
+      frameMax: undefined,
+      heartbeat: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.channelMax = val;
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.frameMax = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.heartbeat = val;
+    return fields;
+  }
+  function encodeConnectionTune(channel, fields) {
+    var offset = 0, val = null, buffer = Buffer.alloc(20);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655390, 7);
+    offset = 11;
+    val = fields.channelMax;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'channelMax' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.frameMax;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'frameMax' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    val = fields.heartbeat;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'heartbeat' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionTuneOk(buffer) {
+    var val, offset = 0, fields = {
+      channelMax: undefined,
+      frameMax: undefined,
+      heartbeat: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.channelMax = val;
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.frameMax = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.heartbeat = val;
+    return fields;
+  }
+  function encodeConnectionTuneOk(channel, fields) {
+    var offset = 0, val = null, buffer = Buffer.alloc(20);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655391, 7);
+    offset = 11;
+    val = fields.channelMax;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'channelMax' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.frameMax;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'frameMax' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    val = fields.heartbeat;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'heartbeat' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionOpen(buffer) {
+    var val, len, offset = 0, fields = {
+      virtualHost: undefined,
+      capabilities: undefined,
+      insist: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.virtualHost = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.capabilities = val;
+    val = !!(1 & buffer[offset]);
+    fields.insist = val;
+    return fields;
+  }
+  function encodeConnectionOpen(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.virtualHost;
+    if (val === undefined)
+      val = "/";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'virtualHost' is the wrong type; must be a string (up to 255 chars)");
+    var virtualHost_len = Buffer.byteLength(val, "utf8");
+    varyingSize += virtualHost_len;
+    val = fields.capabilities;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'capabilities' is the wrong type; must be a string (up to 255 chars)");
+    var capabilities_len = Buffer.byteLength(val, "utf8");
+    varyingSize += capabilities_len;
+    var buffer = Buffer.alloc(15 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655400, 7);
+    offset = 11;
+    val = fields.virtualHost;
+    val === undefined && (val = "/");
+    buffer[offset] = virtualHost_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += virtualHost_len;
+    val = fields.capabilities;
+    val === undefined && (val = "");
+    buffer[offset] = capabilities_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += capabilities_len;
+    val = fields.insist;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionOpenOk(buffer) {
+    var val, len, offset = 0, fields = {
+      knownHosts: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.knownHosts = val;
+    return fields;
+  }
+  function encodeConnectionOpenOk(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.knownHosts;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'knownHosts' is the wrong type; must be a string (up to 255 chars)");
+    var knownHosts_len = Buffer.byteLength(val, "utf8");
+    varyingSize += knownHosts_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655401, 7);
+    offset = 11;
+    val = fields.knownHosts;
+    val === undefined && (val = "");
+    buffer[offset] = knownHosts_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += knownHosts_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionClose(buffer) {
+    var val, len, offset = 0, fields = {
+      replyCode: undefined,
+      replyText: undefined,
+      classId: undefined,
+      methodId: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.replyCode = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.replyText = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.classId = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.methodId = val;
+    return fields;
+  }
+  function encodeConnectionClose(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.replyText;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'replyText' is the wrong type; must be a string (up to 255 chars)");
+    var replyText_len = Buffer.byteLength(val, "utf8");
+    varyingSize += replyText_len;
+    var buffer = Buffer.alloc(19 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655410, 7);
+    offset = 11;
+    val = fields.replyCode;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'replyCode'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'replyCode' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.replyText;
+    val === undefined && (val = "");
+    buffer[offset] = replyText_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += replyText_len;
+    val = fields.classId;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'classId'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'classId' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.methodId;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'methodId'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'methodId' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionCloseOk(buffer) {
+    return {};
+  }
+  function encodeConnectionCloseOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655411, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionBlocked(buffer) {
+    var val, len, offset = 0, fields = {
+      reason: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.reason = val;
+    return fields;
+  }
+  function encodeConnectionBlocked(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.reason;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'reason' is the wrong type; must be a string (up to 255 chars)");
+    var reason_len = Buffer.byteLength(val, "utf8");
+    varyingSize += reason_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655420, 7);
+    offset = 11;
+    val = fields.reason;
+    val === undefined && (val = "");
+    buffer[offset] = reason_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += reason_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionUnblocked(buffer) {
+    return {};
+  }
+  function encodeConnectionUnblocked(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655421, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionUpdateSecret(buffer) {
+    var val, len, offset = 0, fields = {
+      newSecret: undefined,
+      reason: undefined
+    };
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.newSecret = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.reason = val;
+    return fields;
+  }
+  function encodeConnectionUpdateSecret(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0;
+    val = fields.newSecret;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'newSecret'");
+    if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'newSecret' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    val = fields.reason;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'reason'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'reason' is the wrong type; must be a string (up to 255 chars)");
+    var reason_len = Buffer.byteLength(val, "utf8");
+    varyingSize += reason_len;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655430, 7);
+    offset = 11;
+    val = fields.newSecret;
+    val === undefined && (val = Buffer.from(undefined));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    val = fields.reason;
+    val === undefined && (val = undefined);
+    buffer[offset] = reason_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += reason_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConnectionUpdateSecretOk(buffer) {
+    return {};
+  }
+  function encodeConnectionUpdateSecretOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(655431, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelOpen(buffer) {
+    var val, len, offset = 0, fields = {
+      outOfBand: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.outOfBand = val;
+    return fields;
+  }
+  function encodeChannelOpen(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.outOfBand;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'outOfBand' is the wrong type; must be a string (up to 255 chars)");
+    var outOfBand_len = Buffer.byteLength(val, "utf8");
+    varyingSize += outOfBand_len;
+    var buffer = Buffer.alloc(13 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310730, 7);
+    offset = 11;
+    val = fields.outOfBand;
+    val === undefined && (val = "");
+    buffer[offset] = outOfBand_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += outOfBand_len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelOpenOk(buffer) {
+    var val, len, offset = 0, fields = {
+      channelId: undefined
+    };
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = buffer.subarray(offset, offset + len);
+    offset += len;
+    fields.channelId = val;
+    return fields;
+  }
+  function encodeChannelOpenOk(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0;
+    val = fields.channelId;
+    if (val === undefined)
+      val = Buffer.from("");
+    else if (!Buffer.isBuffer(val))
+      throw new TypeError("Field 'channelId' is the wrong type; must be a Buffer");
+    varyingSize += val.length;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310731, 7);
+    offset = 11;
+    val = fields.channelId;
+    val === undefined && (val = Buffer.from(""));
+    len = val.length;
+    buffer.writeUInt32BE(len, offset);
+    offset += 4;
+    val.copy(buffer, offset);
+    offset += len;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelFlow(buffer) {
+    var val, fields = {
+      active: undefined
+    };
+    val = !!(1 & buffer[0]);
+    fields.active = val;
+    return fields;
+  }
+  function encodeChannelFlow(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(13);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310740, 7);
+    offset = 11;
+    val = fields.active;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'active'");
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelFlowOk(buffer) {
+    var val, fields = {
+      active: undefined
+    };
+    val = !!(1 & buffer[0]);
+    fields.active = val;
+    return fields;
+  }
+  function encodeChannelFlowOk(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(13);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310741, 7);
+    offset = 11;
+    val = fields.active;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'active'");
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelClose(buffer) {
+    var val, len, offset = 0, fields = {
+      replyCode: undefined,
+      replyText: undefined,
+      classId: undefined,
+      methodId: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.replyCode = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.replyText = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.classId = val;
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.methodId = val;
+    return fields;
+  }
+  function encodeChannelClose(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.replyText;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'replyText' is the wrong type; must be a string (up to 255 chars)");
+    var replyText_len = Buffer.byteLength(val, "utf8");
+    varyingSize += replyText_len;
+    var buffer = Buffer.alloc(19 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310760, 7);
+    offset = 11;
+    val = fields.replyCode;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'replyCode'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'replyCode' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.replyText;
+    val === undefined && (val = "");
+    buffer[offset] = replyText_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += replyText_len;
+    val = fields.classId;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'classId'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'classId' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.methodId;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'methodId'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'methodId' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeChannelCloseOk(buffer) {
+    return {};
+  }
+  function encodeChannelCloseOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1310761, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeAccessRequest(buffer) {
+    var val, len, offset = 0, fields = {
+      realm: undefined,
+      exclusive: undefined,
+      passive: undefined,
+      active: undefined,
+      write: undefined,
+      read: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.realm = val;
+    val = !!(1 & buffer[offset]);
+    fields.exclusive = val;
+    val = !!(2 & buffer[offset]);
+    fields.passive = val;
+    val = !!(4 & buffer[offset]);
+    fields.active = val;
+    val = !!(8 & buffer[offset]);
+    fields.write = val;
+    val = !!(16 & buffer[offset]);
+    fields.read = val;
+    return fields;
+  }
+  function encodeAccessRequest(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.realm;
+    if (val === undefined)
+      val = "/data";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'realm' is the wrong type; must be a string (up to 255 chars)");
+    var realm_len = Buffer.byteLength(val, "utf8");
+    varyingSize += realm_len;
+    var buffer = Buffer.alloc(14 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1966090, 7);
+    offset = 11;
+    val = fields.realm;
+    val === undefined && (val = "/data");
+    buffer[offset] = realm_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += realm_len;
+    val = fields.exclusive;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.passive;
+    val === undefined && (val = true);
+    val && (bits += 2);
+    val = fields.active;
+    val === undefined && (val = true);
+    val && (bits += 4);
+    val = fields.write;
+    val === undefined && (val = true);
+    val && (bits += 8);
+    val = fields.read;
+    val === undefined && (val = true);
+    val && (bits += 16);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeAccessRequestOk(buffer) {
+    var val, offset = 0, fields = {
+      ticket: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    return fields;
+  }
+  function encodeAccessRequestOk(channel, fields) {
+    var offset = 0, val = null, buffer = Buffer.alloc(14);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(1966091, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 1;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeDeclare(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      exchange: undefined,
+      type: undefined,
+      passive: undefined,
+      durable: undefined,
+      autoDelete: undefined,
+      internal: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.type = val;
+    val = !!(1 & buffer[offset]);
+    fields.passive = val;
+    val = !!(2 & buffer[offset]);
+    fields.durable = val;
+    val = !!(4 & buffer[offset]);
+    fields.autoDelete = val;
+    val = !!(8 & buffer[offset]);
+    fields.internal = val;
+    val = !!(16 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeExchangeDeclare(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.type;
+    if (val === undefined)
+      val = "direct";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'type' is the wrong type; must be a string (up to 255 chars)");
+    var type_len = Buffer.byteLength(val, "utf8");
+    varyingSize += type_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621450, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.type;
+    val === undefined && (val = "direct");
+    buffer[offset] = type_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += type_len;
+    val = fields.passive;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.durable;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    val = fields.autoDelete;
+    val === undefined && (val = false);
+    val && (bits += 4);
+    val = fields.internal;
+    val === undefined && (val = false);
+    val && (bits += 8);
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 16);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeDeclareOk(buffer) {
+    return {};
+  }
+  function encodeExchangeDeclareOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621451, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeDelete(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      exchange: undefined,
+      ifUnused: undefined,
+      nowait: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    val = !!(1 & buffer[offset]);
+    fields.ifUnused = val;
+    val = !!(2 & buffer[offset]);
+    fields.nowait = val;
+    return fields;
+  }
+  function encodeExchangeDelete(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621460, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.ifUnused;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeDeleteOk(buffer) {
+    return {};
+  }
+  function encodeExchangeDeleteOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621461, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeBind(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      destination: undefined,
+      source: undefined,
+      routingKey: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.destination = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.source = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    val = !!(1 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeExchangeBind(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.destination;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'destination'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'destination' is the wrong type; must be a string (up to 255 chars)");
+    var destination_len = Buffer.byteLength(val, "utf8");
+    varyingSize += destination_len;
+    val = fields.source;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'source'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'source' is the wrong type; must be a string (up to 255 chars)");
+    var source_len = Buffer.byteLength(val, "utf8");
+    varyingSize += source_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(18 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621470, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.destination;
+    val === undefined && (val = undefined);
+    buffer[offset] = destination_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += destination_len;
+    val = fields.source;
+    val === undefined && (val = undefined);
+    buffer[offset] = source_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += source_len;
+    val = fields.routingKey;
+    val === undefined && (val = "");
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeBindOk(buffer) {
+    return {};
+  }
+  function encodeExchangeBindOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621471, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeUnbind(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      destination: undefined,
+      source: undefined,
+      routingKey: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.destination = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.source = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    val = !!(1 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeExchangeUnbind(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.destination;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'destination'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'destination' is the wrong type; must be a string (up to 255 chars)");
+    var destination_len = Buffer.byteLength(val, "utf8");
+    varyingSize += destination_len;
+    val = fields.source;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'source'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'source' is the wrong type; must be a string (up to 255 chars)");
+    var source_len = Buffer.byteLength(val, "utf8");
+    varyingSize += source_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(18 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621480, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.destination;
+    val === undefined && (val = undefined);
+    buffer[offset] = destination_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += destination_len;
+    val = fields.source;
+    val === undefined && (val = undefined);
+    buffer[offset] = source_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += source_len;
+    val = fields.routingKey;
+    val === undefined && (val = "");
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeExchangeUnbindOk(buffer) {
+    return {};
+  }
+  function encodeExchangeUnbindOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(2621491, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueDeclare(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      passive: undefined,
+      durable: undefined,
+      exclusive: undefined,
+      autoDelete: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    val = !!(1 & buffer[offset]);
+    fields.passive = val;
+    val = !!(2 & buffer[offset]);
+    fields.durable = val;
+    val = !!(4 & buffer[offset]);
+    fields.exclusive = val;
+    val = !!(8 & buffer[offset]);
+    fields.autoDelete = val;
+    val = !!(16 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeQueueDeclare(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276810, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.passive;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.durable;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    val = fields.exclusive;
+    val === undefined && (val = false);
+    val && (bits += 4);
+    val = fields.autoDelete;
+    val === undefined && (val = false);
+    val && (bits += 8);
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 16);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueDeclareOk(buffer) {
+    var val, len, offset = 0, fields = {
+      queue: undefined,
+      messageCount: undefined,
+      consumerCount: undefined
+    };
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.messageCount = val;
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.consumerCount = val;
+    return fields;
+  }
+  function encodeQueueDeclareOk(channel, fields) {
+    var offset = 0, val = null, varyingSize = 0;
+    val = fields.queue;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'queue'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    var buffer = Buffer.alloc(21 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276811, 7);
+    offset = 11;
+    val = fields.queue;
+    val === undefined && (val = undefined);
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.messageCount;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'messageCount'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'messageCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    val = fields.consumerCount;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'consumerCount'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'consumerCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueBind(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      exchange: undefined,
+      routingKey: undefined,
+      nowait: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    val = !!(1 & buffer[offset]);
+    fields.nowait = val;
+    offset++;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeQueueBind(channel, fields) {
+    var len, offset = 0, val = null, bits = 0, varyingSize = 0, scratchOffset = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(18 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276820, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = "");
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    bits = 0;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueBindOk(buffer) {
+    return {};
+  }
+  function encodeQueueBindOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276821, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueuePurge(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      nowait: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    val = !!(1 & buffer[offset]);
+    fields.nowait = val;
+    return fields;
+  }
+  function encodeQueuePurge(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276830, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueuePurgeOk(buffer) {
+    var val, offset = 0, fields = {
+      messageCount: undefined
+    };
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.messageCount = val;
+    return fields;
+  }
+  function encodeQueuePurgeOk(channel, fields) {
+    var offset = 0, val = null, buffer = Buffer.alloc(16);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276831, 7);
+    offset = 11;
+    val = fields.messageCount;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'messageCount'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'messageCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueDelete(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      ifUnused: undefined,
+      ifEmpty: undefined,
+      nowait: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    val = !!(1 & buffer[offset]);
+    fields.ifUnused = val;
+    val = !!(2 & buffer[offset]);
+    fields.ifEmpty = val;
+    val = !!(4 & buffer[offset]);
+    fields.nowait = val;
+    return fields;
+  }
+  function encodeQueueDelete(channel, fields) {
+    var offset = 0, val = null, bits = 0, varyingSize = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    var buffer = Buffer.alloc(16 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276840, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.ifUnused;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    val = fields.ifEmpty;
+    val === undefined && (val = false);
+    val && (bits += 2);
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 4);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueDeleteOk(buffer) {
+    var val, offset = 0, fields = {
+      messageCount: undefined
+    };
+    val = buffer.readUInt32BE(offset);
+    offset += 4;
+    fields.messageCount = val;
+    return fields;
+  }
+  function encodeQueueDeleteOk(channel, fields) {
+    var offset = 0, val = null, buffer = Buffer.alloc(16);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276841, 7);
+    offset = 11;
+    val = fields.messageCount;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'messageCount'");
+    if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'messageCount' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt32BE(val, offset);
+    offset += 4;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueUnbind(buffer) {
+    var val, len, offset = 0, fields = {
+      ticket: undefined,
+      queue: undefined,
+      exchange: undefined,
+      routingKey: undefined,
+      arguments: undefined
+    };
+    val = buffer.readUInt16BE(offset);
+    offset += 2;
+    fields.ticket = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.queue = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.exchange = val;
+    len = buffer.readUInt8(offset);
+    offset++;
+    val = buffer.toString("utf8", offset, offset + len);
+    offset += len;
+    fields.routingKey = val;
+    len = buffer.readUInt32BE(offset);
+    offset += 4;
+    val = decodeFields(buffer.subarray(offset, offset + len));
+    offset += len;
+    fields.arguments = val;
+    return fields;
+  }
+  function encodeQueueUnbind(channel, fields) {
+    var len, offset = 0, val = null, varyingSize = 0, scratchOffset = 0;
+    val = fields.queue;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'queue' is the wrong type; must be a string (up to 255 chars)");
+    var queue_len = Buffer.byteLength(val, "utf8");
+    varyingSize += queue_len;
+    val = fields.exchange;
+    if (val === undefined)
+      throw new Error("Missing value for mandatory field 'exchange'");
+    if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'exchange' is the wrong type; must be a string (up to 255 chars)");
+    var exchange_len = Buffer.byteLength(val, "utf8");
+    varyingSize += exchange_len;
+    val = fields.routingKey;
+    if (val === undefined)
+      val = "";
+    else if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+      throw new TypeError("Field 'routingKey' is the wrong type; must be a string (up to 255 chars)");
+    var routingKey_len = Buffer.byteLength(val, "utf8");
+    varyingSize += routingKey_len;
+    val = fields.arguments;
+    if (val === undefined)
+      val = {};
+    else if (typeof val != "object")
+      throw new TypeError("Field 'arguments' is the wrong type; must be an object");
+    len = encodeTable(SCRATCH, val, scratchOffset);
+    var arguments_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+    scratchOffset += len;
+    varyingSize += arguments_encoded.length;
+    var buffer = Buffer.alloc(17 + varyingSize);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276850, 7);
+    offset = 11;
+    val = fields.ticket;
+    if (val === undefined)
+      val = 0;
+    else if (typeof val != "number" || isNaN(val))
+      throw new TypeError("Field 'ticket' is the wrong type; must be a number (but not NaN)");
+    buffer.writeUInt16BE(val, offset);
+    offset += 2;
+    val = fields.queue;
+    val === undefined && (val = "");
+    buffer[offset] = queue_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += queue_len;
+    val = fields.exchange;
+    val === undefined && (val = undefined);
+    buffer[offset] = exchange_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += exchange_len;
+    val = fields.routingKey;
+    val === undefined && (val = "");
+    buffer[offset] = routingKey_len;
+    offset++;
+    buffer.write(val, offset, "utf8");
+    offset += routingKey_len;
+    offset += arguments_encoded.copy(buffer, offset);
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeQueueUnbindOk(buffer) {
+    return {};
+  }
+  function encodeQueueUnbindOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3276851, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxSelect(buffer) {
+    return {};
+  }
+  function encodeTxSelect(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898250, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxSelectOk(buffer) {
+    return {};
+  }
+  function encodeTxSelectOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898251, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxCommit(buffer) {
+    return {};
+  }
+  function encodeTxCommit(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898260, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxCommitOk(buffer) {
+    return {};
+  }
+  function encodeTxCommitOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898261, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxRollback(buffer) {
+    return {};
+  }
+  function encodeTxRollback(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898270, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeTxRollbackOk(buffer) {
+    return {};
+  }
+  function encodeTxRollbackOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5898271, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConfirmSelect(buffer) {
+    var val, fields = {
+      nowait: undefined
+    };
+    val = !!(1 & buffer[0]);
+    fields.nowait = val;
+    return fields;
+  }
+  function encodeConfirmSelect(channel, fields) {
+    var offset = 0, val = null, bits = 0, buffer = Buffer.alloc(13);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5570570, 7);
+    offset = 11;
+    val = fields.nowait;
+    val === undefined && (val = false);
+    val && (bits += 1);
+    buffer[offset] = bits;
+    offset++;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function decodeConfirmSelectOk(buffer) {
+    return {};
+  }
+  function encodeConfirmSelectOk(channel, fields) {
+    var offset = 0, buffer = Buffer.alloc(12);
+    buffer[0] = 1;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(5570571, 7);
+    offset = 11;
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    return buffer;
+  }
+  function encodeBasicProperties(channel, size, fields) {
+    var val, len, offset = 0, flags = 0, scratchOffset = 0, varyingSize = 0;
+    val = fields.contentType;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'contentType' is the wrong type; must be a string (up to 255 chars)");
+      var contentType_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += contentType_len;
+    }
+    val = fields.contentEncoding;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'contentEncoding' is the wrong type; must be a string (up to 255 chars)");
+      var contentEncoding_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += contentEncoding_len;
+    }
+    val = fields.headers;
+    if (val != null) {
+      if (typeof val != "object")
+        throw new TypeError("Field 'headers' is the wrong type; must be an object");
+      len = encodeTable(SCRATCH, val, scratchOffset);
+      var headers_encoded = SCRATCH.slice(scratchOffset, scratchOffset + len);
+      scratchOffset += len;
+      varyingSize += headers_encoded.length;
+    }
+    val = fields.deliveryMode;
+    if (val != null) {
+      if (typeof val != "number" || isNaN(val))
+        throw new TypeError("Field 'deliveryMode' is the wrong type; must be a number (but not NaN)");
+      varyingSize += 1;
+    }
+    val = fields.priority;
+    if (val != null) {
+      if (typeof val != "number" || isNaN(val))
+        throw new TypeError("Field 'priority' is the wrong type; must be a number (but not NaN)");
+      varyingSize += 1;
+    }
+    val = fields.correlationId;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'correlationId' is the wrong type; must be a string (up to 255 chars)");
+      var correlationId_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += correlationId_len;
+    }
+    val = fields.replyTo;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'replyTo' is the wrong type; must be a string (up to 255 chars)");
+      var replyTo_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += replyTo_len;
+    }
+    val = fields.expiration;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'expiration' is the wrong type; must be a string (up to 255 chars)");
+      var expiration_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += expiration_len;
+    }
+    val = fields.messageId;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'messageId' is the wrong type; must be a string (up to 255 chars)");
+      var messageId_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += messageId_len;
+    }
+    val = fields.timestamp;
+    if (val != null) {
+      if (typeof val != "number" || isNaN(val))
+        throw new TypeError("Field 'timestamp' is the wrong type; must be a number (but not NaN)");
+      varyingSize += 8;
+    }
+    val = fields.type;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'type' is the wrong type; must be a string (up to 255 chars)");
+      var type_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += type_len;
+    }
+    val = fields.userId;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'userId' is the wrong type; must be a string (up to 255 chars)");
+      var userId_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += userId_len;
+    }
+    val = fields.appId;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'appId' is the wrong type; must be a string (up to 255 chars)");
+      var appId_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += appId_len;
+    }
+    val = fields.clusterId;
+    if (val != null) {
+      if (!(typeof val == "string" && Buffer.byteLength(val) < 256))
+        throw new TypeError("Field 'clusterId' is the wrong type; must be a string (up to 255 chars)");
+      var clusterId_len = Buffer.byteLength(val, "utf8");
+      varyingSize += 1;
+      varyingSize += clusterId_len;
+    }
+    var buffer = Buffer.alloc(22 + varyingSize);
+    buffer[0] = 2;
+    buffer.writeUInt16BE(channel, 1);
+    buffer.writeUInt32BE(3932160, 7);
+    ints.writeUInt64BE(buffer, size, 11);
+    flags = 0;
+    offset = 21;
+    val = fields.contentType;
+    if (val != null) {
+      flags += 32768;
+      buffer[offset] = contentType_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += contentType_len;
+    }
+    val = fields.contentEncoding;
+    if (val != null) {
+      flags += 16384;
+      buffer[offset] = contentEncoding_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += contentEncoding_len;
+    }
+    val = fields.headers;
+    if (val != null) {
+      flags += 8192;
+      offset += headers_encoded.copy(buffer, offset);
+    }
+    val = fields.deliveryMode;
+    if (val != null) {
+      flags += 4096;
+      buffer.writeUInt8(val, offset);
+      offset++;
+    }
+    val = fields.priority;
+    if (val != null) {
+      flags += 2048;
+      buffer.writeUInt8(val, offset);
+      offset++;
+    }
+    val = fields.correlationId;
+    if (val != null) {
+      flags += 1024;
+      buffer[offset] = correlationId_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += correlationId_len;
+    }
+    val = fields.replyTo;
+    if (val != null) {
+      flags += 512;
+      buffer[offset] = replyTo_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += replyTo_len;
+    }
+    val = fields.expiration;
+    if (val != null) {
+      flags += 256;
+      buffer[offset] = expiration_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += expiration_len;
+    }
+    val = fields.messageId;
+    if (val != null) {
+      flags += 128;
+      buffer[offset] = messageId_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += messageId_len;
+    }
+    val = fields.timestamp;
+    if (val != null) {
+      flags += 64;
+      ints.writeUInt64BE(buffer, val, offset);
+      offset += 8;
+    }
+    val = fields.type;
+    if (val != null) {
+      flags += 32;
+      buffer[offset] = type_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += type_len;
+    }
+    val = fields.userId;
+    if (val != null) {
+      flags += 16;
+      buffer[offset] = userId_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += userId_len;
+    }
+    val = fields.appId;
+    if (val != null) {
+      flags += 8;
+      buffer[offset] = appId_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += appId_len;
+    }
+    val = fields.clusterId;
+    if (val != null) {
+      flags += 4;
+      buffer[offset] = clusterId_len;
+      offset++;
+      buffer.write(val, offset, "utf8");
+      offset += clusterId_len;
+    }
+    buffer[offset] = 206;
+    buffer.writeUInt32BE(offset - 7, 3);
+    buffer.writeUInt16BE(flags, 19);
+    return buffer.subarray(0, offset + 1);
+  }
+  function decodeBasicProperties(buffer) {
+    var flags, val, len, offset = 2;
+    flags = buffer.readUInt16BE(0);
+    if (flags === 0)
+      return {};
+    var fields = {
+      contentType: undefined,
+      contentEncoding: undefined,
+      headers: undefined,
+      deliveryMode: undefined,
+      priority: undefined,
+      correlationId: undefined,
+      replyTo: undefined,
+      expiration: undefined,
+      messageId: undefined,
+      timestamp: undefined,
+      type: undefined,
+      userId: undefined,
+      appId: undefined,
+      clusterId: undefined
+    };
+    if (32768 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.contentType = val;
+    }
+    if (16384 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.contentEncoding = val;
+    }
+    if (8192 & flags) {
+      len = buffer.readUInt32BE(offset);
+      offset += 4;
+      val = decodeFields(buffer.subarray(offset, offset + len));
+      offset += len;
+      fields.headers = val;
+    }
+    if (4096 & flags) {
+      val = buffer[offset];
+      offset++;
+      fields.deliveryMode = val;
+    }
+    if (2048 & flags) {
+      val = buffer[offset];
+      offset++;
+      fields.priority = val;
+    }
+    if (1024 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.correlationId = val;
+    }
+    if (512 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.replyTo = val;
+    }
+    if (256 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.expiration = val;
+    }
+    if (128 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.messageId = val;
+    }
+    if (64 & flags) {
+      val = ints.readUInt64BE(buffer, offset);
+      offset += 8;
+      fields.timestamp = val;
+    }
+    if (32 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.type = val;
+    }
+    if (16 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.userId = val;
+    }
+    if (8 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.appId = val;
+    }
+    if (4 & flags) {
+      len = buffer.readUInt8(offset);
+      offset++;
+      val = buffer.toString("utf8", offset, offset + len);
+      offset += len;
+      fields.clusterId = val;
+    }
+    return fields;
+  }
+  var codec = require_codec();
+  var ints = require_buffer_more_ints();
+  var encodeTable = codec.encodeTable;
+  var decodeFields = codec.decodeFields;
+  var SCRATCH = Buffer.alloc(65536);
+  var EMPTY_OBJECT = Object.freeze({});
+  exports.constants = {
+    FRAME_METHOD: 1,
+    FRAME_HEADER: 2,
+    FRAME_BODY: 3,
+    FRAME_HEARTBEAT: 8,
+    FRAME_MIN_SIZE: 4096,
+    FRAME_END: 206,
+    REPLY_SUCCESS: 200,
+    CONTENT_TOO_LARGE: 311,
+    NO_ROUTE: 312,
+    NO_CONSUMERS: 313,
+    ACCESS_REFUSED: 403,
+    NOT_FOUND: 404,
+    RESOURCE_LOCKED: 405,
+    PRECONDITION_FAILED: 406,
+    CONNECTION_FORCED: 320,
+    INVALID_PATH: 402,
+    FRAME_ERROR: 501,
+    SYNTAX_ERROR: 502,
+    COMMAND_INVALID: 503,
+    CHANNEL_ERROR: 504,
+    UNEXPECTED_FRAME: 505,
+    RESOURCE_ERROR: 506,
+    NOT_ALLOWED: 530,
+    NOT_IMPLEMENTED: 540,
+    INTERNAL_ERROR: 541
+  };
+  exports.constant_strs = {
+    "1": "FRAME-METHOD",
+    "2": "FRAME-HEADER",
+    "3": "FRAME-BODY",
+    "8": "FRAME-HEARTBEAT",
+    "200": "REPLY-SUCCESS",
+    "206": "FRAME-END",
+    "311": "CONTENT-TOO-LARGE",
+    "312": "NO-ROUTE",
+    "313": "NO-CONSUMERS",
+    "320": "CONNECTION-FORCED",
+    "402": "INVALID-PATH",
+    "403": "ACCESS-REFUSED",
+    "404": "NOT-FOUND",
+    "405": "RESOURCE-LOCKED",
+    "406": "PRECONDITION-FAILED",
+    "501": "FRAME-ERROR",
+    "502": "SYNTAX-ERROR",
+    "503": "COMMAND-INVALID",
+    "504": "CHANNEL-ERROR",
+    "505": "UNEXPECTED-FRAME",
+    "506": "RESOURCE-ERROR",
+    "530": "NOT-ALLOWED",
+    "540": "NOT-IMPLEMENTED",
+    "541": "INTERNAL-ERROR",
+    "4096": "FRAME-MIN-SIZE"
+  };
+  exports.FRAME_OVERHEAD = 8;
+  exports.decode = function(id, buf) {
+    switch (id) {
+      case 3932170:
+        return decodeBasicQos(buf);
+      case 3932171:
+        return decodeBasicQosOk(buf);
+      case 3932180:
+        return decodeBasicConsume(buf);
+      case 3932181:
+        return decodeBasicConsumeOk(buf);
+      case 3932190:
+        return decodeBasicCancel(buf);
+      case 3932191:
+        return decodeBasicCancelOk(buf);
+      case 3932200:
+        return decodeBasicPublish(buf);
+      case 3932210:
+        return decodeBasicReturn(buf);
+      case 3932220:
+        return decodeBasicDeliver(buf);
+      case 3932230:
+        return decodeBasicGet(buf);
+      case 3932231:
+        return decodeBasicGetOk(buf);
+      case 3932232:
+        return decodeBasicGetEmpty(buf);
+      case 3932240:
+        return decodeBasicAck(buf);
+      case 3932250:
+        return decodeBasicReject(buf);
+      case 3932260:
+        return decodeBasicRecoverAsync(buf);
+      case 3932270:
+        return decodeBasicRecover(buf);
+      case 3932271:
+        return decodeBasicRecoverOk(buf);
+      case 3932280:
+        return decodeBasicNack(buf);
+      case 655370:
+        return decodeConnectionStart(buf);
+      case 655371:
+        return decodeConnectionStartOk(buf);
+      case 655380:
+        return decodeConnectionSecure(buf);
+      case 655381:
+        return decodeConnectionSecureOk(buf);
+      case 655390:
+        return decodeConnectionTune(buf);
+      case 655391:
+        return decodeConnectionTuneOk(buf);
+      case 655400:
+        return decodeConnectionOpen(buf);
+      case 655401:
+        return decodeConnectionOpenOk(buf);
+      case 655410:
+        return decodeConnectionClose(buf);
+      case 655411:
+        return decodeConnectionCloseOk(buf);
+      case 655420:
+        return decodeConnectionBlocked(buf);
+      case 655421:
+        return decodeConnectionUnblocked(buf);
+      case 655430:
+        return decodeConnectionUpdateSecret(buf);
+      case 655431:
+        return decodeConnectionUpdateSecretOk(buf);
+      case 1310730:
+        return decodeChannelOpen(buf);
+      case 1310731:
+        return decodeChannelOpenOk(buf);
+      case 1310740:
+        return decodeChannelFlow(buf);
+      case 1310741:
+        return decodeChannelFlowOk(buf);
+      case 1310760:
+        return decodeChannelClose(buf);
+      case 1310761:
+        return decodeChannelCloseOk(buf);
+      case 1966090:
+        return decodeAccessRequest(buf);
+      case 1966091:
+        return decodeAccessRequestOk(buf);
+      case 2621450:
+        return decodeExchangeDeclare(buf);
+      case 2621451:
+        return decodeExchangeDeclareOk(buf);
+      case 2621460:
+        return decodeExchangeDelete(buf);
+      case 2621461:
+        return decodeExchangeDeleteOk(buf);
+      case 2621470:
+        return decodeExchangeBind(buf);
+      case 2621471:
+        return decodeExchangeBindOk(buf);
+      case 2621480:
+        return decodeExchangeUnbind(buf);
+      case 2621491:
+        return decodeExchangeUnbindOk(buf);
+      case 3276810:
+        return decodeQueueDeclare(buf);
+      case 3276811:
+        return decodeQueueDeclareOk(buf);
+      case 3276820:
+        return decodeQueueBind(buf);
+      case 3276821:
+        return decodeQueueBindOk(buf);
+      case 3276830:
+        return decodeQueuePurge(buf);
+      case 3276831:
+        return decodeQueuePurgeOk(buf);
+      case 3276840:
+        return decodeQueueDelete(buf);
+      case 3276841:
+        return decodeQueueDeleteOk(buf);
+      case 3276850:
+        return decodeQueueUnbind(buf);
+      case 3276851:
+        return decodeQueueUnbindOk(buf);
+      case 5898250:
+        return decodeTxSelect(buf);
+      case 5898251:
+        return decodeTxSelectOk(buf);
+      case 5898260:
+        return decodeTxCommit(buf);
+      case 5898261:
+        return decodeTxCommitOk(buf);
+      case 5898270:
+        return decodeTxRollback(buf);
+      case 5898271:
+        return decodeTxRollbackOk(buf);
+      case 5570570:
+        return decodeConfirmSelect(buf);
+      case 5570571:
+        return decodeConfirmSelectOk(buf);
+      case 60:
+        return decodeBasicProperties(buf);
+      default:
+        throw new Error("Unknown class/method ID");
+    }
+  };
+  exports.encodeMethod = function(id, channel, fields) {
+    switch (id) {
+      case 3932170:
+        return encodeBasicQos(channel, fields);
+      case 3932171:
+        return encodeBasicQosOk(channel, fields);
+      case 3932180:
+        return encodeBasicConsume(channel, fields);
+      case 3932181:
+        return encodeBasicConsumeOk(channel, fields);
+      case 3932190:
+        return encodeBasicCancel(channel, fields);
+      case 3932191:
+        return encodeBasicCancelOk(channel, fields);
+      case 3932200:
+        return encodeBasicPublish(channel, fields);
+      case 3932210:
+        return encodeBasicReturn(channel, fields);
+      case 3932220:
+        return encodeBasicDeliver(channel, fields);
+      case 3932230:
+        return encodeBasicGet(channel, fields);
+      case 3932231:
+        return encodeBasicGetOk(channel, fields);
+      case 3932232:
+        return encodeBasicGetEmpty(channel, fields);
+      case 3932240:
+        return encodeBasicAck(channel, fields);
+      case 3932250:
+        return encodeBasicReject(channel, fields);
+      case 3932260:
+        return encodeBasicRecoverAsync(channel, fields);
+      case 3932270:
+        return encodeBasicRecover(channel, fields);
+      case 3932271:
+        return encodeBasicRecoverOk(channel, fields);
+      case 3932280:
+        return encodeBasicNack(channel, fields);
+      case 655370:
+        return encodeConnectionStart(channel, fields);
+      case 655371:
+        return encodeConnectionStartOk(channel, fields);
+      case 655380:
+        return encodeConnectionSecure(channel, fields);
+      case 655381:
+        return encodeConnectionSecureOk(channel, fields);
+      case 655390:
+        return encodeConnectionTune(channel, fields);
+      case 655391:
+        return encodeConnectionTuneOk(channel, fields);
+      case 655400:
+        return encodeConnectionOpen(channel, fields);
+      case 655401:
+        return encodeConnectionOpenOk(channel, fields);
+      case 655410:
+        return encodeConnectionClose(channel, fields);
+      case 655411:
+        return encodeConnectionCloseOk(channel, fields);
+      case 655420:
+        return encodeConnectionBlocked(channel, fields);
+      case 655421:
+        return encodeConnectionUnblocked(channel, fields);
+      case 655430:
+        return encodeConnectionUpdateSecret(channel, fields);
+      case 655431:
+        return encodeConnectionUpdateSecretOk(channel, fields);
+      case 1310730:
+        return encodeChannelOpen(channel, fields);
+      case 1310731:
+        return encodeChannelOpenOk(channel, fields);
+      case 1310740:
+        return encodeChannelFlow(channel, fields);
+      case 1310741:
+        return encodeChannelFlowOk(channel, fields);
+      case 1310760:
+        return encodeChannelClose(channel, fields);
+      case 1310761:
+        return encodeChannelCloseOk(channel, fields);
+      case 1966090:
+        return encodeAccessRequest(channel, fields);
+      case 1966091:
+        return encodeAccessRequestOk(channel, fields);
+      case 2621450:
+        return encodeExchangeDeclare(channel, fields);
+      case 2621451:
+        return encodeExchangeDeclareOk(channel, fields);
+      case 2621460:
+        return encodeExchangeDelete(channel, fields);
+      case 2621461:
+        return encodeExchangeDeleteOk(channel, fields);
+      case 2621470:
+        return encodeExchangeBind(channel, fields);
+      case 2621471:
+        return encodeExchangeBindOk(channel, fields);
+      case 2621480:
+        return encodeExchangeUnbind(channel, fields);
+      case 2621491:
+        return encodeExchangeUnbindOk(channel, fields);
+      case 3276810:
+        return encodeQueueDeclare(channel, fields);
+      case 3276811:
+        return encodeQueueDeclareOk(channel, fields);
+      case 3276820:
+        return encodeQueueBind(channel, fields);
+      case 3276821:
+        return encodeQueueBindOk(channel, fields);
+      case 3276830:
+        return encodeQueuePurge(channel, fields);
+      case 3276831:
+        return encodeQueuePurgeOk(channel, fields);
+      case 3276840:
+        return encodeQueueDelete(channel, fields);
+      case 3276841:
+        return encodeQueueDeleteOk(channel, fields);
+      case 3276850:
+        return encodeQueueUnbind(channel, fields);
+      case 3276851:
+        return encodeQueueUnbindOk(channel, fields);
+      case 5898250:
+        return encodeTxSelect(channel, fields);
+      case 5898251:
+        return encodeTxSelectOk(channel, fields);
+      case 5898260:
+        return encodeTxCommit(channel, fields);
+      case 5898261:
+        return encodeTxCommitOk(channel, fields);
+      case 5898270:
+        return encodeTxRollback(channel, fields);
+      case 5898271:
+        return encodeTxRollbackOk(channel, fields);
+      case 5570570:
+        return encodeConfirmSelect(channel, fields);
+      case 5570571:
+        return encodeConfirmSelectOk(channel, fields);
+      default:
+        throw new Error("Unknown class/method ID");
+    }
+  };
+  exports.encodeProperties = function(id, channel, size, fields) {
+    switch (id) {
+      case 60:
+        return encodeBasicProperties(channel, size, fields);
+      default:
+        throw new Error("Unknown class/properties ID");
+    }
+  };
+  exports.info = function(id) {
+    switch (id) {
+      case 3932170:
+        return methodInfoBasicQos;
+      case 3932171:
+        return methodInfoBasicQosOk;
+      case 3932180:
+        return methodInfoBasicConsume;
+      case 3932181:
+        return methodInfoBasicConsumeOk;
+      case 3932190:
+        return methodInfoBasicCancel;
+      case 3932191:
+        return methodInfoBasicCancelOk;
+      case 3932200:
+        return methodInfoBasicPublish;
+      case 3932210:
+        return methodInfoBasicReturn;
+      case 3932220:
+        return methodInfoBasicDeliver;
+      case 3932230:
+        return methodInfoBasicGet;
+      case 3932231:
+        return methodInfoBasicGetOk;
+      case 3932232:
+        return methodInfoBasicGetEmpty;
+      case 3932240:
+        return methodInfoBasicAck;
+      case 3932250:
+        return methodInfoBasicReject;
+      case 3932260:
+        return methodInfoBasicRecoverAsync;
+      case 3932270:
+        return methodInfoBasicRecover;
+      case 3932271:
+        return methodInfoBasicRecoverOk;
+      case 3932280:
+        return methodInfoBasicNack;
+      case 655370:
+        return methodInfoConnectionStart;
+      case 655371:
+        return methodInfoConnectionStartOk;
+      case 655380:
+        return methodInfoConnectionSecure;
+      case 655381:
+        return methodInfoConnectionSecureOk;
+      case 655390:
+        return methodInfoConnectionTune;
+      case 655391:
+        return methodInfoConnectionTuneOk;
+      case 655400:
+        return methodInfoConnectionOpen;
+      case 655401:
+        return methodInfoConnectionOpenOk;
+      case 655410:
+        return methodInfoConnectionClose;
+      case 655411:
+        return methodInfoConnectionCloseOk;
+      case 655420:
+        return methodInfoConnectionBlocked;
+      case 655421:
+        return methodInfoConnectionUnblocked;
+      case 655430:
+        return methodInfoConnectionUpdateSecret;
+      case 655431:
+        return methodInfoConnectionUpdateSecretOk;
+      case 1310730:
+        return methodInfoChannelOpen;
+      case 1310731:
+        return methodInfoChannelOpenOk;
+      case 1310740:
+        return methodInfoChannelFlow;
+      case 1310741:
+        return methodInfoChannelFlowOk;
+      case 1310760:
+        return methodInfoChannelClose;
+      case 1310761:
+        return methodInfoChannelCloseOk;
+      case 1966090:
+        return methodInfoAccessRequest;
+      case 1966091:
+        return methodInfoAccessRequestOk;
+      case 2621450:
+        return methodInfoExchangeDeclare;
+      case 2621451:
+        return methodInfoExchangeDeclareOk;
+      case 2621460:
+        return methodInfoExchangeDelete;
+      case 2621461:
+        return methodInfoExchangeDeleteOk;
+      case 2621470:
+        return methodInfoExchangeBind;
+      case 2621471:
+        return methodInfoExchangeBindOk;
+      case 2621480:
+        return methodInfoExchangeUnbind;
+      case 2621491:
+        return methodInfoExchangeUnbindOk;
+      case 3276810:
+        return methodInfoQueueDeclare;
+      case 3276811:
+        return methodInfoQueueDeclareOk;
+      case 3276820:
+        return methodInfoQueueBind;
+      case 3276821:
+        return methodInfoQueueBindOk;
+      case 3276830:
+        return methodInfoQueuePurge;
+      case 3276831:
+        return methodInfoQueuePurgeOk;
+      case 3276840:
+        return methodInfoQueueDelete;
+      case 3276841:
+        return methodInfoQueueDeleteOk;
+      case 3276850:
+        return methodInfoQueueUnbind;
+      case 3276851:
+        return methodInfoQueueUnbindOk;
+      case 5898250:
+        return methodInfoTxSelect;
+      case 5898251:
+        return methodInfoTxSelectOk;
+      case 5898260:
+        return methodInfoTxCommit;
+      case 5898261:
+        return methodInfoTxCommitOk;
+      case 5898270:
+        return methodInfoTxRollback;
+      case 5898271:
+        return methodInfoTxRollbackOk;
+      case 5570570:
+        return methodInfoConfirmSelect;
+      case 5570571:
+        return methodInfoConfirmSelectOk;
+      case 60:
+        return propertiesInfoBasicProperties;
+      default:
+        throw new Error("Unknown class/method ID");
+    }
+  };
+  exports.BasicQos = 3932170;
+  var methodInfoBasicQos = exports.methodInfoBasicQos = {
+    id: 3932170,
+    classId: 60,
+    methodId: 10,
+    name: "BasicQos",
+    args: [{
+      type: "long",
+      name: "prefetchSize",
+      default: 0
+    }, {
+      type: "short",
+      name: "prefetchCount",
+      default: 0
+    }, {
+      type: "bit",
+      name: "global",
+      default: false
+    }]
+  };
+  exports.BasicQosOk = 3932171;
+  var methodInfoBasicQosOk = exports.methodInfoBasicQosOk = {
+    id: 3932171,
+    classId: 60,
+    methodId: 11,
+    name: "BasicQosOk",
+    args: []
+  };
+  exports.BasicConsume = 3932180;
+  var methodInfoBasicConsume = exports.methodInfoBasicConsume = {
+    id: 3932180,
+    classId: 60,
+    methodId: 20,
+    name: "BasicConsume",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "shortstr",
+      name: "consumerTag",
+      default: ""
+    }, {
+      type: "bit",
+      name: "noLocal",
+      default: false
+    }, {
+      type: "bit",
+      name: "noAck",
+      default: false
+    }, {
+      type: "bit",
+      name: "exclusive",
+      default: false
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.BasicConsumeOk = 3932181;
+  var methodInfoBasicConsumeOk = exports.methodInfoBasicConsumeOk = {
+    id: 3932181,
+    classId: 60,
+    methodId: 21,
+    name: "BasicConsumeOk",
+    args: [{
+      type: "shortstr",
+      name: "consumerTag"
+    }]
+  };
+  exports.BasicCancel = 3932190;
+  var methodInfoBasicCancel = exports.methodInfoBasicCancel = {
+    id: 3932190,
+    classId: 60,
+    methodId: 30,
+    name: "BasicCancel",
+    args: [{
+      type: "shortstr",
+      name: "consumerTag"
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }]
+  };
+  exports.BasicCancelOk = 3932191;
+  var methodInfoBasicCancelOk = exports.methodInfoBasicCancelOk = {
+    id: 3932191,
+    classId: 60,
+    methodId: 31,
+    name: "BasicCancelOk",
+    args: [{
+      type: "shortstr",
+      name: "consumerTag"
+    }]
+  };
+  exports.BasicPublish = 3932200;
+  var methodInfoBasicPublish = exports.methodInfoBasicPublish = {
+    id: 3932200,
+    classId: 60,
+    methodId: 40,
+    name: "BasicPublish",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "exchange",
+      default: ""
+    }, {
+      type: "shortstr",
+      name: "routingKey",
+      default: ""
+    }, {
+      type: "bit",
+      name: "mandatory",
+      default: false
+    }, {
+      type: "bit",
+      name: "immediate",
+      default: false
+    }]
+  };
+  exports.BasicReturn = 3932210;
+  var methodInfoBasicReturn = exports.methodInfoBasicReturn = {
+    id: 3932210,
+    classId: 60,
+    methodId: 50,
+    name: "BasicReturn",
+    args: [{
+      type: "short",
+      name: "replyCode"
+    }, {
+      type: "shortstr",
+      name: "replyText",
+      default: ""
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "routingKey"
+    }]
+  };
+  exports.BasicDeliver = 3932220;
+  var methodInfoBasicDeliver = exports.methodInfoBasicDeliver = {
+    id: 3932220,
+    classId: 60,
+    methodId: 60,
+    name: "BasicDeliver",
+    args: [{
+      type: "shortstr",
+      name: "consumerTag"
+    }, {
+      type: "longlong",
+      name: "deliveryTag"
+    }, {
+      type: "bit",
+      name: "redelivered",
+      default: false
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "routingKey"
+    }]
+  };
+  exports.BasicGet = 3932230;
+  var methodInfoBasicGet = exports.methodInfoBasicGet = {
+    id: 3932230,
+    classId: 60,
+    methodId: 70,
+    name: "BasicGet",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "bit",
+      name: "noAck",
+      default: false
+    }]
+  };
+  exports.BasicGetOk = 3932231;
+  var methodInfoBasicGetOk = exports.methodInfoBasicGetOk = {
+    id: 3932231,
+    classId: 60,
+    methodId: 71,
+    name: "BasicGetOk",
+    args: [{
+      type: "longlong",
+      name: "deliveryTag"
+    }, {
+      type: "bit",
+      name: "redelivered",
+      default: false
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "routingKey"
+    }, {
+      type: "long",
+      name: "messageCount"
+    }]
+  };
+  exports.BasicGetEmpty = 3932232;
+  var methodInfoBasicGetEmpty = exports.methodInfoBasicGetEmpty = {
+    id: 3932232,
+    classId: 60,
+    methodId: 72,
+    name: "BasicGetEmpty",
+    args: [{
+      type: "shortstr",
+      name: "clusterId",
+      default: ""
+    }]
+  };
+  exports.BasicAck = 3932240;
+  var methodInfoBasicAck = exports.methodInfoBasicAck = {
+    id: 3932240,
+    classId: 60,
+    methodId: 80,
+    name: "BasicAck",
+    args: [{
+      type: "longlong",
+      name: "deliveryTag",
+      default: 0
+    }, {
+      type: "bit",
+      name: "multiple",
+      default: false
+    }]
+  };
+  exports.BasicReject = 3932250;
+  var methodInfoBasicReject = exports.methodInfoBasicReject = {
+    id: 3932250,
+    classId: 60,
+    methodId: 90,
+    name: "BasicReject",
+    args: [{
+      type: "longlong",
+      name: "deliveryTag"
+    }, {
+      type: "bit",
+      name: "requeue",
+      default: true
+    }]
+  };
+  exports.BasicRecoverAsync = 3932260;
+  var methodInfoBasicRecoverAsync = exports.methodInfoBasicRecoverAsync = {
+    id: 3932260,
+    classId: 60,
+    methodId: 100,
+    name: "BasicRecoverAsync",
+    args: [{
+      type: "bit",
+      name: "requeue",
+      default: false
+    }]
+  };
+  exports.BasicRecover = 3932270;
+  var methodInfoBasicRecover = exports.methodInfoBasicRecover = {
+    id: 3932270,
+    classId: 60,
+    methodId: 110,
+    name: "BasicRecover",
+    args: [{
+      type: "bit",
+      name: "requeue",
+      default: false
+    }]
+  };
+  exports.BasicRecoverOk = 3932271;
+  var methodInfoBasicRecoverOk = exports.methodInfoBasicRecoverOk = {
+    id: 3932271,
+    classId: 60,
+    methodId: 111,
+    name: "BasicRecoverOk",
+    args: []
+  };
+  exports.BasicNack = 3932280;
+  var methodInfoBasicNack = exports.methodInfoBasicNack = {
+    id: 3932280,
+    classId: 60,
+    methodId: 120,
+    name: "BasicNack",
+    args: [{
+      type: "longlong",
+      name: "deliveryTag",
+      default: 0
+    }, {
+      type: "bit",
+      name: "multiple",
+      default: false
+    }, {
+      type: "bit",
+      name: "requeue",
+      default: true
+    }]
+  };
+  exports.ConnectionStart = 655370;
+  var methodInfoConnectionStart = exports.methodInfoConnectionStart = {
+    id: 655370,
+    classId: 10,
+    methodId: 10,
+    name: "ConnectionStart",
+    args: [{
+      type: "octet",
+      name: "versionMajor",
+      default: 0
+    }, {
+      type: "octet",
+      name: "versionMinor",
+      default: 9
+    }, {
+      type: "table",
+      name: "serverProperties"
+    }, {
+      type: "longstr",
+      name: "mechanisms",
+      default: "PLAIN"
+    }, {
+      type: "longstr",
+      name: "locales",
+      default: "en_US"
+    }]
+  };
+  exports.ConnectionStartOk = 655371;
+  var methodInfoConnectionStartOk = exports.methodInfoConnectionStartOk = {
+    id: 655371,
+    classId: 10,
+    methodId: 11,
+    name: "ConnectionStartOk",
+    args: [{
+      type: "table",
+      name: "clientProperties"
+    }, {
+      type: "shortstr",
+      name: "mechanism",
+      default: "PLAIN"
+    }, {
+      type: "longstr",
+      name: "response"
+    }, {
+      type: "shortstr",
+      name: "locale",
+      default: "en_US"
+    }]
+  };
+  exports.ConnectionSecure = 655380;
+  var methodInfoConnectionSecure = exports.methodInfoConnectionSecure = {
+    id: 655380,
+    classId: 10,
+    methodId: 20,
+    name: "ConnectionSecure",
+    args: [{
+      type: "longstr",
+      name: "challenge"
+    }]
+  };
+  exports.ConnectionSecureOk = 655381;
+  var methodInfoConnectionSecureOk = exports.methodInfoConnectionSecureOk = {
+    id: 655381,
+    classId: 10,
+    methodId: 21,
+    name: "ConnectionSecureOk",
+    args: [{
+      type: "longstr",
+      name: "response"
+    }]
+  };
+  exports.ConnectionTune = 655390;
+  var methodInfoConnectionTune = exports.methodInfoConnectionTune = {
+    id: 655390,
+    classId: 10,
+    methodId: 30,
+    name: "ConnectionTune",
+    args: [{
+      type: "short",
+      name: "channelMax",
+      default: 0
+    }, {
+      type: "long",
+      name: "frameMax",
+      default: 0
+    }, {
+      type: "short",
+      name: "heartbeat",
+      default: 0
+    }]
+  };
+  exports.ConnectionTuneOk = 655391;
+  var methodInfoConnectionTuneOk = exports.methodInfoConnectionTuneOk = {
+    id: 655391,
+    classId: 10,
+    methodId: 31,
+    name: "ConnectionTuneOk",
+    args: [{
+      type: "short",
+      name: "channelMax",
+      default: 0
+    }, {
+      type: "long",
+      name: "frameMax",
+      default: 0
+    }, {
+      type: "short",
+      name: "heartbeat",
+      default: 0
+    }]
+  };
+  exports.ConnectionOpen = 655400;
+  var methodInfoConnectionOpen = exports.methodInfoConnectionOpen = {
+    id: 655400,
+    classId: 10,
+    methodId: 40,
+    name: "ConnectionOpen",
+    args: [{
+      type: "shortstr",
+      name: "virtualHost",
+      default: "/"
+    }, {
+      type: "shortstr",
+      name: "capabilities",
+      default: ""
+    }, {
+      type: "bit",
+      name: "insist",
+      default: false
+    }]
+  };
+  exports.ConnectionOpenOk = 655401;
+  var methodInfoConnectionOpenOk = exports.methodInfoConnectionOpenOk = {
+    id: 655401,
+    classId: 10,
+    methodId: 41,
+    name: "ConnectionOpenOk",
+    args: [{
+      type: "shortstr",
+      name: "knownHosts",
+      default: ""
+    }]
+  };
+  exports.ConnectionClose = 655410;
+  var methodInfoConnectionClose = exports.methodInfoConnectionClose = {
+    id: 655410,
+    classId: 10,
+    methodId: 50,
+    name: "ConnectionClose",
+    args: [{
+      type: "short",
+      name: "replyCode"
+    }, {
+      type: "shortstr",
+      name: "replyText",
+      default: ""
+    }, {
+      type: "short",
+      name: "classId"
+    }, {
+      type: "short",
+      name: "methodId"
+    }]
+  };
+  exports.ConnectionCloseOk = 655411;
+  var methodInfoConnectionCloseOk = exports.methodInfoConnectionCloseOk = {
+    id: 655411,
+    classId: 10,
+    methodId: 51,
+    name: "ConnectionCloseOk",
+    args: []
+  };
+  exports.ConnectionBlocked = 655420;
+  var methodInfoConnectionBlocked = exports.methodInfoConnectionBlocked = {
+    id: 655420,
+    classId: 10,
+    methodId: 60,
+    name: "ConnectionBlocked",
+    args: [{
+      type: "shortstr",
+      name: "reason",
+      default: ""
+    }]
+  };
+  exports.ConnectionUnblocked = 655421;
+  var methodInfoConnectionUnblocked = exports.methodInfoConnectionUnblocked = {
+    id: 655421,
+    classId: 10,
+    methodId: 61,
+    name: "ConnectionUnblocked",
+    args: []
+  };
+  exports.ConnectionUpdateSecret = 655430;
+  var methodInfoConnectionUpdateSecret = exports.methodInfoConnectionUpdateSecret = {
+    id: 655430,
+    classId: 10,
+    methodId: 70,
+    name: "ConnectionUpdateSecret",
+    args: [{
+      type: "longstr",
+      name: "newSecret"
+    }, {
+      type: "shortstr",
+      name: "reason"
+    }]
+  };
+  exports.ConnectionUpdateSecretOk = 655431;
+  var methodInfoConnectionUpdateSecretOk = exports.methodInfoConnectionUpdateSecretOk = {
+    id: 655431,
+    classId: 10,
+    methodId: 71,
+    name: "ConnectionUpdateSecretOk",
+    args: []
+  };
+  exports.ChannelOpen = 1310730;
+  var methodInfoChannelOpen = exports.methodInfoChannelOpen = {
+    id: 1310730,
+    classId: 20,
+    methodId: 10,
+    name: "ChannelOpen",
+    args: [{
+      type: "shortstr",
+      name: "outOfBand",
+      default: ""
+    }]
+  };
+  exports.ChannelOpenOk = 1310731;
+  var methodInfoChannelOpenOk = exports.methodInfoChannelOpenOk = {
+    id: 1310731,
+    classId: 20,
+    methodId: 11,
+    name: "ChannelOpenOk",
+    args: [{
+      type: "longstr",
+      name: "channelId",
+      default: ""
+    }]
+  };
+  exports.ChannelFlow = 1310740;
+  var methodInfoChannelFlow = exports.methodInfoChannelFlow = {
+    id: 1310740,
+    classId: 20,
+    methodId: 20,
+    name: "ChannelFlow",
+    args: [{
+      type: "bit",
+      name: "active"
+    }]
+  };
+  exports.ChannelFlowOk = 1310741;
+  var methodInfoChannelFlowOk = exports.methodInfoChannelFlowOk = {
+    id: 1310741,
+    classId: 20,
+    methodId: 21,
+    name: "ChannelFlowOk",
+    args: [{
+      type: "bit",
+      name: "active"
+    }]
+  };
+  exports.ChannelClose = 1310760;
+  var methodInfoChannelClose = exports.methodInfoChannelClose = {
+    id: 1310760,
+    classId: 20,
+    methodId: 40,
+    name: "ChannelClose",
+    args: [{
+      type: "short",
+      name: "replyCode"
+    }, {
+      type: "shortstr",
+      name: "replyText",
+      default: ""
+    }, {
+      type: "short",
+      name: "classId"
+    }, {
+      type: "short",
+      name: "methodId"
+    }]
+  };
+  exports.ChannelCloseOk = 1310761;
+  var methodInfoChannelCloseOk = exports.methodInfoChannelCloseOk = {
+    id: 1310761,
+    classId: 20,
+    methodId: 41,
+    name: "ChannelCloseOk",
+    args: []
+  };
+  exports.AccessRequest = 1966090;
+  var methodInfoAccessRequest = exports.methodInfoAccessRequest = {
+    id: 1966090,
+    classId: 30,
+    methodId: 10,
+    name: "AccessRequest",
+    args: [{
+      type: "shortstr",
+      name: "realm",
+      default: "/data"
+    }, {
+      type: "bit",
+      name: "exclusive",
+      default: false
+    }, {
+      type: "bit",
+      name: "passive",
+      default: true
+    }, {
+      type: "bit",
+      name: "active",
+      default: true
+    }, {
+      type: "bit",
+      name: "write",
+      default: true
+    }, {
+      type: "bit",
+      name: "read",
+      default: true
+    }]
+  };
+  exports.AccessRequestOk = 1966091;
+  var methodInfoAccessRequestOk = exports.methodInfoAccessRequestOk = {
+    id: 1966091,
+    classId: 30,
+    methodId: 11,
+    name: "AccessRequestOk",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 1
+    }]
+  };
+  exports.ExchangeDeclare = 2621450;
+  var methodInfoExchangeDeclare = exports.methodInfoExchangeDeclare = {
+    id: 2621450,
+    classId: 40,
+    methodId: 10,
+    name: "ExchangeDeclare",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "type",
+      default: "direct"
+    }, {
+      type: "bit",
+      name: "passive",
+      default: false
+    }, {
+      type: "bit",
+      name: "durable",
+      default: false
+    }, {
+      type: "bit",
+      name: "autoDelete",
+      default: false
+    }, {
+      type: "bit",
+      name: "internal",
+      default: false
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.ExchangeDeclareOk = 2621451;
+  var methodInfoExchangeDeclareOk = exports.methodInfoExchangeDeclareOk = {
+    id: 2621451,
+    classId: 40,
+    methodId: 11,
+    name: "ExchangeDeclareOk",
+    args: []
+  };
+  exports.ExchangeDelete = 2621460;
+  var methodInfoExchangeDelete = exports.methodInfoExchangeDelete = {
+    id: 2621460,
+    classId: 40,
+    methodId: 20,
+    name: "ExchangeDelete",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "bit",
+      name: "ifUnused",
+      default: false
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }]
+  };
+  exports.ExchangeDeleteOk = 2621461;
+  var methodInfoExchangeDeleteOk = exports.methodInfoExchangeDeleteOk = {
+    id: 2621461,
+    classId: 40,
+    methodId: 21,
+    name: "ExchangeDeleteOk",
+    args: []
+  };
+  exports.ExchangeBind = 2621470;
+  var methodInfoExchangeBind = exports.methodInfoExchangeBind = {
+    id: 2621470,
+    classId: 40,
+    methodId: 30,
+    name: "ExchangeBind",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "destination"
+    }, {
+      type: "shortstr",
+      name: "source"
+    }, {
+      type: "shortstr",
+      name: "routingKey",
+      default: ""
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.ExchangeBindOk = 2621471;
+  var methodInfoExchangeBindOk = exports.methodInfoExchangeBindOk = {
+    id: 2621471,
+    classId: 40,
+    methodId: 31,
+    name: "ExchangeBindOk",
+    args: []
+  };
+  exports.ExchangeUnbind = 2621480;
+  var methodInfoExchangeUnbind = exports.methodInfoExchangeUnbind = {
+    id: 2621480,
+    classId: 40,
+    methodId: 40,
+    name: "ExchangeUnbind",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "destination"
+    }, {
+      type: "shortstr",
+      name: "source"
+    }, {
+      type: "shortstr",
+      name: "routingKey",
+      default: ""
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.ExchangeUnbindOk = 2621491;
+  var methodInfoExchangeUnbindOk = exports.methodInfoExchangeUnbindOk = {
+    id: 2621491,
+    classId: 40,
+    methodId: 51,
+    name: "ExchangeUnbindOk",
+    args: []
+  };
+  exports.QueueDeclare = 3276810;
+  var methodInfoQueueDeclare = exports.methodInfoQueueDeclare = {
+    id: 3276810,
+    classId: 50,
+    methodId: 10,
+    name: "QueueDeclare",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "bit",
+      name: "passive",
+      default: false
+    }, {
+      type: "bit",
+      name: "durable",
+      default: false
+    }, {
+      type: "bit",
+      name: "exclusive",
+      default: false
+    }, {
+      type: "bit",
+      name: "autoDelete",
+      default: false
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.QueueDeclareOk = 3276811;
+  var methodInfoQueueDeclareOk = exports.methodInfoQueueDeclareOk = {
+    id: 3276811,
+    classId: 50,
+    methodId: 11,
+    name: "QueueDeclareOk",
+    args: [{
+      type: "shortstr",
+      name: "queue"
+    }, {
+      type: "long",
+      name: "messageCount"
+    }, {
+      type: "long",
+      name: "consumerCount"
+    }]
+  };
+  exports.QueueBind = 3276820;
+  var methodInfoQueueBind = exports.methodInfoQueueBind = {
+    id: 3276820,
+    classId: 50,
+    methodId: 20,
+    name: "QueueBind",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "routingKey",
+      default: ""
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.QueueBindOk = 3276821;
+  var methodInfoQueueBindOk = exports.methodInfoQueueBindOk = {
+    id: 3276821,
+    classId: 50,
+    methodId: 21,
+    name: "QueueBindOk",
+    args: []
+  };
+  exports.QueuePurge = 3276830;
+  var methodInfoQueuePurge = exports.methodInfoQueuePurge = {
+    id: 3276830,
+    classId: 50,
+    methodId: 30,
+    name: "QueuePurge",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }]
+  };
+  exports.QueuePurgeOk = 3276831;
+  var methodInfoQueuePurgeOk = exports.methodInfoQueuePurgeOk = {
+    id: 3276831,
+    classId: 50,
+    methodId: 31,
+    name: "QueuePurgeOk",
+    args: [{
+      type: "long",
+      name: "messageCount"
+    }]
+  };
+  exports.QueueDelete = 3276840;
+  var methodInfoQueueDelete = exports.methodInfoQueueDelete = {
+    id: 3276840,
+    classId: 50,
+    methodId: 40,
+    name: "QueueDelete",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "bit",
+      name: "ifUnused",
+      default: false
+    }, {
+      type: "bit",
+      name: "ifEmpty",
+      default: false
+    }, {
+      type: "bit",
+      name: "nowait",
+      default: false
+    }]
+  };
+  exports.QueueDeleteOk = 3276841;
+  var methodInfoQueueDeleteOk = exports.methodInfoQueueDeleteOk = {
+    id: 3276841,
+    classId: 50,
+    methodId: 41,
+    name: "QueueDeleteOk",
+    args: [{
+      type: "long",
+      name: "messageCount"
+    }]
+  };
+  exports.QueueUnbind = 3276850;
+  var methodInfoQueueUnbind = exports.methodInfoQueueUnbind = {
+    id: 3276850,
+    classId: 50,
+    methodId: 50,
+    name: "QueueUnbind",
+    args: [{
+      type: "short",
+      name: "ticket",
+      default: 0
+    }, {
+      type: "shortstr",
+      name: "queue",
+      default: ""
+    }, {
+      type: "shortstr",
+      name: "exchange"
+    }, {
+      type: "shortstr",
+      name: "routingKey",
+      default: ""
+    }, {
+      type: "table",
+      name: "arguments",
+      default: {}
+    }]
+  };
+  exports.QueueUnbindOk = 3276851;
+  var methodInfoQueueUnbindOk = exports.methodInfoQueueUnbindOk = {
+    id: 3276851,
+    classId: 50,
+    methodId: 51,
+    name: "QueueUnbindOk",
+    args: []
+  };
+  exports.TxSelect = 5898250;
+  var methodInfoTxSelect = exports.methodInfoTxSelect = {
+    id: 5898250,
+    classId: 90,
+    methodId: 10,
+    name: "TxSelect",
+    args: []
+  };
+  exports.TxSelectOk = 5898251;
+  var methodInfoTxSelectOk = exports.methodInfoTxSelectOk = {
+    id: 5898251,
+    classId: 90,
+    methodId: 11,
+    name: "TxSelectOk",
+    args: []
+  };
+  exports.TxCommit = 5898260;
+  var methodInfoTxCommit = exports.methodInfoTxCommit = {
+    id: 5898260,
+    classId: 90,
+    methodId: 20,
+    name: "TxCommit",
+    args: []
+  };
+  exports.TxCommitOk = 5898261;
+  var methodInfoTxCommitOk = exports.methodInfoTxCommitOk = {
+    id: 5898261,
+    classId: 90,
+    methodId: 21,
+    name: "TxCommitOk",
+    args: []
+  };
+  exports.TxRollback = 5898270;
+  var methodInfoTxRollback = exports.methodInfoTxRollback = {
+    id: 5898270,
+    classId: 90,
+    methodId: 30,
+    name: "TxRollback",
+    args: []
+  };
+  exports.TxRollbackOk = 5898271;
+  var methodInfoTxRollbackOk = exports.methodInfoTxRollbackOk = {
+    id: 5898271,
+    classId: 90,
+    methodId: 31,
+    name: "TxRollbackOk",
+    args: []
+  };
+  exports.ConfirmSelect = 5570570;
+  var methodInfoConfirmSelect = exports.methodInfoConfirmSelect = {
+    id: 5570570,
+    classId: 85,
+    methodId: 10,
+    name: "ConfirmSelect",
+    args: [{
+      type: "bit",
+      name: "nowait",
+      default: false
+    }]
+  };
+  exports.ConfirmSelectOk = 5570571;
+  var methodInfoConfirmSelectOk = exports.methodInfoConfirmSelectOk = {
+    id: 5570571,
+    classId: 85,
+    methodId: 11,
+    name: "ConfirmSelectOk",
+    args: []
+  };
+  exports.BasicProperties = 60;
+  var propertiesInfoBasicProperties = exports.propertiesInfoBasicProperties = {
+    id: 60,
+    name: "BasicProperties",
+    args: [{
+      type: "shortstr",
+      name: "contentType"
+    }, {
+      type: "shortstr",
+      name: "contentEncoding"
+    }, {
+      type: "table",
+      name: "headers"
+    }, {
+      type: "octet",
+      name: "deliveryMode"
+    }, {
+      type: "octet",
+      name: "priority"
+    }, {
+      type: "shortstr",
+      name: "correlationId"
+    }, {
+      type: "shortstr",
+      name: "replyTo"
+    }, {
+      type: "shortstr",
+      name: "expiration"
+    }, {
+      type: "shortstr",
+      name: "messageId"
+    }, {
+      type: "timestamp",
+      name: "timestamp"
+    }, {
+      type: "shortstr",
+      name: "type"
+    }, {
+      type: "shortstr",
+      name: "userId"
+    }, {
+      type: "shortstr",
+      name: "appId"
+    }, {
+      type: "shortstr",
+      name: "clusterId"
+    }]
+  };
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/frame.js
+var require_frame = __commonJS((exports, module) => {
+  var ints = require_buffer_more_ints();
+  var defs = require_defs();
+  var constants = defs.constants;
+  var decode = defs.decode;
+  exports.PROTOCOL_HEADER = "AMQP" + String.fromCharCode(0, 0, 9, 1);
+  var FRAME_METHOD = constants.FRAME_METHOD;
+  var FRAME_HEARTBEAT = constants.FRAME_HEARTBEAT;
+  var FRAME_HEADER = constants.FRAME_HEADER;
+  var FRAME_BODY = constants.FRAME_BODY;
+  var FRAME_END = constants.FRAME_END;
+  var TYPE_BYTES = 1;
+  var CHANNEL_BYTES = 2;
+  var SIZE_BYTES = 4;
+  var FRAME_HEADER_BYTES = TYPE_BYTES + CHANNEL_BYTES + SIZE_BYTES;
+  var FRAME_END_BYTES = 1;
+  function readInt64BE(buffer, offset) {
+    if (typeof Buffer.prototype.readBigInt64BE === "function") {
+      return Number(buffer.readBigInt64BE(offset));
+    }
+    return ints.readInt64BE(buffer, offset);
+  }
+  exports.makeBodyFrame = function(channel, payload) {
+    const frameSize = FRAME_HEADER_BYTES + payload.length + FRAME_END_BYTES;
+    const frame = Buffer.alloc(frameSize);
+    let offset = 0;
+    offset = frame.writeUInt8(FRAME_BODY, offset);
+    offset = frame.writeUInt16BE(channel, offset);
+    offset = frame.writeInt32BE(payload.length, offset);
+    payload.copy(frame, offset);
+    offset += payload.length;
+    frame.writeUInt8(FRAME_END, offset);
+    return frame;
+  };
+  function parseFrame(bin) {
+    if (bin.length < FRAME_HEADER_BYTES) {
+      return false;
+    }
+    const type = bin.readUInt8(0);
+    const channel = bin.readUInt16BE(1);
+    const size = bin.readUInt32BE(3);
+    const totalSize = FRAME_HEADER_BYTES + size + FRAME_END_BYTES;
+    if (bin.length < totalSize) {
+      return false;
+    }
+    const frameEnd = bin.readUInt8(FRAME_HEADER_BYTES + size);
+    if (frameEnd !== FRAME_END) {
+      throw new Error("Invalid frame");
+    }
+    return {
+      type,
+      channel,
+      size,
+      payload: bin.subarray(FRAME_HEADER_BYTES, FRAME_HEADER_BYTES + size),
+      rest: bin.subarray(totalSize)
+    };
+  }
+  exports.parseFrame = parseFrame;
+  var HEARTBEAT = { channel: 0 };
+  exports.decodeFrame = (frame) => {
+    const payload = frame.payload;
+    const channel = frame.channel;
+    switch (frame.type) {
+      case FRAME_METHOD: {
+        const id = payload.readUInt32BE(0);
+        const args = payload.subarray(4);
+        const fields = decode(id, args);
+        return { id, channel, fields };
+      }
+      case FRAME_HEADER: {
+        const id = payload.readUInt16BE(0);
+        const size = readInt64BE(payload, 4);
+        const flagsAndfields = payload.subarray(12);
+        const fields = decode(id, flagsAndfields);
+        return { id, channel, size, fields };
+      }
+      case FRAME_BODY:
+        return { channel, content: payload };
+      case FRAME_HEARTBEAT:
+        return HEARTBEAT;
+      default:
+        throw new Error("Unknown frame type " + frame.type);
+    }
+  };
+  exports.HEARTBEAT_BUF = Buffer.from([
+    constants.FRAME_HEARTBEAT,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    constants.FRAME_END
+  ]);
+  exports.HEARTBEAT = HEARTBEAT;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/mux.js
+var require_mux = __commonJS((exports, module) => {
+  var assert = __require("assert");
+  var schedule = typeof setImmediate === "function" ? setImmediate : process.nextTick;
+
+  class Mux {
+    constructor(downstream) {
+      this.newStreams = [];
+      this.oldStreams = [];
+      this.blocked = false;
+      this.scheduledRead = false;
+      this.out = downstream;
+      var self2 = this;
+      downstream.on("drain", function() {
+        self2.blocked = false;
+        self2._readIncoming();
+      });
+    }
+    _readIncoming() {
+      if (this.blocked)
+        return;
+      var accepting = true;
+      var out = this.out;
+      function roundrobin(streams) {
+        var s;
+        while (accepting && (s = streams.shift())) {
+          var chunk = s.read();
+          if (chunk !== null) {
+            accepting = out.write(chunk);
+            streams.push(s);
+          }
+        }
+      }
+      roundrobin(this.newStreams);
+      if (accepting) {
+        assert.equal(0, this.newStreams.length);
+        roundrobin(this.oldStreams);
+      } else {
+        assert(this.newStreams.length > 0, "Expect some new streams to remain");
+        Array.prototype.push.apply(this.oldStreams, this.newStreams);
+        this.newStreams = [];
+      }
+      this.blocked = !accepting;
+    }
+    _scheduleRead() {
+      var self2 = this;
+      if (!self2.scheduledRead) {
+        schedule(function() {
+          self2.scheduledRead = false;
+          self2._readIncoming();
+        });
+        self2.scheduledRead = true;
+      }
+    }
+    pipeFrom(readable) {
+      var self2 = this;
+      function enqueue() {
+        self2.newStreams.push(readable);
+        self2._scheduleRead();
+      }
+      function cleanup() {
+        readable.removeListener("readable", enqueue);
+        readable.removeListener("error", cleanup);
+        readable.removeListener("end", cleanup);
+        readable.removeListener("unpipeFrom", cleanupIfMe);
+      }
+      function cleanupIfMe(dest) {
+        if (dest === self2)
+          cleanup();
+      }
+      readable.on("unpipeFrom", cleanupIfMe);
+      readable.on("end", cleanup);
+      readable.on("error", cleanup);
+      readable.on("readable", enqueue);
+    }
+    unpipeFrom(readable) {
+      readable.emit("unpipeFrom", this);
+    }
+  }
+  exports.Mux = Mux;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/heartbeat.js
+var require_heartbeat = __commonJS((exports, module) => {
+  var EventEmitter2 = __require("events");
+  exports.UNITS_TO_MS = 1000;
+
+  class Heart extends EventEmitter2 {
+    constructor(interval, checkSend, checkRecv) {
+      super();
+      this.interval = interval;
+      var intervalMs = interval * exports.UNITS_TO_MS;
+      var beat = this.emit.bind(this, "beat");
+      var timeout = this.emit.bind(this, "timeout");
+      this.sendTimer = setInterval(this.runHeartbeat.bind(this, checkSend, beat), intervalMs / 2);
+      var recvMissed = 0;
+      function missedTwo() {
+        if (!checkRecv())
+          return ++recvMissed < 2;
+        else {
+          recvMissed = 0;
+          return true;
+        }
+      }
+      this.recvTimer = setInterval(this.runHeartbeat.bind(this, missedTwo, timeout), intervalMs);
+    }
+    clear() {
+      clearInterval(this.sendTimer);
+      clearInterval(this.recvTimer);
+    }
+    runHeartbeat(check, fail2) {
+      if (!check())
+        fail2();
+    }
+  }
+  exports.Heart = Heart;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/format.js
+var require_format2 = __commonJS((exports, module) => {
+  var defs = require_defs();
+  var format = __require("util").format;
+  var HEARTBEAT = require_frame().HEARTBEAT;
+  exports.closeMessage = function(close) {
+    var code = close.fields.replyCode;
+    return format('%d (%s) with message "%s"', code, defs.constant_strs[code], close.fields.replyText);
+  };
+  exports.methodName = function(id) {
+    return defs.info(id).name;
+  };
+  exports.inspect = function(frame, showFields) {
+    if (frame === HEARTBEAT) {
+      return "<Heartbeat>";
+    } else if (!frame.id) {
+      return format("<Content channel:%d size:%d>", frame.channel, frame.size);
+    } else {
+      var info = defs.info(frame.id);
+      return format("<%s channel:%d%s>", info.name, frame.channel, showFields ? " " + JSON.stringify(frame.fields, undefined, 2) : "");
+    }
+  };
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/bitset.js
+var require_bitset = __commonJS((exports, module) => {
+  class BitSet {
+    constructor(size) {
+      if (size) {
+        const numWords = Math.ceil(size / 32);
+        this.words = new Array(numWords);
+      } else {
+        this.words = [];
+      }
+      this.wordsInUse = 0;
+    }
+    ensureSize(numWords) {
+      const wordsPresent = this.words.length;
+      if (wordsPresent < numWords) {
+        this.words = this.words.concat(new Array(numWords - wordsPresent));
+      }
+    }
+    set(bitIndex) {
+      const w = wordIndex(bitIndex);
+      if (w >= this.wordsInUse) {
+        this.ensureSize(w + 1);
+        this.wordsInUse = w + 1;
+      }
+      const bit = 1 << bitIndex;
+      this.words[w] |= bit;
+    }
+    clear(bitIndex) {
+      const w = wordIndex(bitIndex);
+      if (w >= this.wordsInUse)
+        return;
+      const mask = ~(1 << bitIndex);
+      this.words[w] &= mask;
+    }
+    get(bitIndex) {
+      const w = wordIndex(bitIndex);
+      if (w >= this.wordsInUse)
+        return false;
+      const bit = 1 << bitIndex;
+      return !!(this.words[w] & bit);
+    }
+    nextSetBit(fromIndex) {
+      let w = wordIndex(fromIndex);
+      if (w >= this.wordsInUse)
+        return -1;
+      let word = this.words[w] & 4294967295 << fromIndex;
+      while (true) {
+        if (word)
+          return w * 32 + trailingZeros(word);
+        w++;
+        if (w === this.wordsInUse)
+          return -1;
+        word = this.words[w];
+      }
+    }
+    nextClearBit(fromIndex) {
+      let w = wordIndex(fromIndex);
+      if (w >= this.wordsInUse)
+        return fromIndex;
+      let word = ~this.words[w] & 4294967295 << fromIndex;
+      while (true) {
+        if (word)
+          return w * 32 + trailingZeros(word);
+        w++;
+        if (w == this.wordsInUse)
+          return w * 32;
+        word = ~this.words[w];
+      }
+    }
+  }
+  function wordIndex(bitIndex) {
+    return Math.floor(bitIndex / 32);
+  }
+  function trailingZeros(i) {
+    if (i === 0)
+      return 32;
+    let y, n = 31;
+    y = i << 16;
+    if (y != 0) {
+      n = n - 16;
+      i = y;
+    }
+    y = i << 8;
+    if (y != 0) {
+      n = n - 8;
+      i = y;
+    }
+    y = i << 4;
+    if (y != 0) {
+      n = n - 4;
+      i = y;
+    }
+    y = i << 2;
+    if (y != 0) {
+      n = n - 2;
+      i = y;
+    }
+    return n - (i << 1 >>> 31);
+  }
+  exports.BitSet = BitSet;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/error.js
+var require_error = __commonJS((exports, module) => {
+  var inherits = __require("util").inherits;
+  function trimStack(stack, num) {
+    return stack && stack.split(`
+`).slice(num).join(`
+`);
+  }
+  function IllegalOperationError(msg, stack) {
+    var tmp = new Error;
+    this.message = msg;
+    this.stack = this.toString() + `
+` + trimStack(tmp.stack, 2);
+    this.stackAtStateChange = stack;
+  }
+  inherits(IllegalOperationError, Error);
+  IllegalOperationError.prototype.name = "IllegalOperationError";
+  function stackCapture(reason) {
+    var e = new Error;
+    return "Stack capture: " + reason + `
+` + trimStack(e.stack, 2);
+  }
+  exports.IllegalOperationError = IllegalOperationError;
+  exports.stackCapture = stackCapture;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/connection.js
+var require_connection = __commonJS((exports, module) => {
+  var defs = require_defs();
+  var constants = defs.constants;
+  var frame = require_frame();
+  var HEARTBEAT = frame.HEARTBEAT;
+  var Mux = require_mux().Mux;
+  var Duplex = __require("stream").Duplex;
+  var EventEmitter2 = __require("events");
+  var Heart = require_heartbeat().Heart;
+  var methodName = require_format2().methodName;
+  var closeMsg = require_format2().closeMessage;
+  var inspect = require_format2().inspect;
+  var BitSet = require_bitset().BitSet;
+  var fmt = __require("util").format;
+  var PassThrough = __require("stream").PassThrough;
+  var IllegalOperationError = require_error().IllegalOperationError;
+  var stackCapture = require_error().stackCapture;
+  var DEFAULT_WRITE_HWM = 1024;
+  var SINGLE_CHUNK_THRESHOLD = 2048;
+
+  class Connection extends EventEmitter2 {
+    constructor(underlying) {
+      super();
+      var stream = this.stream = wrapStream(underlying);
+      this.muxer = new Mux(stream);
+      this.rest = Buffer.alloc(0);
+      this.frameMax = constants.FRAME_MIN_SIZE;
+      this.sentSinceLastCheck = false;
+      this.recvSinceLastCheck = false;
+      this.expectSocketClose = false;
+      this.freeChannels = new BitSet;
+      this.channels = [{
+        channel: { accept: channel0(this) },
+        buffer: underlying
+      }];
+    }
+    sendProtocolHeader() {
+      this.sendBytes(frame.PROTOCOL_HEADER);
+    }
+    open(allFields, openCallback0) {
+      var self2 = this;
+      var openCallback = openCallback0 || function() {};
+      var tunedOptions = Object.create(allFields);
+      function wait(k) {
+        self2.step(function(err, frame2) {
+          if (err !== null)
+            bail(err);
+          else if (frame2.channel !== 0) {
+            bail(new Error(fmt("Frame on channel != 0 during handshake: %s", inspect(frame2, false))));
+          } else
+            k(frame2);
+        });
+      }
+      function expect(Method, k) {
+        wait(function(frame2) {
+          if (frame2.id === Method)
+            k(frame2);
+          else {
+            bail(new Error(fmt("Expected %s; got %s", methodName(Method), inspect(frame2, false))));
+          }
+        });
+      }
+      function bail(err) {
+        openCallback(err);
+      }
+      function send(Method) {
+        self2.sendMethod(0, Method, tunedOptions);
+      }
+      function negotiate(server, desired) {
+        if (server === 0 || desired === 0) {
+          return Math.max(server, desired);
+        } else {
+          return Math.min(server, desired);
+        }
+      }
+      function onStart(start) {
+        var mechanisms = start.fields.mechanisms.toString().split(" ");
+        if (mechanisms.indexOf(allFields.mechanism) < 0) {
+          bail(new Error(fmt("SASL mechanism %s is not provided by the server", allFields.mechanism)));
+          return;
+        }
+        self2.serverProperties = start.fields.serverProperties;
+        try {
+          send(defs.ConnectionStartOk);
+        } catch (err) {
+          bail(err);
+          return;
+        }
+        wait(afterStartOk);
+      }
+      function afterStartOk(reply) {
+        switch (reply.id) {
+          case defs.ConnectionSecure:
+            bail(new Error("Wasn't expecting to have to go through secure"));
+            break;
+          case defs.ConnectionClose:
+            bail(new Error(fmt("Handshake terminated by server: %s", closeMsg(reply))));
+            break;
+          case defs.ConnectionTune:
+            var fields = reply.fields;
+            tunedOptions.frameMax = negotiate(fields.frameMax, allFields.frameMax);
+            tunedOptions.channelMax = negotiate(fields.channelMax, allFields.channelMax);
+            tunedOptions.heartbeat = negotiate(fields.heartbeat, allFields.heartbeat);
+            try {
+              send(defs.ConnectionTuneOk);
+              send(defs.ConnectionOpen);
+            } catch (err) {
+              bail(err);
+              return;
+            }
+            expect(defs.ConnectionOpenOk, onOpenOk);
+            break;
+          default:
+            bail(new Error(fmt("Expected connection.secure, connection.close, " + "or connection.tune during handshake; got %s", inspect(reply, false))));
+            break;
+        }
+      }
+      function onOpenOk(openOk) {
+        self2.channelMax = tunedOptions.channelMax || 65535;
+        self2.frameMax = tunedOptions.frameMax || 4294967295;
+        self2.heartbeat = tunedOptions.heartbeat;
+        self2.heartbeater = self2.startHeartbeater();
+        self2.accept = mainAccept;
+        succeed(openOk);
+      }
+      function endWhileOpening(err) {
+        bail(err || new Error("Socket closed abruptly " + "during opening handshake"));
+      }
+      this.stream.on("end", endWhileOpening);
+      this.stream.on("error", endWhileOpening);
+      function succeed(ok2) {
+        self2.stream.removeListener("end", endWhileOpening);
+        self2.stream.removeListener("error", endWhileOpening);
+        self2.stream.on("error", self2.onSocketError.bind(self2));
+        self2.stream.on("end", self2.onSocketError.bind(self2, new Error("Unexpected close")));
+        self2.on("frameError", self2.onSocketError.bind(self2));
+        self2.acceptLoop();
+        openCallback(null, ok2);
+      }
+      this.sendProtocolHeader();
+      expect(defs.ConnectionStart, onStart);
+    }
+    close(closeCallback) {
+      var k = closeCallback && function() {
+        closeCallback(null);
+      };
+      this.closeBecause("Cheers, thanks", constants.REPLY_SUCCESS, k);
+    }
+    closeBecause(reason, code, k) {
+      this.sendMethod(0, defs.ConnectionClose, {
+        replyText: reason,
+        replyCode: code,
+        methodId: 0,
+        classId: 0
+      });
+      var s = stackCapture("closeBecause called: " + reason);
+      this.toClosing(s, k);
+    }
+    closeWithError(reason, code, error) {
+      this.emit("error", error);
+      this.closeBecause(reason, code);
+    }
+    onSocketError(err) {
+      if (!this.expectSocketClose) {
+        this.expectSocketClose = true;
+        this.emit("error", err);
+        var s = stackCapture("Socket error");
+        this.toClosed(s, err);
+      }
+    }
+    toClosing(capturedStack, k) {
+      var send = this.sendMethod.bind(this);
+      this.accept = function(f) {
+        if (f.id === defs.ConnectionCloseOk) {
+          if (k)
+            k();
+          var s = stackCapture("ConnectionCloseOk received");
+          this.toClosed(s, undefined);
+        } else if (f.id === defs.ConnectionClose) {
+          send(0, defs.ConnectionCloseOk, {});
+        }
+      };
+      invalidateSend(this, "Connection closing", capturedStack);
+    }
+    _closeChannels(capturedStack) {
+      for (var i = 1;i < this.channels.length; i++) {
+        var ch = this.channels[i];
+        if (ch !== null) {
+          ch.channel.toClosed(capturedStack);
+        }
+      }
+    }
+    toClosed(capturedStack, maybeErr) {
+      this._closeChannels(capturedStack);
+      var info = fmt("Connection closed (%s)", maybeErr ? maybeErr.toString() : "by client");
+      invalidateSend(this, info, capturedStack);
+      this.accept = invalidOp(info, capturedStack);
+      this.close = function(cb) {
+        cb && cb(new IllegalOperationError(info, capturedStack));
+      };
+      if (this.heartbeater)
+        this.heartbeater.clear();
+      this.expectSocketClose = true;
+      this.stream.end();
+      this.emit("close", maybeErr);
+    }
+    _updateSecret(newSecret, reason, cb) {
+      this.sendMethod(0, defs.ConnectionUpdateSecret, {
+        newSecret,
+        reason
+      });
+      this.once("update-secret-ok", cb);
+    }
+    startHeartbeater() {
+      if (this.heartbeat === 0)
+        return null;
+      else {
+        var self2 = this;
+        var hb = new Heart(this.heartbeat, this.checkSend.bind(this), this.checkRecv.bind(this));
+        hb.on("timeout", function() {
+          var hberr = new Error("Heartbeat timeout");
+          self2.emit("error", hberr);
+          var s = stackCapture("Heartbeat timeout");
+          self2.toClosed(s, hberr);
+        });
+        hb.on("beat", function() {
+          self2.sendHeartbeat();
+        });
+        return hb;
+      }
+    }
+    freshChannel(channel, options) {
+      var next = this.freeChannels.nextClearBit(1);
+      if (next < 0 || next > this.channelMax)
+        throw new Error("No channels left to allocate");
+      this.freeChannels.set(next);
+      var hwm = options && options.highWaterMark || DEFAULT_WRITE_HWM;
+      var writeBuffer = new PassThrough({
+        objectMode: true,
+        highWaterMark: hwm
+      });
+      this.channels[next] = { channel, buffer: writeBuffer };
+      writeBuffer.on("drain", function() {
+        channel.onBufferDrain();
+      });
+      this.muxer.pipeFrom(writeBuffer);
+      return next;
+    }
+    releaseChannel(channel) {
+      this.freeChannels.clear(channel);
+      var buffer = this.channels[channel].buffer;
+      buffer.end();
+      this.channels[channel] = null;
+    }
+    acceptLoop() {
+      var self2 = this;
+      function go() {
+        try {
+          var f;
+          while (f = self2.recvFrame())
+            self2.accept(f);
+        } catch (e) {
+          self2.emit("frameError", e);
+        }
+      }
+      self2.stream.on("readable", go);
+      go();
+    }
+    step(cb) {
+      var self2 = this;
+      function recv() {
+        var f;
+        try {
+          f = self2.recvFrame();
+        } catch (e) {
+          cb(e, null);
+          return;
+        }
+        if (f)
+          cb(null, f);
+        else
+          self2.stream.once("readable", recv);
+      }
+      recv();
+    }
+    checkSend() {
+      var check = this.sentSinceLastCheck;
+      this.sentSinceLastCheck = false;
+      return check;
+    }
+    checkRecv() {
+      var check = this.recvSinceLastCheck;
+      this.recvSinceLastCheck = false;
+      return check;
+    }
+    sendBytes(bytes) {
+      this.sentSinceLastCheck = true;
+      this.stream.write(bytes);
+    }
+    sendHeartbeat() {
+      return this.sendBytes(frame.HEARTBEAT_BUF);
+    }
+    sendMethod(channel, Method, fields) {
+      var frame2 = encodeMethod(Method, channel, fields);
+      this.sentSinceLastCheck = true;
+      var buffer = this.channels[channel].buffer;
+      return buffer.write(frame2);
+    }
+    sendMessage(channel, Method, fields, Properties, props, content) {
+      if (!Buffer.isBuffer(content))
+        throw new TypeError("content is not a buffer");
+      var mframe = encodeMethod(Method, channel, fields);
+      var pframe = encodeProperties(Properties, channel, content.length, props);
+      var buffer = this.channels[channel].buffer;
+      this.sentSinceLastCheck = true;
+      var methodHeaderLen = mframe.length + pframe.length;
+      var bodyLen = content.length > 0 ? content.length + FRAME_OVERHEAD : 0;
+      var allLen = methodHeaderLen + bodyLen;
+      if (allLen < SINGLE_CHUNK_THRESHOLD) {
+        var all = Buffer.allocUnsafe(allLen);
+        var offset = mframe.copy(all, 0);
+        offset += pframe.copy(all, offset);
+        if (bodyLen > 0)
+          makeBodyFrame(channel, content).copy(all, offset);
+        return buffer.write(all);
+      } else {
+        if (methodHeaderLen < SINGLE_CHUNK_THRESHOLD) {
+          var both = Buffer.allocUnsafe(methodHeaderLen);
+          var offset = mframe.copy(both, 0);
+          pframe.copy(both, offset);
+          buffer.write(both);
+        } else {
+          buffer.write(mframe);
+          buffer.write(pframe);
+        }
+        return this.sendContent(channel, content);
+      }
+    }
+    sendContent(channel, body) {
+      if (!Buffer.isBuffer(body)) {
+        throw new TypeError(fmt("Expected buffer; got %s", body));
+      }
+      var writeResult = true;
+      var buffer = this.channels[channel].buffer;
+      var maxBody = this.frameMax - FRAME_OVERHEAD;
+      for (var offset = 0;offset < body.length; offset += maxBody) {
+        var end = offset + maxBody;
+        var slice = end > body.length ? body.subarray(offset) : body.subarray(offset, end);
+        var bodyFrame = makeBodyFrame(channel, slice);
+        writeResult = buffer.write(bodyFrame);
+      }
+      this.sentSinceLastCheck = true;
+      return writeResult;
+    }
+    recvFrame() {
+      var frame2 = parseFrame(this.rest);
+      if (!frame2) {
+        var incoming = this.stream.read();
+        if (incoming === null) {
+          return false;
+        } else {
+          this.recvSinceLastCheck = true;
+          this.rest = Buffer.concat([this.rest, incoming]);
+          return this.recvFrame();
+        }
+      } else {
+        this.rest = frame2.rest;
+        return decodeFrame(frame2);
+      }
+    }
+  }
+  function mainAccept(frame2) {
+    var rec = this.channels[frame2.channel];
+    if (rec) {
+      return rec.channel.accept(frame2);
+    } else
+      this.closeWithError(fmt("Frame on unknown channel %d", frame2.channel), constants.CHANNEL_ERROR, new Error(fmt("Frame on unknown channel: %s", inspect(frame2, false))));
+  }
+  function channel0(connection) {
+    return function(f) {
+      if (f === HEARTBEAT)
+        ;
+      else if (f.id === defs.ConnectionClose) {
+        connection.sendMethod(0, defs.ConnectionCloseOk, {});
+        var emsg = fmt("Connection closed: %s", closeMsg(f));
+        var s = stackCapture(emsg);
+        var e = new Error(emsg);
+        e.code = f.fields.replyCode;
+        if (isFatalError(e)) {
+          connection.emit("error", e);
+        }
+        connection.toClosed(s, e);
+      } else if (f.id === defs.ConnectionBlocked) {
+        connection.emit("blocked", f.fields.reason);
+      } else if (f.id === defs.ConnectionUnblocked) {
+        connection.emit("unblocked");
+      } else if (f.id === defs.ConnectionUpdateSecretOk) {
+        connection.emit("update-secret-ok");
+      } else {
+        connection.closeWithError(fmt("Unexpected frame on channel 0"), constants.UNEXPECTED_FRAME, new Error(fmt("Unexpected frame on channel 0: %s", inspect(f, false))));
+      }
+    };
+  }
+  function invalidOp(msg, stack) {
+    return function() {
+      throw new IllegalOperationError(msg, stack);
+    };
+  }
+  function invalidateSend(conn, msg, stack) {
+    conn.sendMethod = conn.sendContent = conn.sendMessage = invalidOp(msg, stack);
+  }
+  var encodeMethod = defs.encodeMethod;
+  var encodeProperties = defs.encodeProperties;
+  var FRAME_OVERHEAD = defs.FRAME_OVERHEAD;
+  var makeBodyFrame = frame.makeBodyFrame;
+  var parseFrame = frame.parseFrame;
+  var decodeFrame = frame.decodeFrame;
+  function wrapStream(s) {
+    if (s instanceof Duplex)
+      return s;
+    else {
+      var ws = new Duplex;
+      ws.wrap(s);
+      ws._write = function(chunk, encoding, callback) {
+        return s.write(chunk, encoding, callback);
+      };
+      return ws;
+    }
+  }
+  function isFatalError(error) {
+    switch (error && error.code) {
+      case defs.constants.CONNECTION_FORCED:
+      case defs.constants.REPLY_SUCCESS:
+        return false;
+      default:
+        return true;
+    }
+  }
+  exports.Connection = Connection;
+  exports.isFatalError = isFatalError;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/credentials.js
+var require_credentials = __commonJS((exports, module) => {
+  var codec = require_codec();
+  exports.plain = function(user, passwd) {
+    return {
+      mechanism: "PLAIN",
+      response: function() {
+        return Buffer.from(["", user, passwd].join(String.fromCharCode(0)));
+      },
+      username: user,
+      password: passwd
+    };
+  };
+  exports.amqplain = function(user, passwd) {
+    return {
+      mechanism: "AMQPLAIN",
+      response: function() {
+        const buffer = Buffer.alloc(16384);
+        const size = codec.encodeTable(buffer, { LOGIN: user, PASSWORD: passwd }, 0);
+        return buffer.subarray(4, size);
+      },
+      username: user,
+      password: passwd
+    };
+  };
+  exports.external = function() {
+    return {
+      mechanism: "EXTERNAL",
+      response: function() {
+        return Buffer.from("");
+      }
+    };
+  };
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/package.json
+var require_package = __commonJS((exports, module) => {
+  module.exports = {
+    name: "amqplib",
+    homepage: "http://amqp-node.github.io/amqplib/",
+    main: "./channel_api.js",
+    version: "0.10.9",
+    description: "An AMQP 0-9-1 (e.g., RabbitMQ) library and client.",
+    repository: {
+      type: "git",
+      url: "git+https://github.com/amqp-node/amqplib.git"
+    },
+    engines: {
+      node: ">=10"
+    },
+    dependencies: {
+      "buffer-more-ints": "~1.0.0",
+      "url-parse": "~1.5.10"
+    },
+    devDependencies: {
+      claire: "0.4.1",
+      mocha: "^9.2.2",
+      nyc: "^15.1.0",
+      "uglify-js": "2.8.x"
+    },
+    scripts: {
+      test: "make test"
+    },
+    keywords: [
+      "AMQP",
+      "AMQP 0-9-1",
+      "RabbitMQ"
+    ],
+    author: "Michael Bridgen <mikeb@squaremobius.net>",
+    license: "MIT"
+  };
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/connect.js
+var require_connect = __commonJS((exports, module) => {
+  var URL4 = require_url_parse();
+  var QS = __require("querystring");
+  var Connection = require_connection().Connection;
+  var fmt = __require("util").format;
+  var credentials = require_credentials();
+  function copyInto(obj, target) {
+    var keys = Object.keys(obj);
+    var i = keys.length;
+    while (i--) {
+      var k = keys[i];
+      target[k] = obj[k];
+    }
+    return target;
+  }
+  function clone(obj) {
+    return copyInto(obj, {});
+  }
+  var CLIENT_PROPERTIES = {
+    product: "amqplib",
+    version: require_package().version,
+    platform: fmt("Node.JS %s", process.version),
+    information: "https://amqp-node.github.io/amqplib/",
+    capabilities: {
+      publisher_confirms: true,
+      exchange_exchange_bindings: true,
+      "basic.nack": true,
+      consumer_cancel_notify: true,
+      "connection.blocked": true,
+      authentication_failure_close: true
+    }
+  };
+  function openFrames(vhost, query, credentials2, extraClientProperties) {
+    if (!vhost)
+      vhost = "/";
+    else
+      vhost = QS.unescape(vhost);
+    var query = query || {};
+    function intOrDefault(val, def) {
+      return val === undefined ? def : parseInt(val);
+    }
+    var clientProperties = Object.create(CLIENT_PROPERTIES);
+    return {
+      clientProperties: copyInto(extraClientProperties, clientProperties),
+      mechanism: credentials2.mechanism,
+      response: credentials2.response(),
+      locale: query.locale || "en_US",
+      channelMax: intOrDefault(query.channelMax, 0),
+      frameMax: intOrDefault(query.frameMax, 131072),
+      heartbeat: intOrDefault(query.heartbeat, 0),
+      virtualHost: vhost,
+      capabilities: "",
+      insist: 0
+    };
+  }
+  function credentialsFromUrl(parts) {
+    var user = "guest", passwd = "guest";
+    if (parts.username != "" || parts.password != "") {
+      user = parts.username ? unescape(parts.username) : "";
+      passwd = parts.password ? unescape(parts.password) : "";
+    }
+    return credentials.plain(user, passwd);
+  }
+  function connect(url, socketOptions, openCallback) {
+    var sockopts = clone(socketOptions || {});
+    url = url || "amqp://localhost";
+    var noDelay = !!sockopts.noDelay;
+    var timeout = sockopts.timeout;
+    var keepAlive = !!sockopts.keepAlive;
+    var keepAliveDelay = sockopts.keepAliveDelay || 0;
+    var extraClientProperties = sockopts.clientProperties || {};
+    var protocol, fields;
+    if (typeof url === "object") {
+      protocol = (url.protocol || "amqp") + ":";
+      sockopts.host = url.hostname;
+      sockopts.servername = sockopts.servername || url.hostname;
+      sockopts.port = url.port || (protocol === "amqp:" ? 5672 : 5671);
+      var user, pass;
+      if (url.username == undefined && url.password == undefined) {
+        user = "guest";
+        pass = "guest";
+      } else {
+        user = url.username || "";
+        pass = url.password || "";
+      }
+      var config = {
+        locale: url.locale,
+        channelMax: url.channelMax,
+        frameMax: url.frameMax,
+        heartbeat: url.heartbeat
+      };
+      fields = openFrames(url.vhost, config, sockopts.credentials || credentials.plain(user, pass), extraClientProperties);
+    } else {
+      var parts = URL4(url, true);
+      var host = parts.hostname.replace(/^\[|\]$/g, "");
+      protocol = parts.protocol;
+      sockopts.host = host;
+      sockopts.servername = sockopts.servername || host;
+      sockopts.port = parseInt(parts.port) || (protocol === "amqp:" ? 5672 : 5671);
+      var vhost = parts.pathname ? parts.pathname.substr(1) : null;
+      fields = openFrames(vhost, parts.query, sockopts.credentials || credentialsFromUrl(parts), extraClientProperties);
+    }
+    var sockok = false;
+    var sock;
+    function onConnect() {
+      sockok = true;
+      sock.setNoDelay(noDelay);
+      if (keepAlive)
+        sock.setKeepAlive(keepAlive, keepAliveDelay);
+      var c = new Connection(sock);
+      c.open(fields, function(err, ok2) {
+        if (timeout)
+          sock.setTimeout(0);
+        if (err === null) {
+          openCallback(null, c);
+        } else {
+          sock.end();
+          sock.destroy();
+          openCallback(err);
+        }
+      });
+    }
+    if (protocol === "amqp:") {
+      sock = __require("net").connect(sockopts, onConnect);
+    } else if (protocol === "amqps:") {
+      sock = __require("tls").connect(sockopts, onConnect);
+    } else {
+      throw new Error("Expected amqp: or amqps: as the protocol; got " + protocol);
+    }
+    if (timeout) {
+      sock.setTimeout(timeout, function() {
+        sock.end();
+        sock.destroy();
+        openCallback(new Error("connect ETIMEDOUT"));
+      });
+    }
+    sock.once("error", function(err) {
+      if (!sockok)
+        openCallback(err);
+    });
+  }
+  exports.connect = connect;
+  exports.credentialsFromUrl = credentialsFromUrl;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/channel.js
+var require_channel = __commonJS((exports, module) => {
+  var defs = require_defs();
+  var closeMsg = require_format2().closeMessage;
+  var inspect = require_format2().inspect;
+  var methodName = require_format2().methodName;
+  var assert = __require("assert");
+  var EventEmitter2 = __require("events");
+  var fmt = __require("util").format;
+  var IllegalOperationError = require_error().IllegalOperationError;
+  var stackCapture = require_error().stackCapture;
+
+  class Channel extends EventEmitter2 {
+    constructor(connection) {
+      super();
+      this.connection = connection;
+      this.reply = null;
+      this.pending = [];
+      this.lwm = 1;
+      this.unconfirmed = [];
+      this.on("ack", this.handleConfirm.bind(this, function(cb) {
+        if (cb)
+          cb(null);
+      }));
+      this.on("nack", this.handleConfirm.bind(this, function(cb) {
+        if (cb)
+          cb(new Error("message nacked"));
+      }));
+      this.on("close", function() {
+        var cb;
+        while (cb = this.unconfirmed.shift()) {
+          if (cb)
+            cb(new Error("channel closed"));
+        }
+      });
+      this.handleMessage = acceptDeliveryOrReturn;
+    }
+    setOptions(options) {
+      this.options = options;
+    }
+    allocate() {
+      this.ch = this.connection.freshChannel(this, this.options);
+      return this;
+    }
+    sendImmediately(method, fields) {
+      return this.connection.sendMethod(this.ch, method, fields);
+    }
+    sendOrEnqueue(method, fields, reply) {
+      if (!this.reply) {
+        assert(this.pending.length === 0);
+        this.reply = reply;
+        this.sendImmediately(method, fields);
+      } else {
+        this.pending.push({
+          method,
+          fields,
+          reply
+        });
+      }
+    }
+    sendMessage(fields, properties, content) {
+      return this.connection.sendMessage(this.ch, defs.BasicPublish, fields, defs.BasicProperties, properties, content);
+    }
+    _rpc(method, fields, expect, cb) {
+      var self2 = this;
+      function reply(err, f) {
+        if (err === null) {
+          if (f.id === expect) {
+            return cb(null, f);
+          } else {
+            var expectedName = methodName(expect);
+            var e = new Error(fmt("Expected %s; got %s", expectedName, inspect(f, false)));
+            self2.closeWithError(f.id, fmt("Expected %s; got %s", expectedName, methodName(f.id)), defs.constants.UNEXPECTED_FRAME, e);
+            return cb(e);
+          }
+        } else if (err instanceof Error)
+          return cb(err);
+        else {
+          var closeReason = (err.fields.classId << 16) + err.fields.methodId;
+          var e = method === closeReason ? fmt("Operation failed: %s; %s", methodName(method), closeMsg(err)) : fmt("Channel closed by server: %s", closeMsg(err));
+          var closeFrameError = new Error(e);
+          closeFrameError.code = err.fields.replyCode;
+          closeFrameError.classId = err.fields.classId;
+          closeFrameError.methodId = err.fields.methodId;
+          return cb(closeFrameError);
+        }
+      }
+      this.sendOrEnqueue(method, fields, reply);
+    }
+    toClosed(capturedStack) {
+      this._rejectPending();
+      invalidateSend(this, "Channel closed", capturedStack);
+      this.accept = invalidOp("Channel closed", capturedStack);
+      this.connection.releaseChannel(this.ch);
+      this.emit("close");
+    }
+    toClosing(capturedStack, k) {
+      var send = this.sendImmediately.bind(this);
+      invalidateSend(this, "Channel closing", capturedStack);
+      this.accept = function(f) {
+        if (f.id === defs.ChannelCloseOk) {
+          if (k)
+            k();
+          var s = stackCapture("ChannelCloseOk frame received");
+          this.toClosed(s);
+        } else if (f.id === defs.ChannelClose) {
+          send(defs.ChannelCloseOk, {});
+        }
+      };
+    }
+    _rejectPending() {
+      function rej(r) {
+        r(new Error("Channel ended, no reply will be forthcoming"));
+      }
+      if (this.reply !== null)
+        rej(this.reply);
+      this.reply = null;
+      var discard;
+      while (discard = this.pending.shift())
+        rej(discard.reply);
+      this.pending = null;
+    }
+    closeBecause(reason, code, k) {
+      this.sendImmediately(defs.ChannelClose, {
+        replyText: reason,
+        replyCode: code,
+        methodId: 0,
+        classId: 0
+      });
+      var s = stackCapture("closeBecause called: " + reason);
+      this.toClosing(s, k);
+    }
+    closeWithError(id, reason, code, error) {
+      var self2 = this;
+      this.closeBecause(reason, code, function() {
+        error.code = code;
+        if (id) {
+          error.classId = defs.info(id).classId;
+          error.methodId = defs.info(id).methodId;
+        }
+        self2.emit("error", error);
+      });
+    }
+    acceptMessageFrame(f) {
+      try {
+        this.handleMessage = this.handleMessage(f);
+      } catch (msg) {
+        if (typeof msg === "string") {
+          this.closeWithError(f.id, msg, defs.constants.UNEXPECTED_FRAME, new Error(msg));
+        } else if (msg instanceof Error) {
+          this.closeWithError(f.id, "Error while processing message", defs.constants.INTERNAL_ERROR, msg);
+        } else {
+          this.closeWithError(f.id, "Internal error while processing message", defs.constants.INTERNAL_ERROR, new Error(msg.toString()));
+        }
+      }
+    }
+    handleConfirm(handle, f) {
+      var tag = f.deliveryTag;
+      var multi = f.multiple;
+      if (multi) {
+        var confirmed = this.unconfirmed.splice(0, tag - this.lwm + 1);
+        this.lwm = tag + 1;
+        confirmed.forEach(handle);
+      } else {
+        var c;
+        if (tag === this.lwm) {
+          c = this.unconfirmed.shift();
+          this.lwm++;
+          while (this.unconfirmed[0] === null) {
+            this.unconfirmed.shift();
+            this.lwm++;
+          }
+        } else {
+          c = this.unconfirmed[tag - this.lwm];
+          this.unconfirmed[tag - this.lwm] = null;
+        }
+        handle(c);
+      }
+    }
+    pushConfirmCallback(cb) {
+      this.unconfirmed.push(cb || false);
+    }
+    onBufferDrain() {
+      this.emit("drain");
+    }
+    accept(f) {
+      switch (f.id) {
+        case undefined:
+        case defs.BasicDeliver:
+        case defs.BasicReturn:
+        case defs.BasicProperties:
+          return this.acceptMessageFrame(f);
+        case defs.BasicAck:
+          return this.emit("ack", f.fields);
+        case defs.BasicNack:
+          return this.emit("nack", f.fields);
+        case defs.BasicCancel:
+          return this.emit("cancel", f.fields);
+        case defs.ChannelClose:
+          if (this.reply) {
+            var reply = this.reply;
+            this.reply = null;
+            reply(f);
+          }
+          var emsg = "Channel closed by server: " + closeMsg(f);
+          this.sendImmediately(defs.ChannelCloseOk, {});
+          var error = new Error(emsg);
+          error.code = f.fields.replyCode;
+          error.classId = f.fields.classId;
+          error.methodId = f.fields.methodId;
+          this.emit("error", error);
+          var s = stackCapture(emsg);
+          this.toClosed(s);
+          return;
+        case defs.BasicFlow:
+          return this.closeWithError(f.id, "Flow not implemented", defs.constants.NOT_IMPLEMENTED, new Error("Flow not implemented"));
+        default:
+          var reply = this.reply;
+          this.reply = null;
+          if (this.pending.length > 0) {
+            var send = this.pending.shift();
+            this.reply = send.reply;
+            this.sendImmediately(send.method, send.fields);
+          }
+          return reply(null, f);
+      }
+    }
+  }
+  function invalidOp(msg, stack) {
+    return function() {
+      throw new IllegalOperationError(msg, stack);
+    };
+  }
+  function invalidateSend(ch, msg, stack) {
+    ch.sendImmediately = ch.sendOrEnqueue = ch.sendMessage = invalidOp(msg, stack);
+  }
+  function acceptDeliveryOrReturn(f) {
+    var event;
+    if (f.id === defs.BasicDeliver)
+      event = "delivery";
+    else if (f.id === defs.BasicReturn)
+      event = "return";
+    else
+      throw fmt("Expected BasicDeliver or BasicReturn; got %s", inspect(f));
+    var self2 = this;
+    var fields = f.fields;
+    return acceptMessage(function(message) {
+      message.fields = fields;
+      self2.emit(event, message);
+    });
+  }
+  function acceptMessage(continuation) {
+    var totalSize = 0, remaining = 0;
+    var buffers = null;
+    var message = {
+      fields: null,
+      properties: null,
+      content: null
+    };
+    return headers;
+    function headers(f) {
+      if (f.id === defs.BasicProperties) {
+        message.properties = f.fields;
+        totalSize = remaining = f.size;
+        if (totalSize === 0) {
+          message.content = Buffer.alloc(0);
+          continuation(message);
+          return acceptDeliveryOrReturn;
+        } else {
+          return content;
+        }
+      } else {
+        throw "Expected headers frame after delivery";
+      }
+    }
+    function content(f) {
+      if (f.content) {
+        var size = f.content.length;
+        remaining -= size;
+        if (remaining === 0) {
+          if (buffers !== null) {
+            buffers.push(f.content);
+            message.content = Buffer.concat(buffers);
+          } else {
+            message.content = f.content;
+          }
+          continuation(message);
+          return acceptDeliveryOrReturn;
+        } else if (remaining < 0) {
+          throw fmt("Too much content sent! Expected %d bytes", totalSize);
+        } else {
+          if (buffers !== null)
+            buffers.push(f.content);
+          else
+            buffers = [f.content];
+          return content;
+        }
+      } else
+        throw "Expected content frame after headers";
+    }
+  }
+
+  class BaseChannel extends Channel {
+    constructor(connection) {
+      super(connection);
+      this.consumers = new Map;
+    }
+    registerConsumer(tag, callback) {
+      this.consumers.set(tag, callback);
+    }
+    unregisterConsumer(tag) {
+      this.consumers.delete(tag);
+    }
+    dispatchMessage(fields, message) {
+      var consumerTag = fields.consumerTag;
+      var consumer = this.consumers.get(consumerTag);
+      if (consumer) {
+        return consumer(message);
+      } else {
+        throw new Error("Unknown consumer: " + consumerTag);
+      }
+    }
+    handleDelivery(message) {
+      return this.dispatchMessage(message.fields, message);
+    }
+    handleCancel(fields) {
+      var result = this.dispatchMessage(fields, null);
+      this.unregisterConsumer(fields.consumerTag);
+      return result;
+    }
+  }
+  exports.acceptMessage = acceptMessage;
+  exports.BaseChannel = BaseChannel;
+  exports.Channel = Channel;
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/api_args.js
+var require_api_args = __commonJS((exports, module) => {
+  function setIfDefined(obj, prop, value) {
+    if (value != null)
+      obj[prop] = value;
+  }
+  var EMPTY_OPTIONS = Object.freeze({});
+  var Args = {};
+  Args.assertQueue = function(queue, options) {
+    queue = queue || "";
+    options = options || EMPTY_OPTIONS;
+    var argt = Object.create(options.arguments || null);
+    setIfDefined(argt, "x-expires", options.expires);
+    setIfDefined(argt, "x-message-ttl", options.messageTtl);
+    setIfDefined(argt, "x-dead-letter-exchange", options.deadLetterExchange);
+    setIfDefined(argt, "x-dead-letter-routing-key", options.deadLetterRoutingKey);
+    setIfDefined(argt, "x-max-length", options.maxLength);
+    setIfDefined(argt, "x-max-priority", options.maxPriority);
+    setIfDefined(argt, "x-overflow", options.overflow);
+    setIfDefined(argt, "x-queue-mode", options.queueMode);
+    return {
+      queue,
+      exclusive: !!options.exclusive,
+      durable: options.durable === undefined ? true : options.durable,
+      autoDelete: !!options.autoDelete,
+      arguments: argt,
+      passive: false,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.checkQueue = function(queue) {
+    return {
+      queue,
+      passive: true,
+      nowait: false,
+      durable: true,
+      autoDelete: false,
+      exclusive: false,
+      ticket: 0
+    };
+  };
+  Args.deleteQueue = function(queue, options) {
+    options = options || EMPTY_OPTIONS;
+    return {
+      queue,
+      ifUnused: !!options.ifUnused,
+      ifEmpty: !!options.ifEmpty,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.purgeQueue = function(queue) {
+    return {
+      queue,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.bindQueue = function(queue, source, pattern, argt) {
+    return {
+      queue,
+      exchange: source,
+      routingKey: pattern,
+      arguments: argt,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.unbindQueue = function(queue, source, pattern, argt) {
+    return {
+      queue,
+      exchange: source,
+      routingKey: pattern,
+      arguments: argt,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.assertExchange = function(exchange, type, options) {
+    options = options || EMPTY_OPTIONS;
+    var argt = Object.create(options.arguments || null);
+    setIfDefined(argt, "alternate-exchange", options.alternateExchange);
+    return {
+      exchange,
+      ticket: 0,
+      type,
+      passive: false,
+      durable: options.durable === undefined ? true : options.durable,
+      autoDelete: !!options.autoDelete,
+      internal: !!options.internal,
+      nowait: false,
+      arguments: argt
+    };
+  };
+  Args.checkExchange = function(exchange) {
+    return {
+      exchange,
+      passive: true,
+      nowait: false,
+      durable: true,
+      internal: false,
+      type: "",
+      autoDelete: false,
+      ticket: 0
+    };
+  };
+  Args.deleteExchange = function(exchange, options) {
+    options = options || EMPTY_OPTIONS;
+    return {
+      exchange,
+      ifUnused: !!options.ifUnused,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.bindExchange = function(dest, source, pattern, argt) {
+    return {
+      source,
+      destination: dest,
+      routingKey: pattern,
+      arguments: argt,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.unbindExchange = function(dest, source, pattern, argt) {
+    return {
+      source,
+      destination: dest,
+      routingKey: pattern,
+      arguments: argt,
+      ticket: 0,
+      nowait: false
+    };
+  };
+  Args.publish = function(exchange, routingKey, options) {
+    options = options || EMPTY_OPTIONS;
+    function convertCC(cc) {
+      if (cc === undefined) {
+        return;
+      } else if (Array.isArray(cc)) {
+        return cc.map(String);
+      } else
+        return [String(cc)];
+    }
+    var headers = Object.create(options.headers || null);
+    setIfDefined(headers, "CC", convertCC(options.CC));
+    setIfDefined(headers, "BCC", convertCC(options.BCC));
+    var deliveryMode;
+    if (options.persistent !== undefined)
+      deliveryMode = options.persistent ? 2 : 1;
+    else if (typeof options.deliveryMode === "number")
+      deliveryMode = options.deliveryMode;
+    else if (options.deliveryMode)
+      deliveryMode = 2;
+    var expiration = options.expiration;
+    if (expiration !== undefined)
+      expiration = expiration.toString();
+    return {
+      exchange,
+      routingKey,
+      mandatory: !!options.mandatory,
+      immediate: false,
+      ticket: undefined,
+      contentType: options.contentType,
+      contentEncoding: options.contentEncoding,
+      headers,
+      deliveryMode,
+      priority: options.priority,
+      correlationId: options.correlationId,
+      replyTo: options.replyTo,
+      expiration,
+      messageId: options.messageId,
+      timestamp: options.timestamp,
+      type: options.type,
+      userId: options.userId,
+      appId: options.appId,
+      clusterId: undefined
+    };
+  };
+  Args.consume = function(queue, options) {
+    options = options || EMPTY_OPTIONS;
+    var argt = Object.create(options.arguments || null);
+    setIfDefined(argt, "x-priority", options.priority);
+    return {
+      ticket: 0,
+      queue,
+      consumerTag: options.consumerTag || "",
+      noLocal: !!options.noLocal,
+      noAck: !!options.noAck,
+      exclusive: !!options.exclusive,
+      nowait: false,
+      arguments: argt
+    };
+  };
+  Args.cancel = function(consumerTag) {
+    return {
+      consumerTag,
+      nowait: false
+    };
+  };
+  Args.get = function(queue, options) {
+    options = options || EMPTY_OPTIONS;
+    return {
+      ticket: 0,
+      queue,
+      noAck: !!options.noAck
+    };
+  };
+  Args.ack = function(tag, allUpTo) {
+    return {
+      deliveryTag: tag,
+      multiple: !!allUpTo
+    };
+  };
+  Args.nack = function(tag, allUpTo, requeue) {
+    return {
+      deliveryTag: tag,
+      multiple: !!allUpTo,
+      requeue: requeue === undefined ? true : requeue
+    };
+  };
+  Args.reject = function(tag, requeue) {
+    return {
+      deliveryTag: tag,
+      requeue: requeue === undefined ? true : requeue
+    };
+  };
+  Args.prefetch = function(count, global2) {
+    return {
+      prefetchCount: count || 0,
+      prefetchSize: 0,
+      global: !!global2
+    };
+  };
+  Args.recover = function() {
+    return { requeue: true };
+  };
+  module.exports = Object.freeze(Args);
+});
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/lib/channel_model.js
+var require_channel_model = __commonJS((exports, module) => {
+  var EventEmitter2 = __require("events");
+  var promisify = __require("util").promisify;
+  var defs = require_defs();
+  var { BaseChannel } = require_channel();
+  var { acceptMessage } = require_channel();
+  var Args = require_api_args();
+  var { inspect } = require_format2();
+
+  class ChannelModel extends EventEmitter2 {
+    constructor(connection) {
+      super();
+      this.connection = connection;
+      ["error", "close", "blocked", "unblocked"].forEach((ev) => {
+        connection.on(ev, this.emit.bind(this, ev));
+      });
+    }
+    close() {
+      return promisify(this.connection.close.bind(this.connection))();
+    }
+    updateSecret(newSecret, reason) {
+      return promisify(this.connection._updateSecret.bind(this.connection))(newSecret, reason);
+    }
+    async createChannel(options) {
+      const channel = new Channel(this.connection);
+      channel.setOptions(options);
+      await channel.open();
+      return channel;
+    }
+    async createConfirmChannel(options) {
+      const channel = new ConfirmChannel(this.connection);
+      channel.setOptions(options);
+      await channel.open();
+      await channel.rpc(defs.ConfirmSelect, { nowait: false }, defs.ConfirmSelectOk);
+      return channel;
+    }
+  }
+
+  class Channel extends BaseChannel {
+    constructor(connection) {
+      super(connection);
+      this.on("delivery", this.handleDelivery.bind(this));
+      this.on("cancel", this.handleCancel.bind(this));
+    }
+    async rpc(method, fields, expect) {
+      const f = await promisify((cb) => {
+        return this._rpc(method, fields, expect, cb);
+      })();
+      return f.fields;
+    }
+    async open() {
+      const ch = await this.allocate.bind(this)();
+      return ch.rpc(defs.ChannelOpen, { outOfBand: "" }, defs.ChannelOpenOk);
+    }
+    close() {
+      return promisify((cb) => {
+        return this.closeBecause("Goodbye", defs.constants.REPLY_SUCCESS, cb);
+      })();
+    }
+    assertQueue(queue, options) {
+      return this.rpc(defs.QueueDeclare, Args.assertQueue(queue, options), defs.QueueDeclareOk);
+    }
+    checkQueue(queue) {
+      return this.rpc(defs.QueueDeclare, Args.checkQueue(queue), defs.QueueDeclareOk);
+    }
+    deleteQueue(queue, options) {
+      return this.rpc(defs.QueueDelete, Args.deleteQueue(queue, options), defs.QueueDeleteOk);
+    }
+    purgeQueue(queue) {
+      return this.rpc(defs.QueuePurge, Args.purgeQueue(queue), defs.QueuePurgeOk);
+    }
+    bindQueue(queue, source, pattern, argt) {
+      return this.rpc(defs.QueueBind, Args.bindQueue(queue, source, pattern, argt), defs.QueueBindOk);
+    }
+    unbindQueue(queue, source, pattern, argt) {
+      return this.rpc(defs.QueueUnbind, Args.unbindQueue(queue, source, pattern, argt), defs.QueueUnbindOk);
+    }
+    assertExchange(exchange, type, options) {
+      return this.rpc(defs.ExchangeDeclare, Args.assertExchange(exchange, type, options), defs.ExchangeDeclareOk).then((_ok) => {
+        return { exchange };
+      });
+    }
+    checkExchange(exchange) {
+      return this.rpc(defs.ExchangeDeclare, Args.checkExchange(exchange), defs.ExchangeDeclareOk);
+    }
+    deleteExchange(name, options) {
+      return this.rpc(defs.ExchangeDelete, Args.deleteExchange(name, options), defs.ExchangeDeleteOk);
+    }
+    bindExchange(dest, source, pattern, argt) {
+      return this.rpc(defs.ExchangeBind, Args.bindExchange(dest, source, pattern, argt), defs.ExchangeBindOk);
+    }
+    unbindExchange(dest, source, pattern, argt) {
+      return this.rpc(defs.ExchangeUnbind, Args.unbindExchange(dest, source, pattern, argt), defs.ExchangeUnbindOk);
+    }
+    publish(exchange, routingKey, content, options) {
+      const fieldsAndProps = Args.publish(exchange, routingKey, options);
+      return this.sendMessage(fieldsAndProps, fieldsAndProps, content);
+    }
+    sendToQueue(queue, content, options) {
+      return this.publish("", queue, content, options);
+    }
+    consume(queue, callback, options) {
+      const fields = Args.consume(queue, options);
+      return new Promise((resolve, reject) => {
+        this._rpc(defs.BasicConsume, fields, defs.BasicConsumeOk, (err, ok2) => {
+          if (err)
+            return reject(err);
+          this.registerConsumer(ok2.fields.consumerTag, callback);
+          resolve(ok2.fields);
+        });
+      });
+    }
+    async cancel(consumerTag) {
+      const ok2 = await promisify((cb) => {
+        this._rpc(defs.BasicCancel, Args.cancel(consumerTag), defs.BasicCancelOk, cb);
+      })().then((ok3) => {
+        this.unregisterConsumer(consumerTag);
+        return ok3.fields;
+      });
+    }
+    get(queue, options) {
+      const fields = Args.get(queue, options);
+      return new Promise((resolve, reject) => {
+        this.sendOrEnqueue(defs.BasicGet, fields, (err, f) => {
+          if (err)
+            return reject(err);
+          if (f.id === defs.BasicGetEmpty) {
+            return resolve(false);
+          } else if (f.id === defs.BasicGetOk) {
+            const fields2 = f.fields;
+            this.handleMessage = acceptMessage((m) => {
+              m.fields = fields2;
+              resolve(m);
+            });
+          } else {
+            reject(new Error(`Unexpected response to BasicGet: ${inspect(f)}`));
+          }
+        });
+      });
+    }
+    ack(message, allUpTo) {
+      this.sendImmediately(defs.BasicAck, Args.ack(message.fields.deliveryTag, allUpTo));
+    }
+    ackAll() {
+      this.sendImmediately(defs.BasicAck, Args.ack(0, true));
+    }
+    nack(message, allUpTo, requeue) {
+      this.sendImmediately(defs.BasicNack, Args.nack(message.fields.deliveryTag, allUpTo, requeue));
+    }
+    nackAll(requeue) {
+      this.sendImmediately(defs.BasicNack, Args.nack(0, true, requeue));
+    }
+    reject(message, requeue) {
+      this.sendImmediately(defs.BasicReject, Args.reject(message.fields.deliveryTag, requeue));
+    }
+    recover() {
+      return this.rpc(defs.BasicRecover, Args.recover(), defs.BasicRecoverOk);
+    }
+    qos(count, global2) {
+      return this.rpc(defs.BasicQos, Args.prefetch(count, global2), defs.BasicQosOk);
+    }
+  }
+  Channel.prototype.prefetch = Channel.prototype.qos;
+
+  class ConfirmChannel extends Channel {
+    publish(exchange, routingKey, content, options, cb) {
+      this.pushConfirmCallback(cb);
+      return super.publish(exchange, routingKey, content, options);
+    }
+    sendToQueue(queue, content, options, cb) {
+      return this.publish("", queue, content, options, cb);
+    }
+    waitForConfirms() {
+      const awaiting = [];
+      const unconfirmed = this.unconfirmed;
+      unconfirmed.forEach((val, index) => {
+        if (val !== null) {
+          const confirmed = new Promise((resolve, reject) => {
+            unconfirmed[index] = (err) => {
+              if (val)
+                val(err);
+              if (err === null)
+                resolve();
+              else
+                reject(err);
+            };
+          });
+          awaiting.push(confirmed);
+        }
+      });
+      if (!this.pending) {
+        var cb;
+        while (cb = this.unconfirmed.shift()) {
+          if (cb)
+            cb(new Error("channel closed"));
+        }
+      }
+      return Promise.all(awaiting);
+    }
+  }
+  exports.ConfirmChannel = ConfirmChannel;
+  exports.Channel = Channel;
+  exports.ChannelModel = ChannelModel;
+});
+
+// ../../node_modules/.bun/promise-breaker@6.0.0/node_modules/promise-breaker/index.js
+var require_promise_breaker = __commonJS((exports) => {
+  (function(root, factory2) {
+    if (typeof define === "function" && define.amd) {
+      define(["exports"], factory2);
+    } else if (typeof exports === "object") {
+      factory2(exports);
+    } else {
+      factory2(root.promiseBreaker = {});
+    }
+  })(exports, function(exports2) {
+    var globals = global || window;
+    function makeParams(count) {
+      var answer = [];
+      for (var i = 0;i < count; i++) {
+        answer.push("p" + i);
+      }
+      return answer;
+    }
+    function toList(params, extraParam, appendComma) {
+      if (extraParam) {
+        params = params.concat([extraParam]);
+      }
+      return params.join(", ") + (appendComma && params.length ? "," : "");
+    }
+    function isFunction(fn) {
+      var str = Object.prototype.toString.call(fn);
+      return !!fn && (typeof fn === "object" || typeof fn === "function") && (str === "[object Function]" || str === "[object AsyncFunction]");
+    }
+    function validatePromise(p) {
+      if (!p) {
+        throw new Error("Promise is undefined. Define Promise as global variable or call withPromise()");
+      }
+      if (!isFunction(p)) {
+        throw new Error("Expect Promise to be a constructor");
+      }
+    }
+    exports2.withPromise = function(promiseImpl) {
+      if (promiseImpl) {
+        validatePromise(promiseImpl);
+      }
+      var pb = {};
+      pb.make = function(options, asyncFn) {
+        if (!asyncFn) {
+          asyncFn = options;
+          options = {};
+        }
+        if (!isFunction(asyncFn)) {
+          throw new Error("Function required");
+        }
+        if (!promiseImpl) {
+          validatePromise(globals.Promise);
+        }
+        var argumentCount = options.args || asyncFn.length;
+        var args = makeParams(argumentCount - 1);
+        var fn = new Function(["asyncFn", "Promise"], "return function(" + toList(args, "done") + `) {
+` + `    if(done) {
+` + "        return asyncFn.call(this, " + toList(args, "done") + `);
+` + `    } else {
+` + `        var _this = this;
+` + `        return new Promise(function(resolve, reject) {
+` + "            asyncFn.call(_this, " + toList(args, null, true) + ` function(err, result) {
+` + `                if(err) {
+` + `                    reject(err);
+` + `                } else {
+` + "                    if(arguments.length > 2) {" + "                        resolve([].slice.call(arguments, 1));" + "                    } else {" + `                        resolve(result);
+` + "                    }" + `                }
+` + `            });
+` + `        });
+` + `    }
+` + "};");
+        return fn(asyncFn, promiseImpl || globals.Promise);
+      };
+      pb["break"] = function(options, promiseFn) {
+        if (!promiseFn) {
+          promiseFn = options;
+          options = {};
+        }
+        if (!isFunction(promiseFn)) {
+          throw new Error("Function required");
+        }
+        var argumentCount = options.args || promiseFn.length;
+        var args = makeParams(argumentCount);
+        var params = ["this"].concat(args);
+        var fn = new Function(["promiseFn"], "return function(" + toList(args, "done") + `) {
+` + `    if(done) {
+` + "        promiseFn.call(" + toList(params) + `).then(
+` + `            function(result) {setTimeout(function() {done(null, result);}, 0);},
+` + `            function(err) {setTimeout(function() {done(err);}, 0);}
+` + `        );
+` + `        return null;
+` + `    } else {
+` + "        return promiseFn.call(" + toList(params) + `);
+` + `    }
+` + "};");
+        return fn(promiseFn);
+      };
+      pb.addPromise = function(done, fn) {
+        var answer = null;
+        if (done) {
+          fn(done);
+        } else {
+          answer = new Promise(function(resolve, reject) {
+            fn(function(err, result) {
+              if (err) {
+                reject(err);
+              } else if (arguments.length > 2) {
+                resolve([].slice.call(arguments, 1));
+              } else {
+                resolve(result);
+              }
+            });
+          });
+        }
+        return answer;
+      };
+      pb.addCallback = function(done, promise) {
+        var answer;
+        if (!promise) {
+          throw new Error("addCallback() expected promise or function as second paramater");
+        } else if (isFunction(promise.then)) {
+          answer = promise;
+        } else if (isFunction(promise)) {
+          answer = Promise.resolve().then(function() {
+            return promise();
+          });
+        } else {
+          throw new Error("addCallback() don't know what to do with " + typeof promise);
+        }
+        if (done) {
+          answer.then(function(result) {
+            setTimeout(function() {
+              done(null, result);
+            }, 0);
+          }, function(err) {
+            setTimeout(function() {
+              done(err);
+            }, 0);
+          });
+          answer = null;
+        }
+        return answer;
+      };
+      pb.applyFn = function(fn, argumentCount, thisArg, args, done) {
+        argumentCount = argumentCount || 0;
+        args = args || [];
+        if (fn.length > argumentCount + 1) {
+          return pb.addCallback(done, Promise.reject(new Error("Expected function with " + argumentCount + " or fewer arguments which returns Promise, " + "or function with " + (argumentCount + 1) + " arguments which takes callback - got function with " + fn.length + " arguments.")));
+        }
+        return pb.addCallback(done, Promise.resolve().then(function() {
+          var isCallbackFn = argumentCount < fn.length;
+          var donePromise;
+          if (args.length < argumentCount || isCallbackFn) {
+            args = args.slice(0);
+            while (args.length < argumentCount) {
+              args.push(undefined);
+            }
+            if (isCallbackFn) {
+              donePromise = new (promiseImpl || globals.Promise)(function(resolve, reject) {
+                args[argumentCount] = function(err, result) {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(result);
+                  }
+                };
+              });
+            }
+          }
+          var returnedPromise = fn.apply(thisArg, args);
+          return donePromise || returnedPromise;
+        }));
+      };
+      pb.apply = function(fn, thisArg, args, done) {
+        args = args || [];
+        return pb.applyFn(fn, args.length, thisArg, args, done);
+      };
+      pb.callFn = function(fn, argumentCount, thisArg) {
+        argumentCount = argumentCount || 0;
+        var maxArgumentsToFetch = Math.min(arguments.length - 3, argumentCount);
+        var args = [];
+        if (maxArgumentsToFetch > 0) {
+          args = [].slice.call(arguments, 3, 3 + maxArgumentsToFetch);
+        }
+        var done = arguments[3 + argumentCount];
+        return pb.applyFn(fn, argumentCount, thisArg, args, done);
+      };
+      pb.call = function(fn, thisArg) {
+        var args = [].slice.call(arguments, 2);
+        return pb.applyFn(fn, args.length, thisArg, args);
+      };
+      pb.callWithCb = function(fn, thisArg) {
+        var args = [].slice.call(arguments, 2, arguments.length - 1);
+        var done = arguments[arguments.length - 1];
+        if (!isFunction(done)) {
+          throw new Error("callWithCb requires function as last parameter.");
+        }
+        return pb.applyFn(fn, args.length, thisArg, args, done);
+      };
+      return pb;
+    };
+    exports2.default = exports2.withPromise();
+    for (var k in exports2.default) {
+      if ({}.hasOwnProperty.call(exports2.default, k)) {
+        exports2[k] = exports2.default[k];
+      }
+    }
+    exports2.usingDefaultPromise = exports2.default;
+  });
+});
+
+// ../../node_modules/.bun/cookie-signature@1.0.6/node_modules/cookie-signature/index.js
+var require_cookie_signature2 = __commonJS((exports) => {
+  var crypto7 = __require("crypto");
+  exports.sign = function(val, secret) {
+    if (typeof val != "string")
+      throw new TypeError("Cookie value must be provided as a string.");
+    if (typeof secret != "string")
+      throw new TypeError("Secret string must be provided.");
+    return val + "." + crypto7.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+  };
+  exports.unsign = function(val, secret) {
+    if (typeof val != "string")
+      throw new TypeError("Signed cookie string must be provided.");
+    if (typeof secret != "string")
+      throw new TypeError("Secret string must be provided.");
+    var str = val.slice(0, val.lastIndexOf(".")), mac = exports.sign(str, secret);
+    return sha1(mac) == sha1(val) ? str : false;
+  };
+  function sha1(str) {
+    return crypto7.createHash("sha1").update(str).digest("hex");
+  }
+});
+
+// ../../node_modules/.bun/cookie-parser@1.4.7/node_modules/cookie-parser/index.js
+var require_cookie_parser = __commonJS((exports, module) => {
+  /*!
+   * cookie-parser
+   * Copyright(c) 2014 TJ Holowaychuk
+   * Copyright(c) 2015 Douglas Christopher Wilson
+   * MIT Licensed
+   */
+  var cookie = require_cookie();
+  var signature = require_cookie_signature2();
+  module.exports = cookieParser;
+  module.exports.JSONCookie = JSONCookie;
+  module.exports.JSONCookies = JSONCookies;
+  module.exports.signedCookie = signedCookie;
+  module.exports.signedCookies = signedCookies;
+  function cookieParser(secret, options) {
+    var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
+    return function cookieParser2(req, res, next) {
+      if (req.cookies) {
+        return next();
+      }
+      var cookies = req.headers.cookie;
+      req.secret = secrets[0];
+      req.cookies = Object.create(null);
+      req.signedCookies = Object.create(null);
+      if (!cookies) {
+        return next();
+      }
+      req.cookies = cookie.parse(cookies, options);
+      if (secrets.length !== 0) {
+        req.signedCookies = signedCookies(req.cookies, secrets);
+        req.signedCookies = JSONCookies(req.signedCookies);
+      }
+      req.cookies = JSONCookies(req.cookies);
+      next();
+    };
+  }
+  function JSONCookie(str) {
+    if (typeof str !== "string" || str.substr(0, 2) !== "j:") {
+      return;
+    }
+    try {
+      return JSON.parse(str.slice(2));
+    } catch (err) {
+      return;
+    }
+  }
+  function JSONCookies(obj) {
+    var cookies = Object.keys(obj);
+    var key;
+    var val;
+    for (var i = 0;i < cookies.length; i++) {
+      key = cookies[i];
+      val = JSONCookie(obj[key]);
+      if (val) {
+        obj[key] = val;
+      }
+    }
+    return obj;
+  }
+  function signedCookie(str, secret) {
+    if (typeof str !== "string") {
+      return;
+    }
+    if (str.substr(0, 2) !== "s:") {
+      return str;
+    }
+    var secrets = !secret || Array.isArray(secret) ? secret || [] : [secret];
+    for (var i = 0;i < secrets.length; i++) {
+      var val = signature.unsign(str.slice(2), secrets[i]);
+      if (val !== false) {
+        return val;
+      }
+    }
+    return false;
+  }
+  function signedCookies(obj, secret) {
+    var cookies = Object.keys(obj);
+    var dec;
+    var key;
+    var ret = Object.create(null);
+    var val;
+    for (var i = 0;i < cookies.length; i++) {
+      key = cookies[i];
+      val = obj[key];
+      dec = signedCookie(val, secret);
+      if (val !== dec) {
+        ret[key] = dec;
+        delete obj[key];
+      }
+    }
+    return ret;
+  }
+});
+
+// ../../packages/http-server/src/index.ts
+var import_express2 = __toESM(require_express(), 1);
+
+// ../../packages/http-server/src/async-handler.ts
+function fail(errors) {
+  return { success: false, errors };
+}
 
 // ../../packages/redis/src/index.ts
 var exports_src = {};
@@ -32765,41 +47885,9674 @@ redis.on("connect", () => {
   console.log("[Redis] Connected successfully to", REDIS_URL);
 });
 
-// src/index.ts
-var app = import_express.default();
-var PORT = process.env.PORT ?? 6061;
-app.use(import_express.default.json());
-app.use(import_express.default.urlencoded({ extended: true }));
-app.get(["/", "/api/authenticate"], (_req, res) => {
-  res.json({ status: "ok", message: "Authenticate Microservice is running" });
-});
-app.get(["/health", "/api/authenticate/health", "/api/v1/authenticate/health"], async (_req, res) => {
-  let redisStatus = "disconnected";
-  try {
-    const ping = await redis.ping();
-    if (ping === "PONG") {
-      redisStatus = "connected";
+// ../../node_modules/.bun/httpxy@0.5.5/node_modules/httpxy/dist/index.mjs
+import httpNative, { request } from "http";
+import httpsNative, { request as request$1 } from "https";
+import http2 from "http2";
+import { EventEmitter } from "events";
+var upgradeHeader = /(^|,)\s*upgrade\s*($|,)/i;
+var transferEncodingConnectionToken = /(^|,)\s*transfer-encoding\s*($|,)/i;
+var defaultAgents = {
+  http: new httpNative.Agent({
+    keepAlive: true,
+    maxSockets: 256,
+    maxFreeSockets: 64
+  }),
+  https: new httpsNative.Agent({
+    keepAlive: true,
+    maxSockets: 256,
+    maxFreeSockets: 64
+  })
+};
+var isSSL = /^https|wss/;
+function forceConnectionCloseForTransferEncoding(headers) {
+  let carriesTransferEncoding = false;
+  for (const key in headers)
+    if (headers[key] !== undefined && key.toLowerCase() === "transfer-encoding") {
+      carriesTransferEncoding = true;
+      break;
     }
-  } catch (error) {
-    console.error("Redis health check failed:", error);
+  const connection = headers.connection;
+  const connectionMarksTransferEncoding = typeof connection === "string" && transferEncodingConnectionToken.test(connection);
+  if (carriesTransferEncoding || connectionMarksTransferEncoding)
+    headers.connection = "close";
+}
+var HTTP2_HEADER_BLACKLIST = [
+  ":method",
+  ":path",
+  ":scheme",
+  ":authority"
+];
+function setupOutgoing(outgoing, options, req, forward) {
+  outgoing.port = options[forward || "target"].port || (isSSL.test(options[forward || "target"].protocol ?? "http") ? 443 : 80);
+  for (const e of [
+    "host",
+    "hostname",
+    "socketPath",
+    "pfx",
+    "key",
+    "passphrase",
+    "cert",
+    "ca",
+    "ciphers",
+    "secureProtocol"
+  ]) {
+    const value = options[forward || "target"][e];
+    if (value !== undefined)
+      outgoing[e] = value;
   }
-  res.json({
-    status: "healthy",
-    timestamp: new Date().toISOString(),
-    redis: redisStatus
+  if (outgoing.host === undefined && typeof outgoing.hostname === "string") {
+    const bracketedHost = outgoing.hostname.includes(":") && !outgoing.hostname.startsWith("[") ? `[${outgoing.hostname}]` : outgoing.hostname;
+    outgoing.host = outgoing.port ? `${bracketedHost}:${outgoing.port}` : bracketedHost;
+  }
+  outgoing.method = options.method || req.method;
+  outgoing.headers = { ...req.headers };
+  if (req.headers?.[":authority"])
+    outgoing.headers.host = req.headers[":authority"];
+  if (options.headers)
+    for (const key of Object.keys(options.headers))
+      outgoing.headers[key] = options.headers[key];
+  if (req.httpVersionMajor > 1)
+    for (const header of HTTP2_HEADER_BLACKLIST)
+      delete outgoing.headers[header];
+  if (options.auth)
+    outgoing.auth = options.auth;
+  if (options.ca)
+    outgoing.ca = options.ca;
+  if (isSSL.test(options[forward || "target"].protocol ?? "http"))
+    outgoing.rejectUnauthorized = options.secure === undefined ? true : options.secure;
+  if (options.agent !== undefined)
+    outgoing.agent = options.agent || false;
+  else if (req.httpVersionMajor > 1 || upgradeHeader.test(req.headers.connection || ""))
+    outgoing.agent = false;
+  else {
+    const targetProto = options[forward || "target"].protocol ?? "http";
+    outgoing.agent = isSSL.test(targetProto) ? defaultAgents.https : defaultAgents.http;
+  }
+  outgoing.localAddress = options.localAddress;
+  if (!outgoing.agent) {
+    outgoing.headers = outgoing.headers || {};
+    if (typeof outgoing.headers.connection !== "string" || !upgradeHeader.test(outgoing.headers.connection))
+      outgoing.headers.connection = "close";
+  }
+  outgoing.headers = outgoing.headers || {};
+  forceConnectionCloseForTransferEncoding(outgoing.headers);
+  const target = options[forward || "target"];
+  const targetPath = target && options.prependPath !== false ? target.pathname || "" : "";
+  const targetSearch = target instanceof URL && options.prependPath !== false ? target.search || "" : "";
+  const reqUrl = req.url || "";
+  const qIdx = reqUrl.indexOf("?");
+  const reqPath = qIdx === -1 ? reqUrl : reqUrl.slice(0, qIdx);
+  const reqSearch = qIdx === -1 ? "" : reqUrl.slice(qIdx);
+  const normalizedPath = reqPath ? reqPath[0] === "/" ? reqPath : "/" + reqPath : "/";
+  let outgoingPath = options.toProxy ? "/" + reqUrl : normalizedPath + reqSearch;
+  outgoingPath = options.ignorePath ? "" : outgoingPath;
+  let fullPath = joinURL(targetPath, outgoingPath);
+  if (targetSearch)
+    fullPath = fullPath.includes("?") ? fullPath.replace("?", targetSearch + "&") : fullPath + targetSearch;
+  outgoing.path = fullPath;
+  if (options.changeOrigin)
+    outgoing.headers.host = requiresPort(outgoing.port, options[forward || "target"].protocol) && !hasPort(outgoing.host) ? outgoing.host + ":" + outgoing.port : outgoing.host ?? undefined;
+  return outgoing;
+}
+function joinURL(base, path) {
+  if (!base || base === "/")
+    return path || "/";
+  if (!path || path === "/")
+    return base || "/";
+  const baseHasTrailing = base[base.length - 1] === "/";
+  const pathHasLeading = path[0] === "/";
+  if (baseHasTrailing && pathHasLeading)
+    return base + path.slice(1);
+  if (!baseHasTrailing && !pathHasLeading)
+    return base + "/" + path;
+  return base + path;
+}
+function setupSocket(socket) {
+  socket.setTimeout(0);
+  socket.setNoDelay(true);
+  socket.setKeepAlive(true, 0);
+  return socket;
+}
+function getPort(req) {
+  const hostHeader = req.headers[":authority"] || req.headers.host;
+  const res = hostHeader ? hostHeader.match(/:(\d+)/) : "";
+  if (res)
+    return res[1];
+  return hasEncryptedConnection(req) ? "443" : "80";
+}
+function hasEncryptedConnection(req) {
+  const socket = req.socket;
+  return !!socket && "encrypted" in socket && socket.encrypted;
+}
+function rewriteCookieProperty(header, config, property) {
+  if (Array.isArray(header))
+    return header.map(function(headerElement) {
+      return rewriteCookieProperty(headerElement, config, property);
+    });
+  return header.replace(new RegExp(String.raw`(;\s*` + property + "=)([^;]+)", "i"), function(match, prefix, previousValue) {
+    let newValue;
+    if (previousValue in config)
+      newValue = config[previousValue];
+    else if ("*" in config)
+      newValue = config["*"];
+    else
+      return match;
+    return newValue ? prefix + newValue : "";
+  });
+}
+function hasPort(host) {
+  return host ? !!~host.indexOf(":") : false;
+}
+function requiresPort(_port, _protocol) {
+  const protocol = _protocol?.split(":")[0];
+  const port = +_port;
+  if (!port)
+    return false;
+  switch (protocol) {
+    case "http":
+    case "ws":
+      return port !== 80;
+    case "https":
+    case "wss":
+      return port !== 443;
+    case "ftp":
+      return port !== 21;
+    case "gopher":
+      return port !== 70;
+    case "file":
+      return false;
+  }
+  return port !== 0;
+}
+function defineProxyMiddleware(m) {
+  return m;
+}
+function defineProxyOutgoingMiddleware(m) {
+  return m;
+}
+var redirectRegex = /^201|30([12378])$/;
+var webOutgoingMiddleware = [
+  defineProxyOutgoingMiddleware((req, res, proxyRes) => {
+    if (req.httpVersion === "1.0" || req.httpVersionMajor >= 2 || proxyRes.statusCode === 204 || proxyRes.statusCode === 304)
+      delete proxyRes.headers["transfer-encoding"];
+  }),
+  defineProxyOutgoingMiddleware((req, res, proxyRes) => {
+    if (req.httpVersion === "1.0")
+      proxyRes.headers.connection = req.headers.connection || "close";
+    else if (req.httpVersionMajor < 2 && !proxyRes.headers.connection)
+      proxyRes.headers.connection = req.headers.connection || "keep-alive";
+    else if (req.httpVersionMajor >= 2)
+      delete proxyRes.headers.connection;
+  }),
+  defineProxyOutgoingMiddleware((req, res, proxyRes, options) => {
+    if ((options.hostRewrite || options.autoRewrite || options.protocolRewrite) && proxyRes.headers.location && redirectRegex.test(String(proxyRes.statusCode))) {
+      const target = _toURL(options.target);
+      const keepProtocolRelative = proxyRes.headers.location.startsWith("//") && !options.protocolRewrite;
+      const u = new URL(proxyRes.headers.location, target);
+      if (target.host !== u.host)
+        return;
+      if (options.hostRewrite)
+        u.host = options.hostRewrite;
+      else if (options.autoRewrite) {
+        if (req.headers[":authority"])
+          u.host = req.headers[":authority"];
+        else if (req.headers.host)
+          u.host = req.headers.host;
+      }
+      if (options.protocolRewrite)
+        u.protocol = options.protocolRewrite;
+      proxyRes.headers.location = keepProtocolRelative ? u.href.slice(u.protocol.length) : u.href;
+    }
+  }),
+  defineProxyOutgoingMiddleware((req, res, proxyRes, options) => {
+    const rewriteCookieDomainConfig = typeof options.cookieDomainRewrite === "string" ? { "*": options.cookieDomainRewrite } : options.cookieDomainRewrite;
+    const rewriteCookiePathConfig = typeof options.cookiePathRewrite === "string" ? { "*": options.cookiePathRewrite } : options.cookiePathRewrite;
+    const preserveHeaderKeyCase = options.preserveHeaderKeyCase;
+    let rawHeaderKeyMap;
+    const setHeader = function(key, header) {
+      if (header === undefined || !String(key).trim())
+        return;
+      if (rewriteCookieDomainConfig && key.toLowerCase() === "set-cookie")
+        header = rewriteCookieProperty(header, rewriteCookieDomainConfig, "domain");
+      if (rewriteCookiePathConfig && key.toLowerCase() === "set-cookie")
+        header = rewriteCookieProperty(header, rewriteCookiePathConfig, "path");
+      try {
+        res.setHeader(String(key).trim(), header);
+      } catch {}
+    };
+    if (preserveHeaderKeyCase && proxyRes.rawHeaders !== undefined) {
+      rawHeaderKeyMap = {};
+      for (let i = 0;i < proxyRes.rawHeaders.length; i += 2) {
+        const key = proxyRes.rawHeaders[i];
+        rawHeaderKeyMap[key.toLowerCase()] = key;
+      }
+    }
+    for (let key of Object.keys(proxyRes.headers)) {
+      const header = proxyRes.headers[key];
+      if (preserveHeaderKeyCase && rawHeaderKeyMap)
+        key = rawHeaderKeyMap[key] || key;
+      setHeader(key, header);
+    }
+  }),
+  defineProxyOutgoingMiddleware((req, res, proxyRes) => {
+    res.statusCode = proxyRes.statusCode;
+    if (proxyRes.statusMessage && req.httpVersionMajor < 2)
+      res.statusMessage = proxyRes.statusMessage;
+  })
+];
+function _toURL(target) {
+  if (target instanceof URL)
+    return target;
+  if (typeof target === "string")
+    return new URL(target);
+  const protocol = target.protocol || "http:";
+  const host = target.host || target.hostname || "localhost";
+  const port = target.port;
+  return new URL(`${protocol}//${host}${port ? ":" + port : ""}`);
+}
+var nativeAgents = {
+  http: httpNative,
+  https: httpsNative
+};
+var redirectStatuses = /* @__PURE__ */ new Set([
+  301,
+  302,
+  303,
+  307,
+  308
+]);
+var webIncomingMiddleware = [
+  defineProxyMiddleware((req) => {
+    if ((req.method === "DELETE" || req.method === "OPTIONS") && !req.headers["content-length"] && !req.headers["transfer-encoding"])
+      req.headers["content-length"] = "0";
+  }),
+  defineProxyMiddleware((req, res, options) => {
+    if (options.timeout)
+      req.socket.setTimeout(options.timeout, () => {
+        req.socket.destroy();
+      });
+  }),
+  defineProxyMiddleware((req, res, options) => {
+    if (!options.xfwd)
+      return;
+    const encrypted = req.isSpdy || hasEncryptedConnection(req);
+    const values = {
+      for: req.connection.remoteAddress || req.socket.remoteAddress,
+      port: getPort(req),
+      proto: encrypted ? "https" : "http"
+    };
+    for (const header of [
+      "for",
+      "port",
+      "proto"
+    ]) {
+      const key = "x-forwarded-" + header;
+      if (!req.headers[key] && values[header] !== undefined)
+        req.headers[key] = values[header];
+    }
+    req.headers["x-forwarded-host"] = req.headers["x-forwarded-host"] || req.headers[":authority"] || req.headers.host || "";
+  }),
+  defineProxyMiddleware((req, res, options, server, head, callback) => {
+    server.emit("start", req, res, options.target || options.forward);
+    const http = nativeAgents.http;
+    const https = nativeAgents.https;
+    const maxRedirects = typeof options.followRedirects === "number" ? options.followRedirects : options.followRedirects ? 5 : 0;
+    if (options.forward) {
+      const forwardReq = (isSSL.test(options.forward.protocol || "http") ? https : http).request(setupOutgoing(options.ssl || {}, options, req, "forward"));
+      const forwardError = createErrorHandler(forwardReq, options.forward);
+      req.on("error", forwardError);
+      forwardReq.on("error", forwardError);
+      (options.buffer || req).pipe(forwardReq);
+      if (!options.target) {
+        res.end();
+        return;
+      }
+    }
+    const proxyReq = (isSSL.test(options.target.protocol || "http") ? https : http).request(setupOutgoing(options.ssl || {}, options, req));
+    proxyReq.on("socket", (_socket) => {
+      if (server && !proxyReq.getHeader("expect"))
+        server.emit("proxyReq", proxyReq, req, res, options);
+    });
+    if (options.proxyTimeout)
+      proxyReq.setTimeout(options.proxyTimeout, function() {
+        proxyReq.destroy();
+      });
+    res.on("close", function() {
+      if (!res.writableFinished)
+        proxyReq.destroy();
+    });
+    const proxyError = createErrorHandler(proxyReq, options.target);
+    req.on("error", proxyError);
+    proxyReq.on("error", proxyError);
+    function createErrorHandler(proxyReq2, url) {
+      return function proxyError2(err) {
+        if (!req.socket?.writable && err.code === "ECONNRESET") {
+          server.emit("econnreset", err, req, res, url);
+          return proxyReq2.destroy();
+        }
+        if (callback)
+          callback(err, req, res, url);
+        else
+          server.emit("error", err, req, res, url);
+      };
+    }
+    let bodyBuffer;
+    if (maxRedirects > 0) {
+      const chunks = [];
+      const source = options.buffer || req;
+      source.on("data", (chunk) => {
+        chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+        proxyReq.write(chunk);
+      });
+      source.on("end", () => {
+        bodyBuffer = Buffer.concat(chunks);
+        proxyReq.end();
+      });
+      source.on("error", (err) => {
+        proxyReq.destroy(err);
+      });
+    } else
+      proxyReq.on("socket", (socket) => {
+        if (socket.pending)
+          socket.on("connect", () => (options.buffer || req).pipe(proxyReq));
+        else
+          (options.buffer || req).pipe(proxyReq);
+      });
+    function handleResponse(proxyRes, redirectCount, currentUrl) {
+      const statusCode = proxyRes.statusCode;
+      if (maxRedirects > 0 && redirectStatuses.has(statusCode) && redirectCount < maxRedirects && proxyRes.headers.location) {
+        proxyRes.resume();
+        const location = new URL(proxyRes.headers.location, currentUrl);
+        const preserveMethod = statusCode === 307 || statusCode === 308;
+        const redirectMethod = preserveMethod ? req.method || "GET" : "GET";
+        const isHTTPS = isSSL.test(location.protocol);
+        const agent = isHTTPS ? https : http;
+        const redirectHeaders = { ...req.headers };
+        if (options.headers)
+          Object.assign(redirectHeaders, options.headers);
+        redirectHeaders.host = location.host;
+        if (location.host !== currentUrl.host) {
+          delete redirectHeaders.authorization;
+          delete redirectHeaders.cookie;
+        }
+        if (!preserveMethod) {
+          delete redirectHeaders["content-length"];
+          delete redirectHeaders["content-type"];
+          delete redirectHeaders["transfer-encoding"];
+        }
+        forceConnectionCloseForTransferEncoding(redirectHeaders);
+        const redirectOpts = {
+          hostname: location.hostname,
+          port: location.port || (isHTTPS ? 443 : 80),
+          path: location.pathname + location.search,
+          method: redirectMethod,
+          headers: redirectHeaders,
+          agent: options.agent || false
+        };
+        if (isHTTPS)
+          redirectOpts.rejectUnauthorized = options.secure === undefined ? true : options.secure;
+        const redirectReq = agent.request(redirectOpts);
+        if (server && !redirectReq.getHeader("expect"))
+          server.emit("proxyReq", redirectReq, req, res, options);
+        if (options.proxyTimeout)
+          redirectReq.setTimeout(options.proxyTimeout, () => {
+            redirectReq.destroy();
+          });
+        const redirectError = createErrorHandler(redirectReq, location);
+        redirectReq.on("error", redirectError);
+        redirectReq.on("response", (nextRes) => {
+          handleResponse(nextRes, redirectCount + 1, location);
+        });
+        if (preserveMethod && bodyBuffer && bodyBuffer.length > 0)
+          redirectReq.end(bodyBuffer);
+        else
+          redirectReq.end();
+        return;
+      }
+      if (server)
+        server.emit("proxyRes", proxyRes, req, res);
+      if (!res.headersSent && !options.selfHandleResponse) {
+        for (const pass of webOutgoingMiddleware)
+          if (pass(req, res, proxyRes, options))
+            break;
+      }
+      if (res.finished) {
+        if (server)
+          server.emit("end", req, res, proxyRes);
+      } else {
+        res.on("close", function() {
+          proxyRes.destroy();
+        });
+        proxyRes.on("close", function() {
+          if (!proxyRes.complete && !res.destroyed)
+            res.destroy();
+        });
+        proxyRes.on("error", function(err) {
+          if (!res.destroyed)
+            res.destroy(err);
+          if (server.listenerCount("error") > 0)
+            server.emit("error", err, req, res, currentUrl);
+        });
+        proxyRes.on("end", function() {
+          if (server)
+            server.emit("end", req, res, proxyRes);
+        });
+        if (!options.selfHandleResponse)
+          proxyRes.pipe(res);
+      }
+    }
+    proxyReq.on("response", function(proxyRes) {
+      handleResponse(proxyRes, 0, options.target);
+    });
+  })
+];
+var websocketIncomingMiddleware = [
+  defineProxyMiddleware((req, socket) => {
+    if (req.method !== "GET" || !req.headers.upgrade) {
+      socket.destroy();
+      return true;
+    }
+    if (req.headers.upgrade.toLowerCase() !== "websocket") {
+      socket.destroy();
+      return true;
+    }
+  }),
+  defineProxyMiddleware((req, socket, options) => {
+    if (!options.xfwd)
+      return;
+    const values = {
+      for: req.connection.remoteAddress || req.socket.remoteAddress,
+      port: getPort(req),
+      proto: hasEncryptedConnection(req) ? "wss" : "ws"
+    };
+    for (const header of [
+      "for",
+      "port",
+      "proto"
+    ]) {
+      const key = "x-forwarded-" + header;
+      if (!req.headers[key] && values[header] !== undefined)
+        req.headers[key] = values[header];
+    }
+  }),
+  defineProxyMiddleware((req, socket, options, server, head, callback) => {
+    const createHttpHeader = function(line, headers) {
+      return Object.keys(headers).reduce(function(head2, key) {
+        const value = headers[key];
+        if (!Array.isArray(value)) {
+          head2.push(key + ": " + value);
+          return head2;
+        }
+        for (const element of value)
+          head2.push(key + ": " + element);
+        return head2;
+      }, [line]).join(`\r
+`) + `\r
+\r
+`;
+    };
+    setupSocket(socket);
+    if (head && head.length > 0)
+      socket.unshift(head);
+    socket.on("error", onSocketError);
+    const proxyReq = (isSSL.test(options.target.protocol || "http") ? httpsNative : httpNative).request(setupOutgoing(options.ssl || {}, options, req));
+    if (server)
+      server.emit("proxyReqWs", proxyReq, req, socket, options, head);
+    proxyReq.on("error", onOutgoingError);
+    proxyReq.on("response", function(res) {
+      if (!res.upgrade)
+        if (!socket.destroyed && socket.writable) {
+          socket.write(createHttpHeader("HTTP/" + res.httpVersion + " " + res.statusCode + " " + res.statusMessage, res.headers));
+          res.on("error", onOutgoingError);
+          res.pipe(socket);
+        } else
+          res.resume();
+    });
+    proxyReq.on("upgrade", function(proxyRes, proxySocket, proxyHead) {
+      proxySocket.on("error", onOutgoingError);
+      proxySocket.on("end", function() {
+        server.emit("close", proxyRes, proxySocket, proxyHead);
+      });
+      socket.removeListener("error", onSocketError);
+      socket.on("error", function() {
+        proxySocket.end();
+      });
+      setupSocket(proxySocket);
+      if (proxyHead && proxyHead.length > 0)
+        proxySocket.unshift(proxyHead);
+      socket.write(createHttpHeader("HTTP/1.1 101 Switching Protocols", proxyRes.headers));
+      proxySocket.pipe(socket).pipe(proxySocket);
+      server.emit("open", proxySocket);
+      server.emit("proxySocket", proxySocket);
+    });
+    proxyReq.end();
+    function onSocketError(err) {
+      if (callback)
+        callback(err, req, socket);
+      else
+        server.emit("error", err, req, socket);
+      proxyReq.destroy();
+    }
+    function onOutgoingError(err) {
+      if (callback)
+        callback(err, req, socket);
+      else
+        server.emit("error", err, req, socket);
+      socket.end();
+    }
+  })
+];
+var ProxyServer = class extends EventEmitter {
+  _server;
+  _webPasses = [...webIncomingMiddleware];
+  _wsPasses = [...websocketIncomingMiddleware];
+  options;
+  web;
+  ws;
+  constructor(options = {}) {
+    super();
+    this.options = options || {};
+    this.options.prependPath = options.prependPath !== false;
+    this.web = _createProxyFn("web", this);
+    this.ws = _createProxyFn("ws", this);
+  }
+  listen(port, hostname, listeningListener) {
+    const closure = (req, res) => {
+      return this.web(req, res);
+    };
+    if (this.options.http2) {
+      if (!this.options.ssl)
+        throw new Error("HTTP/2 requires ssl option");
+      this._server = http2.createSecureServer({
+        ...this.options.ssl,
+        allowHTTP1: true
+      }, closure);
+    } else if (this.options.ssl)
+      this._server = httpsNative.createServer(this.options.ssl, closure);
+    else
+      this._server = httpNative.createServer(closure);
+    if (this.options.ws)
+      this._server.on("upgrade", (req, socket, head) => {
+        this.ws(req, socket, this.options, head).catch(() => {});
+      });
+    this._server.listen(port, hostname, listeningListener);
+    return this;
+  }
+  close(callback) {
+    if (this._server)
+      this._server.close((...args) => {
+        this._server = undefined;
+        if (callback)
+          Reflect.apply(callback, undefined, args);
+      });
+  }
+  before(type, passName, pass) {
+    if (type !== "ws" && type !== "web")
+      throw new Error("type must be `web` or `ws`");
+    const passes = this._getPasses(type);
+    let i = false;
+    for (const [idx, v] of passes.entries())
+      if (v.name === passName)
+        i = idx;
+    if (i === false)
+      throw new Error("No such pass");
+    passes.splice(i, 0, pass);
+  }
+  after(type, passName, pass) {
+    if (type !== "ws" && type !== "web")
+      throw new Error("type must be `web` or `ws`");
+    const passes = this._getPasses(type);
+    let i = false;
+    for (const [idx, v] of passes.entries())
+      if (v.name === passName)
+        i = idx;
+    if (i === false)
+      throw new Error("No such pass");
+    passes.splice(i++, 0, pass);
+  }
+  _getPasses(type) {
+    return type === "ws" ? this._wsPasses : this._webPasses;
+  }
+};
+function createProxyServer(options = {}) {
+  return new ProxyServer(options);
+}
+function _createProxyFn(type, server) {
+  return function(req, res, opts, head) {
+    const requestOptions = {
+      ...opts,
+      ...server.options
+    };
+    for (const key of ["target", "forward"])
+      if (typeof requestOptions[key] === "string")
+        requestOptions[key] = new URL(requestOptions[key]);
+    if (!requestOptions.target && !requestOptions.forward) {
+      this.emit("error", /* @__PURE__ */ new Error("Must provide a proper URL as target"));
+      return Promise.resolve();
+    }
+    let _resolve;
+    let _reject;
+    const callbackPromise = new Promise((resolve, reject) => {
+      _resolve = resolve;
+      _reject = reject;
+    });
+    res.on("close", () => {
+      _resolve();
+    });
+    res.on("error", (error) => {
+      _reject(error);
+    });
+    for (const pass of server._getPasses(type)) {
+      let stop;
+      try {
+        stop = pass(req, res, requestOptions, server, head, (error, _req, _res, url) => {
+          if (server.listenerCount("error") > 0) {
+            server.emit("error", error, req, res, url);
+            _resolve();
+          } else
+            _reject(error);
+        });
+      } catch (error) {
+        if (server.listenerCount("error") > 0) {
+          server.emit("error", error, req, res, requestOptions.target || requestOptions.forward);
+          _resolve();
+        } else
+          _reject(error);
+        break;
+      }
+      if (stop) {
+        _resolve();
+        break;
+      }
+    }
+    return callbackPromise;
+  };
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/errors.js
+class HttpProxyMiddlewareError extends Error {
+  code;
+  constructor(message, code) {
+    super(message);
+    this.code = code;
+    this.name = this.constructor.name;
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/configuration.js
+function verifyConfig(options) {
+  if (!options.target && !options.router) {
+    throw new HttpProxyMiddlewareError('[HPM] Missing "target" option. Example: {target: "http://www.example.org"}', "ERR_CONFIG_FACTORY_TARGET_MISSING");
+  }
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/debug.js
+var import_debug = __toESM(require_src2(), 1);
+var Debug = import_debug.default("http-proxy-middleware");
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/debug-proxy-errors-plugin.js
+import { styleText } from "util";
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/define-plugin.js
+function definePlugin(fn) {
+  return fn;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/debug-proxy-errors-plugin.js
+var debug = Debug.extend("debug-proxy-errors-plugin");
+var BODY_PARSER_ERROR_MESSAGE = `[HPM] Connection reset (ECONNRESET) detected with non-empty "req.body" [ERR_HPM.GH40].
+
+      This usually means that the POST request body (req.body) was already parsed before reaching the proxy.
+      When bodyParser runs first, it consumes the request stream, leaving the proxy unable to forward the body data to the target server.
+
+      How to fix this issue:
+      - Option 1: Place the proxy middleware before the bodyParser middleware.
+      - Option 2: Use 'fixRequestBody()' helper to fix this issue.
+
+      For more details, see: https://github.com/chimurai/http-proxy-middleware/issues/40
+`;
+function hasParsedBody(req) {
+  return Boolean(req && req.method === "POST" && "body" in req && req.body);
+}
+var debugProxyErrorsPlugin = definePlugin((proxyServer, options) => {
+  proxyServer.on("error", (error, req, res, target) => {
+    debug(`httpxy error event: 
+%O`, error);
+    if (error.code === "ECONNRESET" && hasParsedBody(req)) {
+      console.error(styleText("red", BODY_PARSER_ERROR_MESSAGE));
+    }
+  });
+  proxyServer.on("proxyReq", (proxyReq, req, socket) => {
+    socket.on("error", (error) => {
+      debug(`Socket error in proxyReq event: 
+%O`, error);
+    });
+  });
+  proxyServer.on("proxyRes", (proxyRes, req, res) => {
+    res.on("close", () => {
+      if (!res.writableEnded) {
+        debug("Destroying proxyRes in proxyRes close event");
+        proxyRes.destroy();
+      }
+    });
+  });
+  proxyServer.on("proxyReqWs", (proxyReq, req, socket) => {
+    socket.on("error", (error) => {
+      debug(`Socket error in proxyReqWs event: 
+%O`, error);
+    });
+  });
+  proxyServer.on("open", (proxySocket) => {
+    proxySocket.on("error", (error) => {
+      debug(`Socket error in open event: 
+%O`, error);
+    });
+  });
+  proxyServer.on("close", (req, socket, head) => {
+    socket.on("error", (error) => {
+      debug(`Socket error in close event: 
+%O`, error);
+    });
+  });
+  proxyServer.on("econnreset", (error, req, res, target) => {
+    debug(`httpxy econnreset event: 
+%O`, error);
   });
 });
-app.use((_req, res) => {
-  res.status(404).json({ error: "Route not found in Authenticate service" });
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/status-code.js
+function getStatusCode(errorCode) {
+  let statusCode;
+  if (/HPE_INVALID/.test(errorCode)) {
+    statusCode = 502;
+    return statusCode;
+  }
+  if (/HPM_ERR_INVALID_MULTIPART_/.test(errorCode)) {
+    statusCode = 400;
+    return statusCode;
+  }
+  switch (errorCode) {
+    case "ECONNRESET":
+    case "ENOTFOUND":
+    case "ECONNREFUSED":
+    case "ETIMEDOUT":
+      statusCode = 504;
+      break;
+    default:
+      statusCode = 500;
+      break;
+  }
+  return statusCode;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/utils/sanitize.js
+function sanitize(input) {
+  return input?.replace(/[<>]/g, (i) => encodeURIComponent(i)) ?? "";
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/error-response-plugin.js
+function isResponseLike(obj) {
+  return obj && typeof obj.writeHead === "function";
+}
+function isSocketLike(obj) {
+  return obj && typeof obj.write === "function" && !("writeHead" in obj);
+}
+var errorResponsePlugin = definePlugin((proxyServer, options) => {
+  proxyServer.on("error", (err, req, res, target) => {
+    if (!req || !res) {
+      throw err;
+    }
+    if (isResponseLike(res)) {
+      if (!res.headersSent) {
+        const statusCode = getStatusCode(err.code);
+        res.writeHead(statusCode);
+      }
+      const host = req.headers && req.headers.host;
+      res.end(`Error occurred while trying to proxy: ${sanitize(host)}${sanitize(req.url)}`);
+    } else if (isSocketLike(res)) {
+      res.destroy();
+    }
+  });
 });
-app.use((err, _req, res, _next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: "Internal server error in Authenticate service" });
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/logger-plugin.js
+import { URL as URL3 } from "url";
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/logger.js
+var noopLogger = {
+  info: () => {},
+  warn: () => {},
+  error: () => {}
+};
+function getLogger(options) {
+  return options.logger || noopLogger;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/utils/create-url.js
+import { URL as URL2 } from "url";
+function createUrl({ protocol, host, port, path }) {
+  const ipv6Host = host?.includes(":") ? `[${host}]` : host;
+  const base = `${protocol || "undefined:"}//${ipv6Host || "[::]"}`;
+  const url = new URL2(base);
+  if (port) {
+    url.port = port;
+  }
+  if (path) {
+    url.pathname = path;
+  }
+  return url;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/utils/logger-plugin.js
+function getPort2(sockets) {
+  return Object.keys(sockets || {})?.[0]?.split(":")[1];
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/logger-plugin.js
+var loggerPlugin = definePlugin((proxyServer, options) => {
+  const logger = getLogger(options);
+  proxyServer.on("error", (err, req, res, target) => {
+    const hostname = req?.headers?.host;
+    const requestHref = `${hostname}${req?.url}`;
+    const targetHref = `${target?.href}`;
+    const errorMessage = "[HPM] Error occurred while proxying request %s to %s [%s] (%s)";
+    const errReference = "https://nodejs.org/api/errors.html#errors_common_system_errors";
+    logger.error(errorMessage, requestHref, targetHref, err.code || err, errReference);
+  });
+  proxyServer.on("proxyRes", (proxyRes, req, res) => {
+    const originalUrl = req.originalUrl ?? `${req.baseUrl || ""}${req.url}`;
+    let target;
+    try {
+      const port = getPort2(proxyRes.req?.agent?.sockets);
+      const { protocol, host, path } = proxyRes.req;
+      target = createUrl({ protocol, host, port, path });
+    } catch (err) {
+      console.error("[HPM] Unexpected error while creating target URL", err);
+      target = new URL3(options.target);
+      target.pathname = proxyRes.req.path;
+    }
+    const targetUrl = target.toString();
+    const exchange = `[HPM] ${req.method} ${originalUrl} -> ${targetUrl} [${proxyRes.statusCode}]`;
+    logger.info(exchange);
+  });
+  proxyServer.on("open", (socket) => {
+    logger.info("[HPM] Client connected: %o", socket.address());
+  });
+  proxyServer.on("close", (req, proxySocket, proxyHead) => {
+    logger.info("[HPM] Client disconnected: %o", proxySocket.address());
+  });
 });
-app.listen(PORT, () => {
-  console.log(`[authenticate] Server running on http://localhost:${PORT}`);
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/utils/function.js
+function getFunctionName(fn) {
+  return fn.name || "[anonymous Function]";
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/plugins/default/proxy-events.js
+var debug2 = Debug.extend("proxy-events-plugin");
+var proxyEventsPlugin = definePlugin((proxyServer, options) => {
+  if (!options.on) {
+    return;
+  }
+  let eventName;
+  for (eventName in options.on) {
+    if (Object.prototype.hasOwnProperty.call(options.on, eventName)) {
+      const handler = options.on[eventName];
+      if (!handler) {
+        continue;
+      }
+      debug2(`register event handler: "${eventName}" -> "${getFunctionName(handler)}"`);
+      proxyServer.on(eventName, handler);
+    }
+  }
 });
-var src_default = app;
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/get-plugins.js
+function getPlugins(options) {
+  const maybeErrorResponsePlugin = options.on?.error ? [] : [errorResponsePlugin];
+  const defaultPlugins = options.ejectPlugins ? [] : [debugProxyErrorsPlugin, proxyEventsPlugin, loggerPlugin, ...maybeErrorResponsePlugin];
+  const userPlugins = options.plugins ?? [];
+  return [...defaultPlugins, ...userPlugins];
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/path-filter.js
+var import_is_glob = __toESM(require_is_glob(), 1);
+var import_micromatch = __toESM(require_micromatch(), 1);
+function matchPathFilter(pathFilter = "/", uri, req) {
+  if (isStringPath(pathFilter)) {
+    return matchSingleStringPath(pathFilter, uri);
+  }
+  if (isGlobPath(pathFilter)) {
+    return matchSingleGlobPath(pathFilter, uri);
+  }
+  if (Array.isArray(pathFilter)) {
+    if (pathFilter.every(isStringPath)) {
+      return matchMultiPath(pathFilter, uri);
+    }
+    if (pathFilter.every(isGlobPath)) {
+      return matchMultiGlobPath(pathFilter, uri);
+    }
+    throw new HttpProxyMiddlewareError('[HPM] Invalid pathFilter. Plain paths (e.g. "/api") can not be mixed with globs (e.g. "/api/**"). Expecting something like: ["/api", "/ajax"] or ["/api/**", "!**.html"].', "HPM_INVALID_PATH_FILTER_ARRAY_CONFIG");
+  }
+  if (typeof pathFilter === "function") {
+    const pathname = getUrlPathName(uri);
+    return Boolean(pathFilter(pathname, req));
+  }
+  throw new HttpProxyMiddlewareError('[HPM] Invalid pathFilter. Expecting something like: "/api" or ["/api", "/ajax"]', "HPM_INVALID_PATH_FILTER_CONFIG");
+}
+function matchSingleStringPath(pathFilter, uri) {
+  const pathname = getUrlPathName(uri);
+  return pathname?.indexOf(pathFilter) === 0;
+}
+function matchSingleGlobPath(pattern, uri) {
+  const pathname = getUrlPathName(uri);
+  const matches = import_micromatch.default([pathname], pattern);
+  return matches && matches.length > 0;
+}
+function matchMultiGlobPath(patternList, uri) {
+  return matchSingleGlobPath(patternList, uri);
+}
+function matchMultiPath(pathFilterList, uri) {
+  let isMultiPath = false;
+  for (const context of pathFilterList) {
+    if (matchSingleStringPath(context, uri)) {
+      isMultiPath = true;
+      break;
+    }
+  }
+  return isMultiPath;
+}
+function getUrlPathName(uri) {
+  return uri && new URL(uri, "http://0.0.0.0").pathname;
+}
+function isStringPath(pathFilter) {
+  return typeof pathFilter === "string" && !import_is_glob.default(pathFilter);
+}
+function isGlobPath(pathFilter) {
+  return import_is_glob.default(pathFilter);
+}
+
+// ../../node_modules/.bun/is-plain-obj@4.1.0/node_modules/is-plain-obj/index.js
+function isPlainObject(value) {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const prototype = Object.getPrototypeOf(value);
+  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in value) && !(Symbol.iterator in value);
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/path-rewriter.js
+var debug3 = Debug.extend("path-rewriter");
+function createPathRewriter(rewriteConfig) {
+  let rulesCache;
+  if (!isValidRewriteConfig(rewriteConfig)) {
+    return;
+  }
+  if (typeof rewriteConfig === "function") {
+    const customRewriteFn = rewriteConfig;
+    return customRewriteFn;
+  } else {
+    rulesCache = parsePathRewriteRules(rewriteConfig);
+    return rewritePath;
+  }
+  function rewritePath(path) {
+    let result = path;
+    for (const rule of rulesCache) {
+      if (rule.regex.test(path)) {
+        result = result.replace(rule.regex, rule.value);
+        debug3('rewriting path from "%s" to "%s"', path, result);
+        break;
+      }
+    }
+    return result;
+  }
+}
+function isValidRewriteConfig(rewriteConfig) {
+  if (typeof rewriteConfig === "function") {
+    return true;
+  } else if (isPlainObject(rewriteConfig)) {
+    return Object.keys(rewriteConfig).length !== 0;
+  } else if (rewriteConfig === undefined || rewriteConfig === null) {
+    return false;
+  } else {
+    throw new HttpProxyMiddlewareError("[HPM] Invalid pathRewrite config. Expecting object with pathRewrite config or a rewrite function", "HPM_INVALID_PATH_REWRITER_CONFIG");
+  }
+}
+function parsePathRewriteRules(rewriteConfig) {
+  const rules = [];
+  if (isPlainObject(rewriteConfig)) {
+    for (const [key, value] of Object.entries(rewriteConfig)) {
+      rules.push({
+        regex: new RegExp(key),
+        value
+      });
+      debug3('rewrite rule created: "%s" ~> "%s"', key, value);
+    }
+  }
+  return rules;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/router.js
+var debug4 = Debug.extend("router");
+async function getTarget(req, res, config) {
+  let newTarget;
+  const router = config.router;
+  if (isPlainObject(router)) {
+    newTarget = getTargetFromProxyTable(req, router);
+  } else if (typeof router === "function") {
+    newTarget = await router(req, res, config);
+  }
+  return newTarget;
+}
+function getTargetFromProxyTable(req, table) {
+  let result;
+  const host = req.headers.host ?? "";
+  const path = req.url ?? "";
+  for (const [key, value] of Object.entries(table)) {
+    if (containsPath(key)) {
+      if (isHostAndPathKey(key)) {
+        const [keyHost, keyPath] = splitHostAndPathKey(key);
+        if (host === keyHost && path.startsWith(keyPath)) {
+          result = value;
+          debug4('match: "%s" -> "%s"', key, result);
+          break;
+        }
+      } else {
+        if (path.startsWith(key)) {
+          result = value;
+          debug4('match: "%s" -> "%s"', key, result);
+          break;
+        }
+      }
+    } else {
+      if (key === host) {
+        result = value;
+        debug4('match: "%s" -> "%s"', host, result);
+        break;
+      }
+    }
+  }
+  return result;
+}
+function containsPath(v) {
+  return v.indexOf("/") > -1;
+}
+function isHostAndPathKey(v) {
+  return containsPath(v) && !v.startsWith("/");
+}
+function splitHostAndPathKey(v) {
+  const firstSlash = v.indexOf("/");
+  return [v.slice(0, firstSlash), v.slice(firstSlash)];
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/utils/ipv6.js
+var debug5 = Debug.extend("ipv6");
+function normalizeIPv6LiteralTargets(options) {
+  options.target = normalizeIPv6ProxyTarget(options.target, "target");
+  options.forward = normalizeIPv6ProxyTarget(options.forward, "forward");
+}
+function normalizeIPv6ProxyTarget(target, optionName) {
+  const targetUrl = toTargetUrl(target);
+  if (targetUrl && isBracketedIPv6Hostname(targetUrl.hostname)) {
+    const normalizedHostname = normalizeIPv6DestinationHostname(stripBrackets(targetUrl.hostname));
+    debug5('normalized IPv6 "%s" %s', optionName, target);
+    const auth = targetUrl.username || targetUrl.password ? `${targetUrl.username}:${targetUrl.password}` : undefined;
+    return {
+      hostname: normalizedHostname,
+      auth,
+      pathname: targetUrl.pathname,
+      port: targetUrl.port,
+      protocol: targetUrl.protocol,
+      search: targetUrl.search
+    };
+  }
+  return target;
+}
+function toTargetUrl(target) {
+  if (typeof target === "string") {
+    return new URL(target);
+  }
+  if (target instanceof URL) {
+    return target;
+  }
+  return;
+}
+function isBracketedIPv6Hostname(hostname) {
+  return hostname.startsWith("[") && hostname.endsWith("]");
+}
+function stripBrackets(hostname) {
+  return hostname.replace(/^\[|\]$/g, "");
+}
+function normalizeIPv6DestinationHostname(hostname) {
+  if (hostname === "::") {
+    debug5("normalizing hostname unspecified IPv6 address (::) to loopback (::1)");
+    return "::1";
+  }
+  return hostname;
+}
+
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/http-proxy-middleware.js
+class HttpProxyMiddleware {
+  wsInternalSubscribedServers = new WeakSet;
+  activeServers = new Set;
+  proxyOptions;
+  proxy;
+  pathRewriter;
+  logger;
+  constructor(options) {
+    verifyConfig(options);
+    this.proxyOptions = options;
+    this.logger = getLogger(options);
+    Debug(`create proxy server`);
+    this.proxy = createProxyServer({});
+    this.registerPlugins(this.proxy, this.proxyOptions);
+    this.pathRewriter = createPathRewriter(this.proxyOptions.pathRewrite);
+    this.middleware.upgrade = (req, socket, head) => {
+      const server = this.#getServer(req);
+      if (server && !this.wsInternalSubscribedServers.has(server)) {
+        this.handleUpgrade(req, socket, head);
+      }
+    };
+  }
+  #getServer(req) {
+    return req.socket?.server;
+  }
+  middleware = async (req, res, next) => {
+    if (this.shouldProxy(this.proxyOptions.pathFilter, req)) {
+      let activeProxyOptions;
+      try {
+        activeProxyOptions = await this.prepareProxyRequest(req, res);
+        if (!activeProxyOptions.target && !activeProxyOptions.forward) {
+          throw new Error("Must provide a proper URL as target");
+        }
+      } catch (err) {
+        next?.(err);
+        return;
+      }
+      try {
+        Debug(`proxy request to target: %O`, activeProxyOptions.target);
+        await this.proxy.web(req, res, activeProxyOptions);
+      } catch (err) {
+        this.proxy.emit("error", err, req, res, activeProxyOptions.target);
+        next?.(err);
+      }
+    } else {
+      next?.();
+    }
+    const server = this.#getServer(req);
+    if (server && !this.activeServers.has(server)) {
+      Debug("registering server close listener");
+      this.activeServers.add(server);
+      server.on("close", () => {
+        Debug("server close signal received.");
+        this.activeServers.delete(server);
+        if (this.activeServers.size > 0) {
+          Debug(`proxy server not closed: ${this.activeServers.size} server(s) still active`);
+          return;
+        } else {
+          Debug("closing proxy server");
+          this.proxy.close(() => Debug("proxy server closed"));
+        }
+      });
+    }
+    if (this.proxyOptions.ws === true && server) {
+      this.catchUpgradeRequest(server);
+    }
+  };
+  registerPlugins(proxy, options) {
+    const plugins = getPlugins(options);
+    plugins.forEach((plugin) => {
+      Debug(`register plugin: "${getFunctionName(plugin)}"`);
+      plugin(proxy, options);
+    });
+  }
+  catchUpgradeRequest = (server) => {
+    if (!this.wsInternalSubscribedServers.has(server)) {
+      Debug("subscribing to server upgrade event");
+      server.on("upgrade", this.handleUpgrade);
+      this.wsInternalSubscribedServers.add(server);
+    }
+  };
+  handleUpgrade = async (req, socket, head) => {
+    try {
+      if (this.shouldProxy(this.proxyOptions.pathFilter, req)) {
+        const activeProxyOptions = await this.prepareProxyRequest(req, undefined);
+        await this.proxy.ws(req, socket, activeProxyOptions, head);
+        Debug("server upgrade event received. Proxying WebSocket");
+      }
+    } catch (err) {
+      this.proxy.emit("error", err, req, socket);
+    }
+  };
+  shouldProxy = (pathFilter, req) => {
+    try {
+      return matchPathFilter(pathFilter, req.url, req);
+    } catch (err) {
+      Debug("Error: matchPathFilter() called with request url: ", `"${req.url}"`);
+      this.logger.error(err);
+      return false;
+    }
+  };
+  prepareProxyRequest = async (req, res) => {
+    const newProxyOptions = Object.assign({}, this.proxyOptions);
+    await this.applyRouter(req, res, newProxyOptions);
+    normalizeIPv6LiteralTargets(newProxyOptions);
+    await this.applyPathRewrite(req, res, this.pathRewriter, newProxyOptions);
+    return newProxyOptions;
+  };
+  applyRouter = async (req, res, options) => {
+    let newTarget;
+    if (options.router) {
+      newTarget = await getTarget(req, res, options);
+      if (newTarget) {
+        Debug('router new target: "%s"', newTarget);
+        options.target = newTarget;
+      }
+    }
+  };
+  applyPathRewrite = async (req, res, pathRewriter, options) => {
+    if (req.url && pathRewriter) {
+      const path = await pathRewriter(req.url, req, res, options);
+      if (typeof path === "string") {
+        Debug("pathRewrite new path: %s", path);
+        req.url = path;
+      } else {
+        Debug("pathRewrite: no rewritten path found: %s", req.url);
+      }
+    }
+  };
+}
+// ../../node_modules/.bun/http-proxy-middleware@4.2.0+759ce506b1ed1a42/node_modules/http-proxy-middleware/dist/handlers/response-interceptor.js
+var debug6 = Debug.extend("response-interceptor");
+// ../../packages/http-server/src/proxy.ts
+var import_express = __toESM(require_express(), 1);
+
+// ../../node_modules/.bun/express-rate-limit@8.6.1+6eaaa7b2fde6cac9/node_modules/express-rate-limit/dist/index.mjs
+var import_debug9 = __toESM(require_src2(), 1);
+var SECOND = 1000;
+var MINUTE = 60 * SECOND;
+var HOUR = 60 * MINUTE;
+var DAY = 24 * HOUR;
+
+// ../../packages/http-server/src/index.ts
+function createApp({ serviceName, mountPath, router, port, onStart, customMiddlewares, healthCheck }) {
+  const app = import_express2.default();
+  app.use(import_express2.default.json());
+  app.use(import_express2.default.urlencoded({ extended: true }));
+  if (customMiddlewares) {
+    customMiddlewares.forEach((mw) => app.use(mw));
+  }
+  app.get(["/", mountPath], (_req, res) => {
+    res.json({ status: "ok", message: `${serviceName} service is running` });
+  });
+  app.get(["/health", `${mountPath}/health`], async (req, res) => {
+    if (healthCheck) {
+      await healthCheck(req, res);
+    } else {
+      let redisStatus = "disconnected";
+      try {
+        const ping = await redis.ping();
+        if (ping === "PONG") {
+          redisStatus = "connected";
+        }
+      } catch (error) {
+        console.error(`[${serviceName}] Redis health check failed:`, error);
+      }
+      res.json({
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        redis: redisStatus
+      });
+    }
+  });
+  app.use(mountPath, router);
+  app.use((_req, res) => {
+    res.status(404).json(fail([{ message: `Route not found in ${serviceName} service` }]));
+  });
+  app.use((err, _req, res, _next) => {
+    console.error(`[${serviceName}] ${err.stack}`);
+    res.status(500).json(fail([{ message: err.message ?? "Internal server error" }]));
+  });
+  if (port) {
+    app.listen(port, async () => {
+      console.log(`[${serviceName}] Server running on http://localhost:${port}`);
+      if (onStart) {
+        await onStart();
+      }
+    });
+  }
+  return app;
+}
+
+// src/routes/index.ts
+var import_express5 = __toESM(require_express(), 1);
+
+// src/routes/v1/mutate.ts
+var import_express3 = __toESM(require_express(), 1);
+
+// src/redis/auth-store.ts
+import crypto2 from "crypto";
+var authStore = {
+  REFRESH_TTL: 30 * 24 * 60 * 60,
+  OTP_TTL: 5 * 60,
+  OTP_COOLDOWN: 60,
+  LOGIN_FAIL_TTL: 15 * 60,
+  async storeRefreshToken(userId, sessionId, rawToken) {
+    const hash = crypto2.createHash("sha256").update(rawToken).digest("hex");
+    const key = `refresh:${userId}:${sessionId}`;
+    await redis.set(key, hash, "EX", this.REFRESH_TTL);
+    await redis.sadd(`user_sessions:${userId}`, sessionId);
+  },
+  async validateRefreshToken(userId, sessionId, rawToken) {
+    const key = `refresh:${userId}:${sessionId}`;
+    const storedHash = await redis.get(key);
+    if (!storedHash)
+      return false;
+    const hash = crypto2.createHash("sha256").update(rawToken).digest("hex");
+    return hash === storedHash;
+  },
+  async revokeSession(userId, sessionId) {
+    const key = `refresh:${userId}:${sessionId}`;
+    await redis.del(key);
+    await redis.srem(`user_sessions:${userId}`, sessionId);
+  },
+  async revokeAllSessions(userId) {
+    const sessionIds = await redis.smembers(`user_sessions:${userId}`);
+    if (sessionIds.length > 0) {
+      const keys = sessionIds.map((sid) => `refresh:${userId}:${sid}`);
+      await redis.del(...keys);
+    }
+    await redis.del(`user_sessions:${userId}`);
+  },
+  async getActiveSessions(userId) {
+    return redis.smembers(`user_sessions:${userId}`);
+  },
+  async storeOTP(email, code) {
+    const payload = JSON.stringify({ code, attempts: 0 });
+    await redis.set(`otp:${email}`, payload, "EX", this.OTP_TTL);
+    await redis.set(`otp_cooldown:${email}`, "1", "EX", this.OTP_COOLDOWN);
+  },
+  async checkOTPCooldown(email) {
+    const exists = await redis.exists(`otp_cooldown:${email}`);
+    return exists === 1;
+  },
+  async validateOTP(email, code) {
+    const key = `otp:${email}`;
+    const dataStr = await redis.get(key);
+    if (!dataStr)
+      return "expired";
+    const data = JSON.parse(dataStr);
+    if (data.attempts >= 5) {
+      return "max_attempts";
+    }
+    if (data.code === code) {
+      await redis.del(key);
+      return "success";
+    }
+    data.attempts += 1;
+    await redis.set(key, JSON.stringify(data), "KEEPTTL");
+    return "invalid";
+  },
+  async recordLoginFailure(ip) {
+    const key = `login_fail:${ip}`;
+    const failures = await redis.incr(key);
+    if (failures === 1) {
+      await redis.expire(key, this.LOGIN_FAIL_TTL);
+    }
+    return failures;
+  },
+  async blockIP(ip, ttlHours = 1) {
+    await redis.set(`blocked_ip:${ip}`, "1", "EX", ttlHours * 60 * 60);
+  },
+  async isIPBlocked(ip) {
+    const blocked = await redis.exists(`blocked_ip:${ip}`);
+    return blocked === 1;
+  },
+  async resetLoginFailures(ip) {
+    await redis.del(`login_fail:${ip}`);
+  },
+  async blacklistToken(jti, remainingTtlSeconds) {
+    if (remainingTtlSeconds > 0) {
+      await redis.set(`blacklist_at:${jti}`, "1", "EX", remainingTtlSeconds);
+    }
+  },
+  async isTokenBlacklisted(jti) {
+    const exists = await redis.exists(`blacklist_at:${jti}`);
+    return exists === 1;
+  }
+};
+
+// src/controllers/v1/query.ts
+var queryFunctions = {
+  getSessions: async (req, res) => {
+    try {
+      const user = req.user;
+      const sessions = await authStore.getActiveSessions(user.sub);
+      res.status(200).json({ sessions });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  }
+};
+
+// src/controllers/v1/mutate.ts
+var import_argon2 = __toESM(require_argon2(), 1);
+var import_jsonwebtoken = __toESM(require_jsonwebtoken(), 1);
+import crypto6 from "crypto";
+
+// ../../node_modules/.bun/amqplib@0.10.9/node_modules/amqplib/channel_api.js
+var raw_connect = require_connect().connect;
+var ChannelModel = require_channel_model().ChannelModel;
+var promisify = __require("util").promisify;
+function connect(url, connOptions) {
+  return promisify(function(cb) {
+    return raw_connect(url, connOptions, cb);
+  })().then(function(conn) {
+    return new ChannelModel(conn);
+  });
+}
+var $connect = connect;
+var $credentials = require_credentials();
+var $IllegalOperationError = require_error().IllegalOperationError;
+
+// ../../node_modules/.bun/amqp-connection-manager@4.1.15+b6c3344463270069/node_modules/amqp-connection-manager/dist/esm/AmqpConnectionManager.js
+var import_promise_breaker2 = __toESM(require_promise_breaker(), 1);
+import { EventEmitter as EventEmitter3, once } from "events";
+import { URL as URL4 } from "url";
+
+// ../../node_modules/.bun/amqp-connection-manager@4.1.15+b6c3344463270069/node_modules/amqp-connection-manager/dist/esm/ChannelWrapper.js
+var import_promise_breaker = __toESM(require_promise_breaker(), 1);
+import * as crypto3 from "crypto";
+import { EventEmitter as EventEmitter2 } from "events";
+import { promisify as promisify2 } from "util";
+var MAX_MESSAGES_PER_BATCH = 1000;
+var randomBytes2 = promisify2(crypto3.randomBytes);
+var IRRECOVERABLE_ERRORS = [
+  403,
+  404,
+  406,
+  501,
+  502,
+  503,
+  504,
+  505,
+  530,
+  540,
+  541
+];
+
+class ChannelWrapper extends EventEmitter2 {
+  addListener(event, listener) {
+    return super.addListener(event, listener);
+  }
+  on(event, listener) {
+    return super.on(event, listener);
+  }
+  once(event, listener) {
+    return super.once(event, listener);
+  }
+  prependListener(event, listener) {
+    return super.prependListener(event, listener);
+  }
+  prependOnceListener(event, listener) {
+    return super.prependOnceListener(event, listener);
+  }
+  addSetup(setup, done) {
+    return import_promise_breaker.default.addCallback(done, (this._settingUp || Promise.resolve()).then(() => {
+      this._setups.push(setup);
+      if (this._channel) {
+        return import_promise_breaker.default.call(setup, this, this._channel);
+      } else {
+        return;
+      }
+    }));
+  }
+  removeSetup(setup, teardown, done) {
+    return import_promise_breaker.default.addCallback(done, () => {
+      this._setups = this._setups.filter((s) => s !== setup);
+      return (this._settingUp || Promise.resolve()).then(() => this._channel && teardown ? import_promise_breaker.default.call(teardown, this, this._channel) : undefined);
+    });
+  }
+  waitForConnect(done) {
+    return import_promise_breaker.default.addCallback(done, this._channel && !this._settingUp ? Promise.resolve() : new Promise((resolve) => this.once("connect", resolve)));
+  }
+  publish(exchange, routingKey, content, options, done) {
+    return import_promise_breaker.default.addCallback(done, new Promise((resolve, reject) => {
+      const { timeout, ...opts } = options || {};
+      this._enqueueMessage({
+        type: "publish",
+        exchange,
+        routingKey,
+        content: this._getEncodedMessage(content),
+        resolve,
+        reject,
+        options: opts,
+        isTimedout: false
+      }, timeout || this._publishTimeout);
+      this._startWorker();
+    }));
+  }
+  sendToQueue(queue, content, options, done) {
+    const encodedContent = this._getEncodedMessage(content);
+    return import_promise_breaker.default.addCallback(done, new Promise((resolve, reject) => {
+      const { timeout, ...opts } = options || {};
+      this._enqueueMessage({
+        type: "sendToQueue",
+        queue,
+        content: encodedContent,
+        resolve,
+        reject,
+        options: opts,
+        isTimedout: false
+      }, timeout || this._publishTimeout);
+      this._startWorker();
+    }));
+  }
+  _enqueueMessage(message, timeout) {
+    if (timeout) {
+      message.timeout = setTimeout(() => {
+        let idx = this._messages.indexOf(message);
+        if (idx !== -1) {
+          this._messages.splice(idx, 1);
+        } else {
+          idx = this._unconfirmedMessages.indexOf(message);
+          if (idx !== -1) {
+            this._unconfirmedMessages.splice(idx, 1);
+          }
+        }
+        message.isTimedout = true;
+        message.reject(new Error("timeout"));
+      }, timeout);
+    }
+    this._messages.push(message);
+  }
+  constructor(connectionManager, options = {}) {
+    var _a, _b;
+    super();
+    this._settingUp = undefined;
+    this._messages = [];
+    this._unconfirmedMessages = [];
+    this._consumers = [];
+    this._confirm = true;
+    this._working = false;
+    this._workerNumber = 0;
+    this._channelHasRoom = true;
+    this._onConnect = this._onConnect.bind(this);
+    this._onDisconnect = this._onDisconnect.bind(this);
+    this._connectionManager = connectionManager;
+    this._confirm = (_a = options.confirm) !== null && _a !== undefined ? _a : true;
+    this.name = options.name;
+    this._publishTimeout = options.publishTimeout;
+    this._json = (_b = options.json) !== null && _b !== undefined ? _b : false;
+    this._setups = [];
+    this._consumers = [];
+    if (options.setup) {
+      this._setups.push(options.setup);
+    }
+    const connection = connectionManager.connection;
+    if (connection) {
+      this._onConnect({ connection });
+    }
+    connectionManager.on("connect", this._onConnect);
+    connectionManager.on("disconnect", this._onDisconnect);
+  }
+  async _onConnect({ connection }) {
+    this._irrecoverableCode = undefined;
+    try {
+      let channel;
+      if (this._confirm) {
+        channel = await connection.createConfirmChannel();
+      } else {
+        channel = await connection.createChannel();
+      }
+      this._channel = channel;
+      this._channelHasRoom = true;
+      channel.on("close", () => this._onChannelClose(channel));
+      channel.on("drain", () => this._onChannelDrain());
+      this._settingUp = Promise.all(this._setups.map((setupFn) => import_promise_breaker.default.call(setupFn, this, channel).catch((err) => {
+        if (err.name === "IllegalOperationError") {
+          return;
+        }
+        this.emit("error", err, { name: this.name });
+      }))).then(() => {
+        return Promise.all(this._consumers.map((c) => this._reconnectConsumer(c)));
+      }).then(() => {
+        this._settingUp = undefined;
+      });
+      await this._settingUp;
+      if (!this._channel) {
+        return;
+      }
+      this._startWorker();
+      this.emit("connect");
+    } catch (err) {
+      this.emit("error", err, { name: this.name });
+      this._settingUp = undefined;
+      this._channel = undefined;
+    }
+  }
+  _onChannelClose(channel) {
+    if (this._channel === channel) {
+      this._channel = undefined;
+    }
+  }
+  _onChannelDrain() {
+    this._channelHasRoom = true;
+    this._startWorker();
+  }
+  _onDisconnect(ex) {
+    this._irrecoverableCode = ex.err instanceof Error ? ex.err.code : undefined;
+    this._channel = undefined;
+    this._settingUp = undefined;
+    this._working = false;
+  }
+  queueLength() {
+    return this._messages.length;
+  }
+  close() {
+    return Promise.resolve().then(() => {
+      this._working = false;
+      if (this._messages.length !== 0) {
+        this._messages.forEach((message) => {
+          if (message.timeout) {
+            clearTimeout(message.timeout);
+          }
+          message.reject(new Error("Channel closed"));
+        });
+      }
+      if (this._unconfirmedMessages.length !== 0) {
+        this._unconfirmedMessages.forEach((message) => {
+          if (message.timeout) {
+            clearTimeout(message.timeout);
+          }
+          message.reject(new Error("Channel closed"));
+        });
+      }
+      this._connectionManager.removeListener("connect", this._onConnect);
+      this._connectionManager.removeListener("disconnect", this._onDisconnect);
+      const answer = this._channel && this._channel.close() || undefined;
+      this._channel = undefined;
+      this.emit("close");
+      return answer;
+    });
+  }
+  _shouldPublish() {
+    return this._messages.length > 0 && !this._settingUp && !!this._channel && this._channelHasRoom;
+  }
+  _startWorker() {
+    if (!this._working && this._shouldPublish()) {
+      this._working = true;
+      this._workerNumber++;
+      this._publishQueuedMessages(this._workerNumber);
+    }
+  }
+  _canWaitReconnection() {
+    return !this._irrecoverableCode || !IRRECOVERABLE_ERRORS.includes(this._irrecoverableCode);
+  }
+  _messageResolved(message, result) {
+    removeUnconfirmedMessage(this._unconfirmedMessages, message);
+    message.resolve(result);
+  }
+  _messageRejected(message, err) {
+    if (!this._channel && this._canWaitReconnection()) {
+      removeUnconfirmedMessage(this._unconfirmedMessages, message);
+      this._messages.push(message);
+    } else {
+      removeUnconfirmedMessage(this._unconfirmedMessages, message);
+      message.reject(err);
+    }
+  }
+  _getEncodedMessage(content) {
+    let encodedMessage;
+    if (this._json) {
+      encodedMessage = Buffer.from(JSON.stringify(content));
+    } else if (typeof content === "string") {
+      encodedMessage = Buffer.from(content);
+    } else if (content instanceof Buffer) {
+      encodedMessage = content;
+    } else if (typeof content === "object" && typeof content.toString === "function") {
+      encodedMessage = Buffer.from(content.toString());
+    } else {
+      console.warn("amqp-connection-manager: Sending JSON message, but json option not speicifed");
+      encodedMessage = Buffer.from(JSON.stringify(content));
+    }
+    return encodedMessage;
+  }
+  _publishQueuedMessages(workerNumber) {
+    const channel = this._channel;
+    if (!channel || !this._shouldPublish() || !this._working || workerNumber !== this._workerNumber) {
+      this._working = false;
+      return;
+    }
+    try {
+      let sendsLeft = MAX_MESSAGES_PER_BATCH;
+      while (this._channelHasRoom && this._messages.length > 0 && sendsLeft > 0) {
+        sendsLeft--;
+        const message = this._messages.shift();
+        if (!message) {
+          break;
+        }
+        let thisCanSend = true;
+        switch (message.type) {
+          case "publish": {
+            if (this._confirm) {
+              this._unconfirmedMessages.push(message);
+              thisCanSend = this._channelHasRoom = channel.publish(message.exchange, message.routingKey, message.content, message.options, (err) => {
+                if (message.isTimedout) {
+                  return;
+                }
+                if (message.timeout) {
+                  clearTimeout(message.timeout);
+                }
+                if (err) {
+                  this._messageRejected(message, err);
+                } else {
+                  this._messageResolved(message, thisCanSend);
+                }
+              });
+            } else {
+              if (message.timeout) {
+                clearTimeout(message.timeout);
+              }
+              thisCanSend = this._channelHasRoom = channel.publish(message.exchange, message.routingKey, message.content, message.options);
+              message.resolve(thisCanSend);
+            }
+            break;
+          }
+          case "sendToQueue": {
+            if (this._confirm) {
+              this._unconfirmedMessages.push(message);
+              thisCanSend = this._channelHasRoom = channel.sendToQueue(message.queue, message.content, message.options, (err) => {
+                if (message.isTimedout) {
+                  return;
+                }
+                if (message.timeout) {
+                  clearTimeout(message.timeout);
+                }
+                if (err) {
+                  this._messageRejected(message, err);
+                } else {
+                  this._messageResolved(message, thisCanSend);
+                }
+              });
+            } else {
+              if (message.timeout) {
+                clearTimeout(message.timeout);
+              }
+              thisCanSend = this._channelHasRoom = channel.sendToQueue(message.queue, message.content, message.options);
+              message.resolve(thisCanSend);
+            }
+            break;
+          }
+          default:
+            throw new Error(`Unhandled message type ${message.type}`);
+        }
+      }
+      if (this._channelHasRoom && this._messages.length > 0) {
+        setImmediate(() => this._publishQueuedMessages(workerNumber));
+      } else {
+        this._working = false;
+      }
+    } catch (err) {
+      this._working = false;
+      this.emit("error", err);
+    }
+  }
+  async consume(queue, onMessage, options = {}) {
+    const consumerTag = options.consumerTag || (await randomBytes2(16)).toString("hex");
+    const consumer = {
+      consumerTag: null,
+      queue,
+      onMessage,
+      options: {
+        ...options,
+        consumerTag
+      }
+    };
+    if (this._settingUp) {
+      await this._settingUp;
+    }
+    this._consumers.push(consumer);
+    await this._consume(consumer);
+    return { consumerTag };
+  }
+  async _consume(consumer) {
+    if (!this._channel) {
+      return;
+    }
+    const { prefetch, ...options } = consumer.options;
+    if (typeof prefetch === "number") {
+      this._channel.prefetch(prefetch, false);
+    }
+    const { consumerTag } = await this._channel.consume(consumer.queue, (msg) => {
+      if (!msg) {
+        consumer.consumerTag = null;
+        this._reconnectConsumer(consumer).catch((err) => {
+          if (err.code === 404) {
+            return;
+          }
+          this.emit("error", err);
+        });
+        return;
+      }
+      consumer.onMessage(msg);
+    }, options);
+    consumer.consumerTag = consumerTag;
+  }
+  async _reconnectConsumer(consumer) {
+    if (!this._consumers.includes(consumer)) {
+      return;
+    }
+    await this._consume(consumer);
+  }
+  async cancelAll() {
+    const consumers = this._consumers;
+    this._consumers = [];
+    if (!this._channel) {
+      return;
+    }
+    const channel = this._channel;
+    await Promise.all(consumers.reduce((acc, consumer) => {
+      if (consumer.consumerTag) {
+        acc.push(channel.cancel(consumer.consumerTag));
+      }
+      return acc;
+    }, []));
+  }
+  async cancel(consumerTag) {
+    const idx = this._consumers.findIndex((x) => x.options.consumerTag === consumerTag);
+    if (idx === -1) {
+      return;
+    }
+    const consumer = this._consumers[idx];
+    this._consumers.splice(idx, 1);
+    if (this._channel && consumer.consumerTag) {
+      await this._channel.cancel(consumer.consumerTag);
+    }
+  }
+  ack(message, allUpTo) {
+    this._channel && this._channel.ack(message, allUpTo);
+  }
+  ackAll() {
+    this._channel && this._channel.ackAll();
+  }
+  nack(message, allUpTo, requeue) {
+    this._channel && this._channel.nack(message, allUpTo, requeue);
+  }
+  nackAll(requeue) {
+    this._channel && this._channel.nackAll(requeue);
+  }
+  async purgeQueue(queue) {
+    if (this._channel) {
+      return await this._channel.purgeQueue(queue);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async checkQueue(queue) {
+    if (this._channel) {
+      return await this._channel.checkQueue(queue);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async assertQueue(queue, options) {
+    if (this._channel) {
+      return await this._channel.assertQueue(queue, options);
+    } else {
+      return { queue, messageCount: 0, consumerCount: 0 };
+    }
+  }
+  async bindQueue(queue, source, pattern, args) {
+    if (this._channel) {
+      await this._channel.bindQueue(queue, source, pattern, args);
+    }
+  }
+  async unbindQueue(queue, source, pattern, args) {
+    if (this._channel) {
+      await this._channel.unbindQueue(queue, source, pattern, args);
+    }
+  }
+  async deleteQueue(queue, options) {
+    if (this._channel) {
+      return await this._channel.deleteQueue(queue, options);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async assertExchange(exchange, type, options) {
+    if (this._channel) {
+      return await this._channel.assertExchange(exchange, type, options);
+    } else {
+      return { exchange };
+    }
+  }
+  async bindExchange(destination, source, pattern, args) {
+    if (this._channel) {
+      return await this._channel.bindExchange(destination, source, pattern, args);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async checkExchange(exchange) {
+    if (this._channel) {
+      return await this._channel.checkExchange(exchange);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async deleteExchange(exchange, options) {
+    if (this._channel) {
+      return await this._channel.deleteExchange(exchange, options);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async unbindExchange(destination, source, pattern, args) {
+    if (this._channel) {
+      return await this._channel.unbindExchange(destination, source, pattern, args);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+  async get(queue, options) {
+    if (this._channel) {
+      return await this._channel.get(queue, options);
+    } else {
+      throw new Error(`Not connected.`);
+    }
+  }
+}
+function removeUnconfirmedMessage(arr, message) {
+  const toRemove = arr.indexOf(message);
+  if (toRemove === -1) {
+    throw new Error(`Message is not in _unconfirmedMessages!`);
+  }
+  const removed = arr.splice(toRemove, 1);
+  return removed[0];
+}
+
+// ../../node_modules/.bun/amqp-connection-manager@4.1.15+b6c3344463270069/node_modules/amqp-connection-manager/dist/esm/helpers.js
+function wait(timeInMs) {
+  let timeoutHandle;
+  return {
+    promise: new Promise(function(resolve) {
+      timeoutHandle = setTimeout(resolve, timeInMs);
+    }),
+    cancel: () => clearTimeout(timeoutHandle)
+  };
+}
+
+// ../../node_modules/.bun/amqp-connection-manager@4.1.15+b6c3344463270069/node_modules/amqp-connection-manager/dist/esm/AmqpConnectionManager.js
+var HEARTBEAT_IN_SECONDS = 5;
+function neverThrows() {
+  return (err) => setImmediate(() => {
+    throw new Error(`AmqpConnectionManager - should never get here: ${err.message}
+` + err.stack);
+  });
+}
+
+class AmqpConnectionManager extends EventEmitter3 {
+  constructor(urls, options = {}) {
+    super();
+    this._closed = false;
+    if (!urls && !options.findServers) {
+      throw new Error("Must supply either `urls` or `findServers`");
+    }
+    this._channels = [];
+    this._currentUrl = 0;
+    this.connectionOptions = options.connectionOptions;
+    this.heartbeatIntervalInSeconds = options.heartbeatIntervalInSeconds || options.heartbeatIntervalInSeconds === 0 ? options.heartbeatIntervalInSeconds : HEARTBEAT_IN_SECONDS;
+    this.reconnectTimeInSeconds = options.reconnectTimeInSeconds || this.heartbeatIntervalInSeconds;
+    this.setMaxListeners(0);
+    this._findServers = options.findServers || (() => Promise.resolve(urls));
+  }
+  async connect({ timeout } = {}) {
+    this._connect();
+    let reject;
+    const onConnectFailed = ({ err }) => {
+      if (err.message.includes("ACCESS-REFUSED") || err.message.includes("403")) {
+        reject(err);
+      }
+    };
+    let waitTimeout;
+    if (timeout) {
+      waitTimeout = wait(timeout);
+    }
+    try {
+      await Promise.race([
+        once(this, "connect"),
+        new Promise((_resolve, innerReject) => {
+          reject = innerReject;
+          this.on("connectFailed", onConnectFailed);
+        }),
+        ...waitTimeout ? [
+          waitTimeout.promise.then(() => {
+            throw new Error("amqp-connection-manager: connect timeout");
+          })
+        ] : []
+      ]);
+    } finally {
+      waitTimeout === null || waitTimeout === undefined || waitTimeout.cancel();
+      this.removeListener("connectFailed", onConnectFailed);
+    }
+  }
+  createChannel(options = {}) {
+    const channel = new ChannelWrapper(this, options);
+    this._channels.push(channel);
+    channel.once("close", () => {
+      this._channels = this._channels.filter((c) => c !== channel);
+    });
+    return channel;
+  }
+  close() {
+    if (this._closed) {
+      return Promise.resolve();
+    }
+    this._closed = true;
+    if (this._cancelRetriesHandler) {
+      this._cancelRetriesHandler();
+      this._cancelRetriesHandler = undefined;
+    }
+    return Promise.resolve(this._connectPromise).then(() => {
+      return Promise.all(this._channels.map((channel) => channel.close())).catch(function() {}).then(() => {
+        this._channels = [];
+        if (this._currentConnection) {
+          this._currentConnection.removeAllListeners("close");
+          return this._currentConnection.close();
+        } else {
+          return null;
+        }
+      }).then(() => {
+        this._currentConnection = undefined;
+      });
+    });
+  }
+  isConnected() {
+    return !!this._currentConnection;
+  }
+  reconnect() {
+    if (this._closed) {
+      throw new Error("cannot reconnect after close");
+    }
+    if (this._currentConnection) {
+      this._currentConnection.removeAllListeners();
+      this._currentConnection.close().catch(() => {}).then(() => {
+        this._currentConnection = undefined;
+        this.emit("disconnect", { err: new Error("forced reconnect") });
+        return this._connect();
+      }).catch(neverThrows);
+    }
+  }
+  get connection() {
+    return this._currentConnection;
+  }
+  get channelCount() {
+    return this._channels.length;
+  }
+  _connect() {
+    if (this._connectPromise) {
+      return this._connectPromise;
+    }
+    if (this._closed || this.isConnected()) {
+      return Promise.resolve(null);
+    }
+    let attemptedUrl;
+    const result = this._connectPromise = Promise.resolve().then(() => {
+      if (!this._urls || this._currentUrl >= this._urls.length) {
+        this._currentUrl = 0;
+        return import_promise_breaker2.default.call(this._findServers, 0, null);
+      } else {
+        return this._urls;
+      }
+    }).then((urls) => {
+      var _a;
+      if (Array.isArray(urls)) {
+        this._urls = urls;
+      } else if (urls) {
+        this._urls = [urls];
+      }
+      if (!this._urls || this._urls.length === 0) {
+        throw new Error("amqp-connection-manager: No servers found");
+      }
+      const url = this._urls[this._currentUrl];
+      this._currentUrl++;
+      let connectionOptions = this.connectionOptions;
+      let originalUrl;
+      let connect2;
+      if (typeof url === "object" && "url" in url) {
+        originalUrl = connect2 = url.url;
+        connectionOptions = url.connectionOptions || this.connectionOptions;
+      } else if (typeof url === "string") {
+        originalUrl = connect2 = url;
+      } else {
+        originalUrl = url;
+        connect2 = {
+          ...url,
+          heartbeat: (_a = url.heartbeat) !== null && _a !== undefined ? _a : this.heartbeatIntervalInSeconds
+        };
+      }
+      attemptedUrl = originalUrl;
+      if (typeof connect2 === "string") {
+        const u = new URL4(connect2);
+        if (!u.searchParams.get("heartbeat")) {
+          u.searchParams.set("heartbeat", `${this.heartbeatIntervalInSeconds}`);
+        }
+        connect2 = u.toString();
+      }
+      return $connect(connect2, connectionOptions).then((connection) => {
+        this._currentConnection = connection;
+        connection.on("blocked", (reason) => this.emit("blocked", { reason }));
+        connection.on("unblocked", () => this.emit("unblocked"));
+        connection.on("error", () => {});
+        connection.on("close", (err) => {
+          this._currentConnection = undefined;
+          this.emit("disconnect", { err });
+          const handle = wait(this.reconnectTimeInSeconds * 1000);
+          this._cancelRetriesHandler = handle.cancel;
+          handle.promise.then(() => this._connect()).catch(neverThrows);
+        });
+        this._connectPromise = undefined;
+        this.emit("connect", { connection, url: originalUrl });
+        return null;
+      });
+    }).catch((err) => {
+      this.emit("connectFailed", { err, url: attemptedUrl });
+      this._currentConnection = undefined;
+      this._connectPromise = undefined;
+      let handle;
+      if (err.name === "OperationalError" && err.message === "connect ETIMEDOUT") {
+        handle = wait(0);
+      } else {
+        handle = wait(this.reconnectTimeInSeconds * 1000);
+      }
+      this._cancelRetriesHandler = handle.cancel;
+      return handle.promise.then(() => this._connect());
+    });
+    return result;
+  }
+}
+
+// ../../node_modules/.bun/amqp-connection-manager@4.1.15+b6c3344463270069/node_modules/amqp-connection-manager/dist/esm/index.js
+function connect2(urls, options) {
+  const conn = new AmqpConnectionManager(urls, options);
+  conn.connect().catch(() => {});
+  return conn;
+}
+var amqp = { connect: connect2 };
+var esm_default = amqp;
+
+// ../../packages/rabbitmq/src/connection.ts
+var RABBITMQ_URL = process.env.RABBITMQ_URL || "amqp://localhost:5672";
+var EXCHANGE_NAME = "crm_events_exchange";
+var DLX_EXCHANGE_NAME = "crm_events_dlx";
+var connection = esm_default.connect([RABBITMQ_URL]);
+connection.on("connect", () => {
+  console.log("[RabbitMQ] Connected to cluster!");
+});
+connection.on("disconnect", (err) => {
+  console.error("[RabbitMQ] Disconnected:", err);
+});
+var channelWrapper = connection.createChannel({
+  setup: async (channel) => {
+    await channel.assertExchange(DLX_EXCHANGE_NAME, "topic", { durable: true });
+    await channel.assertExchange(EXCHANGE_NAME, "topic", { durable: true });
+  }
+});
+// ../../packages/rabbitmq/src/constants/routing-keys.ts
+var ROUTING_KEYS = {
+  USERS: {
+    CREATED: "users.created",
+    UPDATED: "users.updated",
+    DELETED: "users.deleted"
+  },
+  AUTHENTICATION: {
+    LOGIN_SUCCESS: "authentication.login_success",
+    LOGIN_FAILED: "authentication.login_failed"
+  },
+  RPC: {
+    USERS: {
+      CREATE: "rpc.users.create",
+      GET_BY_EMAIL: "rpc.users.get_by_email",
+      VERIFY: "rpc.users.verify"
+    }
+  }
+};
+// ../../packages/rabbitmq/src/rpc-client.ts
+import crypto4 from "crypto";
+var requestReply = async (routingKey, payload, timeoutMs = 1e4) => {
+  return new Promise((resolve, reject) => {
+    let resolved = false;
+    const rpcChannelWrapper = connection.createChannel({
+      setup: async (channel) => {
+        try {
+          const q = await channel.assertQueue("", { exclusive: true, autoDelete: true });
+          const replyTo = q.queue;
+          const correlationId = crypto4.randomUUID();
+          await channel.consume(replyTo, (msg) => {
+            if (msg && msg.properties.correlationId === correlationId) {
+              if (!resolved) {
+                resolved = true;
+                const responseData = JSON.parse(msg.content.toString());
+                resolve(responseData);
+                rpcChannelWrapper.close().catch(() => {});
+              }
+            }
+          }, { noAck: true });
+          await channel.publish("crm_events_exchange", routingKey, Buffer.from(JSON.stringify(payload)), {
+            correlationId,
+            replyTo,
+            persistent: false
+          });
+          setTimeout(() => {
+            if (!resolved) {
+              resolved = true;
+              reject(new Error(`RPC request to ${routingKey} timed out after ${timeoutMs}ms`));
+              rpcChannelWrapper.close().catch(() => {});
+            }
+          }, timeoutMs);
+        } catch (error) {
+          if (!resolved) {
+            resolved = true;
+            reject(error);
+          }
+        }
+      }
+    });
+  });
+};
+// src/services/users-service-client.ts
+var usersServiceClient = {
+  async createUser(userData) {
+    try {
+      const response = await requestReply(ROUTING_KEYS.RPC.USERS.CREATE, userData);
+      if (response.error)
+        throw new Error(response.error);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to create user over RPC: ${error.message}`);
+    }
+  },
+  async getUserByEmail(email) {
+    try {
+      const response = await requestReply(ROUTING_KEYS.RPC.USERS.GET_BY_EMAIL, { email });
+      if (response.error) {
+        if (response.status === 404)
+          return null;
+        throw new Error(response.error);
+      }
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch user by email over RPC: ${error.message}`);
+    }
+  },
+  async verifyUser(userId) {
+    try {
+      const response = await requestReply(ROUTING_KEYS.RPC.USERS.VERIFY, { userId });
+      if (response.error)
+        throw new Error(response.error);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to verify user over RPC: ${error.message}`);
+    }
+  }
+};
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/index.js
+import os from "os";
+import fs from "fs";
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/query.js
+var originCache = new Map;
+var originStackCache = new Map;
+var originError = Symbol("OriginError");
+var CLOSE = {};
+
+class Query extends Promise {
+  constructor(strings, args, handler, canceller, options = {}) {
+    let resolve, reject;
+    super((a, b) => {
+      resolve = a;
+      reject = b;
+    });
+    this.tagged = Array.isArray(strings.raw);
+    this.strings = strings;
+    this.args = args;
+    this.handler = handler;
+    this.canceller = canceller;
+    this.options = options;
+    this.state = null;
+    this.statement = null;
+    this.resolve = (x) => (this.active = false, resolve(x));
+    this.reject = (x) => (this.active = false, reject(x));
+    this.active = false;
+    this.cancelled = null;
+    this.executed = false;
+    this.signature = "";
+    this[originError] = this.handler.debug ? new Error : this.tagged && cachedError(this.strings);
+  }
+  get origin() {
+    return (this.handler.debug ? this[originError].stack : this.tagged && originStackCache.has(this.strings) ? originStackCache.get(this.strings) : originStackCache.set(this.strings, this[originError].stack).get(this.strings)) || "";
+  }
+  static get [Symbol.species]() {
+    return Promise;
+  }
+  cancel() {
+    return this.canceller && (this.canceller(this), this.canceller = null);
+  }
+  simple() {
+    this.options.simple = true;
+    this.options.prepare = false;
+    return this;
+  }
+  async readable() {
+    this.simple();
+    this.streaming = true;
+    return this;
+  }
+  async writable() {
+    this.simple();
+    this.streaming = true;
+    return this;
+  }
+  cursor(rows = 1, fn) {
+    this.options.simple = false;
+    if (typeof rows === "function") {
+      fn = rows;
+      rows = 1;
+    }
+    this.cursorRows = rows;
+    if (typeof fn === "function")
+      return this.cursorFn = fn, this;
+    let prev;
+    return {
+      [Symbol.asyncIterator]: () => ({
+        next: () => {
+          if (this.executed && !this.active)
+            return { done: true };
+          prev && prev();
+          const promise = new Promise((resolve, reject) => {
+            this.cursorFn = (value) => {
+              resolve({ value, done: false });
+              return new Promise((r) => prev = r);
+            };
+            this.resolve = () => (this.active = false, resolve({ done: true }));
+            this.reject = (x) => (this.active = false, reject(x));
+          });
+          this.execute();
+          return promise;
+        },
+        return() {
+          prev && prev(CLOSE);
+          return { done: true };
+        }
+      })
+    };
+  }
+  describe() {
+    this.options.simple = false;
+    this.onlyDescribe = this.options.prepare = true;
+    return this;
+  }
+  stream() {
+    throw new Error(".stream has been renamed to .forEach");
+  }
+  forEach(fn) {
+    this.forEachFn = fn;
+    this.handle();
+    return this;
+  }
+  raw() {
+    this.isRaw = true;
+    return this;
+  }
+  values() {
+    this.isRaw = "values";
+    return this;
+  }
+  async handle() {
+    !this.executed && (this.executed = true) && await 1 && this.handler(this);
+  }
+  execute() {
+    this.handle();
+    return this;
+  }
+  then() {
+    this.handle();
+    return super.then.apply(this, arguments);
+  }
+  catch() {
+    this.handle();
+    return super.catch.apply(this, arguments);
+  }
+  finally() {
+    this.handle();
+    return super.finally.apply(this, arguments);
+  }
+}
+function cachedError(xs) {
+  if (originCache.has(xs))
+    return originCache.get(xs);
+  const x = Error.stackTraceLimit;
+  Error.stackTraceLimit = 4;
+  originCache.set(xs, new Error);
+  Error.stackTraceLimit = x;
+  return originCache.get(xs);
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/errors.js
+class PostgresError extends Error {
+  constructor(x) {
+    super(x.message);
+    this.name = this.constructor.name;
+    Object.assign(this, x);
+  }
+}
+var Errors = {
+  connection: connection3,
+  postgres,
+  generic,
+  notSupported
+};
+function connection3(x, options, socket) {
+  const { host, port } = socket || options;
+  const error = Object.assign(new Error("write " + x + " " + (options.path || host + ":" + port)), {
+    code: x,
+    errno: x,
+    address: options.path || host
+  }, options.path ? {} : { port });
+  Error.captureStackTrace(error, connection3);
+  return error;
+}
+function postgres(x) {
+  const error = new PostgresError(x);
+  Error.captureStackTrace(error, postgres);
+  return error;
+}
+function generic(code, message) {
+  const error = Object.assign(new Error(code + ": " + message), { code });
+  Error.captureStackTrace(error, generic);
+  return error;
+}
+function notSupported(x) {
+  const error = Object.assign(new Error(x + " (B) is not supported"), {
+    code: "MESSAGE_NOT_SUPPORTED",
+    name: x
+  });
+  Error.captureStackTrace(error, notSupported);
+  return error;
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/types.js
+var types = {
+  string: {
+    to: 25,
+    from: null,
+    serialize: (x) => "" + x
+  },
+  number: {
+    to: 0,
+    from: [21, 23, 26, 700, 701],
+    serialize: (x) => "" + x,
+    parse: (x) => +x
+  },
+  json: {
+    to: 114,
+    from: [114, 3802],
+    serialize: (x) => JSON.stringify(x),
+    parse: (x) => JSON.parse(x)
+  },
+  boolean: {
+    to: 16,
+    from: 16,
+    serialize: (x) => x === true ? "t" : "f",
+    parse: (x) => x === "t"
+  },
+  date: {
+    to: 1184,
+    from: [1082, 1114, 1184],
+    serialize: (x) => (x instanceof Date ? x : new Date(x)).toISOString(),
+    parse: (x) => new Date(x)
+  },
+  bytea: {
+    to: 17,
+    from: 17,
+    serialize: (x) => "\\x" + Buffer.from(x).toString("hex"),
+    parse: (x) => Buffer.from(x.slice(2), "hex")
+  }
+};
+
+class NotTagged {
+  then() {
+    notTagged();
+  }
+  catch() {
+    notTagged();
+  }
+  finally() {
+    notTagged();
+  }
+}
+
+class Identifier extends NotTagged {
+  constructor(value) {
+    super();
+    this.value = escapeIdentifier(value);
+  }
+}
+
+class Parameter extends NotTagged {
+  constructor(value, type, array) {
+    super();
+    this.value = value;
+    this.type = type;
+    this.array = array;
+  }
+}
+
+class Builder extends NotTagged {
+  constructor(first, rest) {
+    super();
+    this.first = first;
+    this.rest = rest;
+  }
+  build(before, parameters, types2, options) {
+    const keyword = builders.map(([x, fn]) => ({ fn, i: before.search(x) })).sort((a, b) => a.i - b.i).pop();
+    return keyword.i === -1 ? escapeIdentifiers(this.first, options) : keyword.fn(this.first, this.rest, parameters, types2, options);
+  }
+}
+function handleValue(x, parameters, types2, options) {
+  let value = x instanceof Parameter ? x.value : x;
+  if (value === undefined) {
+    x instanceof Parameter ? x.value = options.transform.undefined : value = x = options.transform.undefined;
+    if (value === undefined)
+      throw Errors.generic("UNDEFINED_VALUE", "Undefined values are not allowed");
+  }
+  return "$" + types2.push(x instanceof Parameter ? (parameters.push(x.value), x.array ? x.array[x.type || inferType(x.value)] || x.type || firstIsString(x.value) : x.type) : (parameters.push(x), inferType(x)));
+}
+var defaultHandlers = typeHandlers(types);
+function stringify(q, string, value, parameters, types2, options) {
+  for (let i = 1;i < q.strings.length; i++) {
+    string += stringifyValue(string, value, parameters, types2, options) + q.strings[i];
+    value = q.args[i];
+  }
+  return string;
+}
+function stringifyValue(string, value, parameters, types2, o) {
+  return value instanceof Builder ? value.build(string, parameters, types2, o) : value instanceof Query ? fragment(value, parameters, types2, o) : value instanceof Identifier ? value.value : value && value[0] instanceof Query ? value.reduce((acc, x) => acc + " " + fragment(x, parameters, types2, o), "") : handleValue(value, parameters, types2, o);
+}
+function fragment(q, parameters, types2, options) {
+  q.fragment = true;
+  return stringify(q, q.strings[0], q.args[0], parameters, types2, options);
+}
+function valuesBuilder(first, parameters, types2, columns, options) {
+  return first.map((row) => "(" + columns.map((column) => stringifyValue("values", row[column], parameters, types2, options)).join(",") + ")").join(",");
+}
+function values(first, rest, parameters, types2, options) {
+  const multi = Array.isArray(first[0]);
+  const columns = rest.length ? rest.flat() : Object.keys(multi ? first[0] : first);
+  return valuesBuilder(multi ? first : [first], parameters, types2, columns, options);
+}
+function select(first, rest, parameters, types2, options) {
+  typeof first === "string" && (first = [first].concat(rest));
+  if (Array.isArray(first))
+    return escapeIdentifiers(first, options);
+  let value;
+  const columns = rest.length ? rest.flat() : Object.keys(first);
+  return columns.map((x) => {
+    value = first[x];
+    return (value instanceof Query ? fragment(value, parameters, types2, options) : value instanceof Identifier ? value.value : handleValue(value, parameters, types2, options)) + " as " + escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x);
+  }).join(",");
+}
+var builders = Object.entries({
+  values,
+  in: (...xs) => {
+    const x = values(...xs);
+    return x === "()" ? "(null)" : x;
+  },
+  select,
+  as: select,
+  returning: select,
+  "\\(": select,
+  update(first, rest, parameters, types2, options) {
+    return (rest.length ? rest.flat() : Object.keys(first)).map((x) => escapeIdentifier(options.transform.column.to ? options.transform.column.to(x) : x) + "=" + stringifyValue("values", first[x], parameters, types2, options));
+  },
+  insert(first, rest, parameters, types2, options) {
+    const columns = rest.length ? rest.flat() : Object.keys(Array.isArray(first) ? first[0] : first);
+    return "(" + escapeIdentifiers(columns, options) + ")values" + valuesBuilder(Array.isArray(first) ? first : [first], parameters, types2, columns, options);
+  }
+}).map(([x, fn]) => [new RegExp("((?:^|[\\s(])" + x + "(?:$|[\\s(]))(?![\\s\\S]*\\1)", "i"), fn]);
+function notTagged() {
+  throw Errors.generic("NOT_TAGGED_CALL", "Query not called as a tagged template literal");
+}
+var serializers = defaultHandlers.serializers;
+var parsers = defaultHandlers.parsers;
+function firstIsString(x) {
+  if (Array.isArray(x))
+    return firstIsString(x[0]);
+  return typeof x === "string" ? 1009 : 0;
+}
+var mergeUserTypes = function(types2) {
+  const user = typeHandlers(types2 || {});
+  return {
+    serializers: Object.assign({}, serializers, user.serializers),
+    parsers: Object.assign({}, parsers, user.parsers)
+  };
+};
+function typeHandlers(types2) {
+  return Object.keys(types2).reduce((acc, k) => {
+    types2[k].from && [].concat(types2[k].from).forEach((x) => acc.parsers[x] = types2[k].parse);
+    if (types2[k].serialize) {
+      acc.serializers[types2[k].to] = types2[k].serialize;
+      types2[k].from && [].concat(types2[k].from).forEach((x) => acc.serializers[x] = types2[k].serialize);
+    }
+    return acc;
+  }, { parsers: {}, serializers: {} });
+}
+function escapeIdentifiers(xs, { transform: { column } }) {
+  return xs.map((x) => escapeIdentifier(column.to ? column.to(x) : x)).join(",");
+}
+var escapeIdentifier = function escape2(str) {
+  return '"' + str.replace(/"/g, '""').replace(/\./g, '"."') + '"';
+};
+var inferType = function inferType2(x) {
+  return x instanceof Parameter ? x.type : x instanceof Date ? 1184 : x instanceof Uint8Array ? 17 : x === true || x === false ? 16 : typeof x === "bigint" ? 20 : Array.isArray(x) ? inferType2(x[0]) : 0;
+};
+var escapeBackslash = /\\/g;
+var escapeQuote = /"/g;
+function arrayEscape(x) {
+  return x.replace(escapeBackslash, "\\\\").replace(escapeQuote, "\\\"");
+}
+var arraySerializer = function arraySerializer2(xs, serializer, options, typarray) {
+  if (Array.isArray(xs) === false)
+    return xs;
+  if (!xs.length)
+    return "{}";
+  const first = xs[0];
+  const delimiter = typarray === 1020 ? ";" : ",";
+  if (Array.isArray(first) && !first.type)
+    return "{" + xs.map((x) => arraySerializer2(x, serializer, options, typarray)).join(delimiter) + "}";
+  return "{" + xs.map((x) => {
+    if (x === undefined) {
+      x = options.transform.undefined;
+      if (x === undefined)
+        throw Errors.generic("UNDEFINED_VALUE", "Undefined values are not allowed");
+    }
+    return x === null ? "null" : '"' + arrayEscape(serializer ? serializer(x.type ? x.value : x) : "" + x) + '"';
+  }).join(delimiter) + "}";
+};
+var arrayParserState = {
+  i: 0,
+  char: null,
+  str: "",
+  quoted: false,
+  last: 0
+};
+var arrayParser = function arrayParser2(x, parser, typarray) {
+  arrayParserState.i = arrayParserState.last = 0;
+  return arrayParserLoop(arrayParserState, x, parser, typarray);
+};
+function arrayParserLoop(s, x, parser, typarray) {
+  const xs = [];
+  const delimiter = typarray === 1020 ? ";" : ",";
+  for (;s.i < x.length; s.i++) {
+    s.char = x[s.i];
+    if (s.quoted) {
+      if (s.char === "\\") {
+        s.str += x[++s.i];
+      } else if (s.char === '"') {
+        xs.push(parser ? parser(s.str) : s.str);
+        s.str = "";
+        s.quoted = x[s.i + 1] === '"';
+        s.last = s.i + 2;
+      } else {
+        s.str += s.char;
+      }
+    } else if (s.char === '"') {
+      s.quoted = true;
+    } else if (s.char === "{") {
+      s.last = ++s.i;
+      xs.push(arrayParserLoop(s, x, parser, typarray));
+    } else if (s.char === "}") {
+      s.quoted = false;
+      s.last < s.i && xs.push(parser ? parser(x.slice(s.last, s.i)) : x.slice(s.last, s.i));
+      s.last = s.i + 1;
+      break;
+    } else if (s.char === delimiter && s.p !== "}" && s.p !== '"') {
+      xs.push(parser ? parser(x.slice(s.last, s.i)) : x.slice(s.last, s.i));
+      s.last = s.i + 1;
+    }
+    s.p = s.char;
+  }
+  s.last < s.i && xs.push(parser ? parser(x.slice(s.last, s.i + 1)) : x.slice(s.last, s.i + 1));
+  return xs;
+}
+var toCamel = (x) => {
+  let str = x[0];
+  for (let i = 1;i < x.length; i++)
+    str += x[i] === "_" ? x[++i].toUpperCase() : x[i];
+  return str;
+};
+var toPascal = (x) => {
+  let str = x[0].toUpperCase();
+  for (let i = 1;i < x.length; i++)
+    str += x[i] === "_" ? x[++i].toUpperCase() : x[i];
+  return str;
+};
+var toKebab = (x) => x.replace(/_/g, "-");
+var fromCamel = (x) => x.replace(/([A-Z])/g, "_$1").toLowerCase();
+var fromPascal = (x) => (x.slice(0, 1) + x.slice(1).replace(/([A-Z])/g, "_$1")).toLowerCase();
+var fromKebab = (x) => x.replace(/-/g, "_");
+function createJsonTransform(fn) {
+  return function jsonTransform(x, column) {
+    return typeof x === "object" && x !== null && (column.type === 114 || column.type === 3802) ? Array.isArray(x) ? x.map((x2) => jsonTransform(x2, column)) : Object.entries(x).reduce((acc, [k, v]) => Object.assign(acc, { [fn(k)]: jsonTransform(v, column) }), {}) : x;
+  };
+}
+toCamel.column = { from: toCamel };
+toCamel.value = { from: createJsonTransform(toCamel) };
+fromCamel.column = { to: fromCamel };
+var camel = { ...toCamel };
+camel.column.to = fromCamel;
+toPascal.column = { from: toPascal };
+toPascal.value = { from: createJsonTransform(toPascal) };
+fromPascal.column = { to: fromPascal };
+var pascal = { ...toPascal };
+pascal.column.to = fromPascal;
+toKebab.column = { from: toKebab };
+toKebab.value = { from: createJsonTransform(toKebab) };
+fromKebab.column = { to: fromKebab };
+var kebab = { ...toKebab };
+kebab.column.to = fromKebab;
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/connection.js
+import net from "net";
+import tls from "tls";
+import crypto5 from "crypto";
+import Stream from "stream";
+import { performance } from "perf_hooks";
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/result.js
+class Result extends Array {
+  constructor() {
+    super();
+    Object.defineProperties(this, {
+      count: { value: null, writable: true },
+      state: { value: null, writable: true },
+      command: { value: null, writable: true },
+      columns: { value: null, writable: true },
+      statement: { value: null, writable: true }
+    });
+  }
+  static get [Symbol.species]() {
+    return Array;
+  }
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/queue.js
+var queue_default = Queue;
+function Queue(initial = []) {
+  let xs = initial.slice();
+  let index = 0;
+  return {
+    get length() {
+      return xs.length - index;
+    },
+    remove: (x) => {
+      const index2 = xs.indexOf(x);
+      return index2 === -1 ? null : (xs.splice(index2, 1), x);
+    },
+    push: (x) => (xs.push(x), x),
+    shift: () => {
+      const out = xs[index++];
+      if (index === xs.length) {
+        index = 0;
+        xs = [];
+      } else {
+        xs[index - 1] = undefined;
+      }
+      return out;
+    }
+  };
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/bytes.js
+var size = 256;
+var buffer = Buffer.allocUnsafe(size);
+var messages = "BCcDdEFfHPpQSX".split("").reduce((acc, x) => {
+  const v = x.charCodeAt(0);
+  acc[x] = () => {
+    buffer[0] = v;
+    b.i = 5;
+    return b;
+  };
+  return acc;
+}, {});
+var b = Object.assign(reset, messages, {
+  N: String.fromCharCode(0),
+  i: 0,
+  inc(x) {
+    b.i += x;
+    return b;
+  },
+  str(x) {
+    const length = Buffer.byteLength(x);
+    fit(length);
+    b.i += buffer.write(x, b.i, length, "utf8");
+    return b;
+  },
+  i16(x) {
+    fit(2);
+    buffer.writeUInt16BE(x, b.i);
+    b.i += 2;
+    return b;
+  },
+  i32(x, i) {
+    if (i || i === 0) {
+      buffer.writeUInt32BE(x, i);
+      return b;
+    }
+    fit(4);
+    buffer.writeUInt32BE(x, b.i);
+    b.i += 4;
+    return b;
+  },
+  z(x) {
+    fit(x);
+    buffer.fill(0, b.i, b.i + x);
+    b.i += x;
+    return b;
+  },
+  raw(x) {
+    buffer = Buffer.concat([buffer.subarray(0, b.i), x]);
+    b.i = buffer.length;
+    return b;
+  },
+  end(at = 1) {
+    buffer.writeUInt32BE(b.i - at, at);
+    const out = buffer.subarray(0, b.i);
+    b.i = 0;
+    buffer = Buffer.allocUnsafe(size);
+    return out;
+  }
+});
+var bytes_default = b;
+function fit(x) {
+  if (buffer.length - b.i < x) {
+    const prev = buffer, length = prev.length;
+    buffer = Buffer.allocUnsafe(length + (length >> 1) + x);
+    prev.copy(buffer);
+  }
+}
+function reset() {
+  b.i = 0;
+  return b;
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/connection.js
+var connection_default = Connection;
+var uid = 1;
+var Sync = bytes_default().S().end();
+var Flush = bytes_default().H().end();
+var SSLRequest = bytes_default().i32(8).i32(80877103).end(8);
+var ExecuteUnnamed = Buffer.concat([bytes_default().E().str(bytes_default.N).i32(0).end(), Sync]);
+var DescribeUnnamed = bytes_default().D().str("S").str(bytes_default.N).end();
+var noop = () => {};
+var retryRoutines = new Set([
+  "FetchPreparedStatement",
+  "RevalidateCachedQuery",
+  "transformAssignedExpr"
+]);
+var errorFields = {
+  83: "severity_local",
+  86: "severity",
+  67: "code",
+  77: "message",
+  68: "detail",
+  72: "hint",
+  80: "position",
+  112: "internal_position",
+  113: "internal_query",
+  87: "where",
+  115: "schema_name",
+  116: "table_name",
+  99: "column_name",
+  100: "data type_name",
+  110: "constraint_name",
+  70: "file",
+  76: "line",
+  82: "routine"
+};
+function Connection(options, queues2 = {}, { onopen = noop, onend = noop, onclose = noop } = {}) {
+  const {
+    sslnegotiation,
+    ssl,
+    max,
+    user,
+    host,
+    port,
+    database,
+    parsers: parsers2,
+    transform,
+    onnotice,
+    onnotify,
+    onparameter,
+    max_pipeline,
+    keep_alive,
+    backoff,
+    target_session_attrs
+  } = options;
+  const sent = queue_default(), id = uid++, backend = { pid: null, secret: null }, idleTimer = timer(end, options.idle_timeout), lifeTimer = timer(end, options.max_lifetime), connectTimer = timer(connectTimedOut, options.connect_timeout);
+  let socket = null, cancelMessage, errorResponse = null, result = new Result, incoming = Buffer.alloc(0), needsTypes = options.fetch_types, backendParameters = {}, statements = {}, statementId = Math.random().toString(36).slice(2), statementCount = 1, closedTime = 0, remaining = 0, hostIndex = 0, retries = 0, length = 0, delay = 0, rows = 0, serverSignature = null, nextWriteTimer = null, terminated = false, incomings = null, results = null, initial = null, ending = null, stream = null, chunk = null, ended = null, nonce = null, query = null, final = null;
+  const connection4 = {
+    queue: queues2.closed,
+    idleTimer,
+    connect(query2) {
+      initial = query2;
+      reconnect();
+    },
+    terminate,
+    execute,
+    cancel,
+    end,
+    count: 0,
+    id
+  };
+  queues2.closed && queues2.closed.push(connection4);
+  return connection4;
+  async function createSocket() {
+    let x;
+    try {
+      x = options.socket ? await Promise.resolve(options.socket(options)) : new net.Socket;
+    } catch (e) {
+      error(e);
+      return;
+    }
+    x.on("error", error);
+    x.on("close", closed);
+    x.on("drain", drain);
+    return x;
+  }
+  async function cancel({ pid, secret }, resolve, reject) {
+    try {
+      cancelMessage = bytes_default().i32(16).i32(80877102).i32(pid).i32(secret).end(16);
+      await connect3();
+      socket.once("error", reject);
+      socket.once("close", resolve);
+    } catch (error2) {
+      reject(error2);
+    }
+  }
+  function execute(q) {
+    if (terminated)
+      return queryError(q, Errors.connection("CONNECTION_DESTROYED", options));
+    if (stream)
+      return queryError(q, Errors.generic("COPY_IN_PROGRESS", "You cannot execute queries during copy"));
+    if (q.cancelled)
+      return;
+    try {
+      q.state = backend;
+      query ? sent.push(q) : (query = q, query.active = true);
+      build(q);
+      return write(toBuffer(q)) && !q.describeFirst && !q.cursorFn && sent.length < max_pipeline && (!q.options.onexecute || q.options.onexecute(connection4));
+    } catch (error2) {
+      sent.length === 0 && write(Sync);
+      errored(error2);
+      return true;
+    }
+  }
+  function toBuffer(q) {
+    if (q.parameters.length >= 65534)
+      throw Errors.generic("MAX_PARAMETERS_EXCEEDED", "Max number of parameters (65534) exceeded");
+    return q.options.simple ? bytes_default().Q().str(q.statement.string + bytes_default.N).end() : q.describeFirst ? Buffer.concat([describe(q), Flush]) : q.prepare ? q.prepared ? prepared(q) : Buffer.concat([describe(q), prepared(q)]) : unnamed(q);
+  }
+  function describe(q) {
+    return Buffer.concat([
+      Parse(q.statement.string, q.parameters, q.statement.types, q.statement.name),
+      Describe("S", q.statement.name)
+    ]);
+  }
+  function prepared(q) {
+    return Buffer.concat([
+      Bind(q.parameters, q.statement.types, q.statement.name, q.cursorName),
+      q.cursorFn ? Execute("", q.cursorRows) : ExecuteUnnamed
+    ]);
+  }
+  function unnamed(q) {
+    return Buffer.concat([
+      Parse(q.statement.string, q.parameters, q.statement.types),
+      DescribeUnnamed,
+      prepared(q)
+    ]);
+  }
+  function build(q) {
+    const parameters = [], types2 = [];
+    const string = stringify(q, q.strings[0], q.args[0], parameters, types2, options);
+    !q.tagged && q.args.forEach((x) => handleValue(x, parameters, types2, options));
+    q.prepare = options.prepare && ("prepare" in q.options ? q.options.prepare : true);
+    q.string = string;
+    q.signature = q.prepare && types2 + string;
+    q.onlyDescribe && delete statements[q.signature];
+    q.parameters = q.parameters || parameters;
+    q.prepared = q.prepare && q.signature in statements;
+    q.describeFirst = q.onlyDescribe || parameters.length && !q.prepared;
+    q.statement = q.prepared ? statements[q.signature] : { string, types: types2, name: q.prepare ? statementId + statementCount++ : "" };
+    typeof options.debug === "function" && options.debug(id, string, parameters, types2);
+  }
+  function write(x, fn) {
+    chunk = chunk ? Buffer.concat([chunk, x]) : Buffer.from(x);
+    if (fn || chunk.length >= 1024)
+      return nextWrite(fn);
+    nextWriteTimer === null && (nextWriteTimer = setImmediate(nextWrite));
+    return true;
+  }
+  function nextWrite(fn) {
+    const x = socket.write(chunk, fn);
+    nextWriteTimer !== null && clearImmediate(nextWriteTimer);
+    chunk = nextWriteTimer = null;
+    return x;
+  }
+  function connectTimedOut() {
+    errored(Errors.connection("CONNECT_TIMEOUT", options, socket));
+    socket.destroy();
+  }
+  async function secure() {
+    if (sslnegotiation !== "direct") {
+      write(SSLRequest);
+      const canSSL = await new Promise((r) => socket.once("data", (x) => r(x[0] === 83)));
+      if (!canSSL && ssl === "prefer")
+        return connected();
+    }
+    const options2 = {
+      socket,
+      servername: net.isIP(socket.host) ? undefined : socket.host
+    };
+    if (sslnegotiation === "direct")
+      options2.ALPNProtocols = ["postgresql"];
+    if (ssl === "require" || ssl === "allow" || ssl === "prefer")
+      options2.rejectUnauthorized = false;
+    else if (typeof ssl === "object")
+      Object.assign(options2, ssl);
+    socket.removeAllListeners();
+    socket = tls.connect(options2);
+    socket.on("secureConnect", connected);
+    socket.on("error", error);
+    socket.on("close", closed);
+    socket.on("drain", drain);
+  }
+  function drain() {
+    !query && onopen(connection4);
+  }
+  function data(x) {
+    if (incomings) {
+      incomings.push(x);
+      remaining -= x.length;
+      if (remaining > 0)
+        return;
+    }
+    incoming = incomings ? Buffer.concat(incomings, length - remaining) : incoming.length === 0 ? x : Buffer.concat([incoming, x], incoming.length + x.length);
+    while (incoming.length > 4) {
+      length = incoming.readUInt32BE(1);
+      if (length >= incoming.length) {
+        remaining = length - incoming.length;
+        incomings = [incoming];
+        break;
+      }
+      try {
+        handle(incoming.subarray(0, length + 1));
+      } catch (e) {
+        query && (query.cursorFn || query.describeFirst) && write(Sync);
+        errored(e);
+      }
+      incoming = incoming.subarray(length + 1);
+      remaining = 0;
+      incomings = null;
+    }
+  }
+  async function connect3() {
+    terminated = false;
+    backendParameters = {};
+    socket || (socket = await createSocket());
+    if (!socket)
+      return;
+    connectTimer.start();
+    if (options.socket)
+      return ssl ? secure() : connected();
+    socket.on("connect", ssl ? secure : connected);
+    if (options.path)
+      return socket.connect(options.path);
+    socket.ssl = ssl;
+    socket.connect(port[hostIndex], host[hostIndex]);
+    socket.host = host[hostIndex];
+    socket.port = port[hostIndex];
+    hostIndex = (hostIndex + 1) % port.length;
+  }
+  function reconnect() {
+    setTimeout(connect3, closedTime ? Math.max(0, closedTime + delay - performance.now()) : 0);
+  }
+  function connected() {
+    try {
+      statements = {};
+      needsTypes = options.fetch_types;
+      statementId = Math.random().toString(36).slice(2);
+      statementCount = 1;
+      lifeTimer.start();
+      socket.on("data", data);
+      keep_alive && socket.setKeepAlive && socket.setKeepAlive(true, 1000 * keep_alive);
+      const s = StartupMessage();
+      write(s);
+    } catch (err) {
+      error(err);
+    }
+  }
+  function error(err) {
+    if (connection4.queue === queues2.connecting && options.host[retries + 1])
+      return;
+    errored(err);
+    while (sent.length)
+      queryError(sent.shift(), err);
+  }
+  function errored(err) {
+    stream && (stream.destroy(err), stream = null);
+    query && queryError(query, err);
+    initial && (queryError(initial, err), initial = null);
+  }
+  function queryError(query2, err) {
+    if (query2.reserve)
+      return query2.reject(err);
+    if (!err || typeof err !== "object")
+      err = new Error(err);
+    "query" in err || "parameters" in err || Object.defineProperties(err, {
+      stack: { value: err.stack + query2.origin.replace(/.*\n/, `
+`), enumerable: options.debug },
+      query: { value: query2.string, enumerable: options.debug },
+      parameters: { value: query2.parameters, enumerable: options.debug },
+      args: { value: query2.args, enumerable: options.debug },
+      types: { value: query2.statement && query2.statement.types, enumerable: options.debug }
+    });
+    query2.reject(err);
+  }
+  function end() {
+    return ending || (!connection4.reserved && onend(connection4), !connection4.reserved && !initial && !query && sent.length === 0 ? (terminate(), new Promise((r) => socket && socket.readyState !== "closed" ? socket.once("close", r) : r())) : ending = new Promise((r) => ended = r));
+  }
+  function terminate() {
+    terminated = true;
+    if (stream || query || initial || sent.length)
+      error(Errors.connection("CONNECTION_DESTROYED", options));
+    clearImmediate(nextWriteTimer);
+    if (socket) {
+      socket.removeListener("data", data);
+      socket.removeListener("connect", connected);
+      socket.readyState === "open" && socket.end(bytes_default().X().end());
+    }
+    ended && (ended(), ending = ended = null);
+  }
+  async function closed(hadError) {
+    incoming = Buffer.alloc(0);
+    remaining = 0;
+    incomings = null;
+    clearImmediate(nextWriteTimer);
+    socket.removeListener("data", data);
+    socket.removeListener("connect", connected);
+    idleTimer.cancel();
+    lifeTimer.cancel();
+    connectTimer.cancel();
+    socket.removeAllListeners();
+    socket = null;
+    if (initial)
+      return reconnect();
+    !hadError && (query || sent.length) && error(Errors.connection("CONNECTION_CLOSED", options, socket));
+    closedTime = performance.now();
+    hadError && options.shared.retries++;
+    delay = (typeof backoff === "function" ? backoff(options.shared.retries) : backoff) * 1000;
+    onclose(connection4, Errors.connection("CONNECTION_CLOSED", options, socket));
+  }
+  function handle(xs, x = xs[0]) {
+    (x === 68 ? DataRow : x === 100 ? CopyData : x === 65 ? NotificationResponse : x === 83 ? ParameterStatus : x === 90 ? ReadyForQuery : x === 67 ? CommandComplete : x === 50 ? BindComplete : x === 49 ? ParseComplete : x === 116 ? ParameterDescription : x === 84 ? RowDescription : x === 82 ? Authentication : x === 110 ? NoData : x === 75 ? BackendKeyData : x === 69 ? ErrorResponse : x === 115 ? PortalSuspended : x === 51 ? CloseComplete : x === 71 ? CopyInResponse : x === 78 ? NoticeResponse : x === 72 ? CopyOutResponse : x === 99 ? CopyDone : x === 73 ? EmptyQueryResponse : x === 86 ? FunctionCallResponse : x === 118 ? NegotiateProtocolVersion : x === 87 ? CopyBothResponse : UnknownMessage)(xs);
+  }
+  function DataRow(x) {
+    let index = 7;
+    let length2;
+    let column;
+    let value;
+    const row = query.isRaw ? new Array(query.statement.columns.length) : {};
+    for (let i = 0;i < query.statement.columns.length; i++) {
+      column = query.statement.columns[i];
+      length2 = x.readInt32BE(index);
+      index += 4;
+      value = length2 === -1 ? null : query.isRaw === true ? x.subarray(index, index += length2) : column.parser === undefined ? x.toString("utf8", index, index += length2) : column.parser.array === true ? column.parser(x.toString("utf8", index + 1, index += length2)) : column.parser(x.toString("utf8", index, index += length2));
+      query.isRaw ? row[i] = query.isRaw === true ? value : transform.value.from ? transform.value.from(value, column) : value : row[column.name] = transform.value.from ? transform.value.from(value, column) : value;
+    }
+    query.forEachFn ? query.forEachFn(transform.row.from ? transform.row.from(row) : row, result) : result[rows++] = transform.row.from ? transform.row.from(row) : row;
+  }
+  function ParameterStatus(x) {
+    const [k, v] = x.toString("utf8", 5, x.length - 1).split(bytes_default.N);
+    backendParameters[k] = v;
+    if (options.parameters[k] !== v) {
+      options.parameters[k] = v;
+      onparameter && onparameter(k, v);
+    }
+  }
+  function ReadyForQuery(x) {
+    if (query) {
+      if (errorResponse) {
+        query.retried ? errored(query.retried) : query.prepared && retryRoutines.has(errorResponse.routine) ? retry(query, errorResponse) : errored(errorResponse);
+      } else {
+        query.resolve(results || result);
+      }
+    } else if (errorResponse) {
+      errored(errorResponse);
+    }
+    query = results = errorResponse = null;
+    result = new Result;
+    connectTimer.cancel();
+    if (initial) {
+      if (target_session_attrs) {
+        if (!backendParameters.in_hot_standby || !backendParameters.default_transaction_read_only)
+          return fetchState();
+        else if (tryNext(target_session_attrs, backendParameters))
+          return terminate();
+      }
+      if (needsTypes) {
+        initial.reserve && (initial = null);
+        return fetchArrayTypes();
+      }
+      initial && !initial.reserve && execute(initial);
+      options.shared.retries = retries = 0;
+      initial = null;
+      return;
+    }
+    while (sent.length && (query = sent.shift()) && (query.active = true, query.cancelled))
+      Connection(options).cancel(query.state, query.cancelled.resolve, query.cancelled.reject);
+    if (query)
+      return;
+    connection4.reserved ? !connection4.reserved.release && x[5] === 73 ? ending ? terminate() : (connection4.reserved = null, onopen(connection4)) : connection4.reserved() : ending ? terminate() : onopen(connection4);
+  }
+  function CommandComplete(x) {
+    rows = 0;
+    for (let i = x.length - 1;i > 0; i--) {
+      if (x[i] === 32 && x[i + 1] < 58 && result.count === null)
+        result.count = +x.toString("utf8", i + 1, x.length - 1);
+      if (x[i - 1] >= 65) {
+        result.command = x.toString("utf8", 5, i);
+        result.state = backend;
+        break;
+      }
+    }
+    final && (final(), final = null);
+    if (result.command === "BEGIN" && max !== 1 && !connection4.reserved)
+      return errored(Errors.generic("UNSAFE_TRANSACTION", "Only use sql.begin, sql.reserved or max: 1"));
+    if (query.options.simple)
+      return BindComplete();
+    if (query.cursorFn) {
+      result.count && query.cursorFn(result);
+      write(Sync);
+    }
+  }
+  function ParseComplete() {
+    query.parsing = false;
+  }
+  function BindComplete() {
+    !result.statement && (result.statement = query.statement);
+    result.columns = query.statement.columns;
+  }
+  function ParameterDescription(x) {
+    const length2 = x.readUInt16BE(5);
+    for (let i = 0;i < length2; ++i)
+      !query.statement.types[i] && (query.statement.types[i] = x.readUInt32BE(7 + i * 4));
+    query.prepare && (statements[query.signature] = query.statement);
+    query.describeFirst && !query.onlyDescribe && (write(prepared(query)), query.describeFirst = false);
+  }
+  function RowDescription(x) {
+    if (result.command) {
+      results = results || [result];
+      results.push(result = new Result);
+      result.count = null;
+      query.statement.columns = null;
+    }
+    const length2 = x.readUInt16BE(5);
+    let index = 7;
+    let start;
+    query.statement.columns = Array(length2);
+    for (let i = 0;i < length2; ++i) {
+      start = index;
+      while (x[index++] !== 0)
+        ;
+      const table = x.readUInt32BE(index);
+      const number = x.readUInt16BE(index + 4);
+      const type = x.readUInt32BE(index + 6);
+      query.statement.columns[i] = {
+        name: transform.column.from ? transform.column.from(x.toString("utf8", start, index - 1)) : x.toString("utf8", start, index - 1),
+        parser: parsers2[type],
+        table,
+        number,
+        type
+      };
+      index += 18;
+    }
+    result.statement = query.statement;
+    if (query.onlyDescribe)
+      return query.resolve(query.statement), write(Sync);
+  }
+  async function Authentication(x, type = x.readUInt32BE(5)) {
+    (type === 3 ? AuthenticationCleartextPassword : type === 5 ? AuthenticationMD5Password : type === 10 ? SASL : type === 11 ? SASLContinue : type === 12 ? SASLFinal : type !== 0 ? UnknownAuth : noop)(x, type);
+  }
+  async function AuthenticationCleartextPassword() {
+    const payload = await Pass();
+    write(bytes_default().p().str(payload).z(1).end());
+  }
+  async function AuthenticationMD5Password(x) {
+    const payload = "md5" + await md5(Buffer.concat([
+      Buffer.from(await md5(await Pass() + user)),
+      x.subarray(9)
+    ]));
+    write(bytes_default().p().str(payload).z(1).end());
+  }
+  async function SASL() {
+    nonce = (await crypto5.randomBytes(18)).toString("base64");
+    bytes_default().p().str("SCRAM-SHA-256" + bytes_default.N);
+    const i = bytes_default.i;
+    write(bytes_default.inc(4).str("n,,n=*,r=" + nonce).i32(bytes_default.i - i - 4, i).end());
+  }
+  async function SASLContinue(x) {
+    const res = x.toString("utf8", 9).split(",").reduce((acc, x2) => (acc[x2[0]] = x2.slice(2), acc), {});
+    const saltedPassword = await crypto5.pbkdf2Sync(await Pass(), Buffer.from(res.s, "base64"), parseInt(res.i), 32, "sha256");
+    const clientKey = await hmac(saltedPassword, "Client Key");
+    const auth = "n=*,r=" + nonce + "," + "r=" + res.r + ",s=" + res.s + ",i=" + res.i + ",c=biws,r=" + res.r;
+    serverSignature = (await hmac(await hmac(saltedPassword, "Server Key"), auth)).toString("base64");
+    const payload = "c=biws,r=" + res.r + ",p=" + xor(clientKey, Buffer.from(await hmac(await sha256(clientKey), auth))).toString("base64");
+    write(bytes_default().p().str(payload).end());
+  }
+  function SASLFinal(x) {
+    if (x.toString("utf8", 9).split(bytes_default.N, 1)[0].slice(2) === serverSignature)
+      return;
+    errored(Errors.generic("SASL_SIGNATURE_MISMATCH", "The server did not return the correct signature"));
+    socket.destroy();
+  }
+  function Pass() {
+    return Promise.resolve(typeof options.pass === "function" ? options.pass() : options.pass);
+  }
+  function NoData() {
+    result.statement = query.statement;
+    result.statement.columns = [];
+    if (query.onlyDescribe)
+      return query.resolve(query.statement), write(Sync);
+  }
+  function BackendKeyData(x) {
+    backend.pid = x.readUInt32BE(5);
+    backend.secret = x.readUInt32BE(9);
+  }
+  async function fetchArrayTypes() {
+    needsTypes = false;
+    const types2 = await new Query([`
+      select b.oid, b.typarray
+      from pg_catalog.pg_type a
+      left join pg_catalog.pg_type b on b.oid = a.typelem
+      where a.typcategory = 'A'
+      group by b.oid, b.typarray
+      order by b.oid
+    `], [], execute);
+    types2.forEach(({ oid, typarray }) => addArrayType(oid, typarray));
+  }
+  function addArrayType(oid, typarray) {
+    if (!!options.parsers[typarray] && !!options.serializers[typarray])
+      return;
+    const parser = options.parsers[oid];
+    options.shared.typeArrayMap[oid] = typarray;
+    options.parsers[typarray] = (xs) => arrayParser(xs, parser, typarray);
+    options.parsers[typarray].array = true;
+    options.serializers[typarray] = (xs) => arraySerializer(xs, options.serializers[oid], options, typarray);
+  }
+  function tryNext(x, xs) {
+    return x === "read-write" && xs.default_transaction_read_only === "on" || x === "read-only" && xs.default_transaction_read_only === "off" || x === "primary" && xs.in_hot_standby === "on" || x === "standby" && xs.in_hot_standby === "off" || x === "prefer-standby" && xs.in_hot_standby === "off" && options.host[retries];
+  }
+  function fetchState() {
+    const query2 = new Query([`
+      show transaction_read_only;
+      select pg_catalog.pg_is_in_recovery()
+    `], [], execute, null, { simple: true });
+    query2.resolve = ([[a], [b2]]) => {
+      backendParameters.default_transaction_read_only = a.transaction_read_only;
+      backendParameters.in_hot_standby = b2.pg_is_in_recovery ? "on" : "off";
+    };
+    query2.execute();
+  }
+  function ErrorResponse(x) {
+    if (query) {
+      (query.cursorFn || query.describeFirst) && write(Sync);
+      errorResponse = Errors.postgres(parseError(x));
+    } else {
+      errored(Errors.postgres(parseError(x)));
+    }
+  }
+  function retry(q, error2) {
+    delete statements[q.signature];
+    q.retried = error2;
+    execute(q);
+  }
+  function NotificationResponse(x) {
+    if (!onnotify)
+      return;
+    let index = 9;
+    while (x[index++] !== 0)
+      ;
+    onnotify(x.toString("utf8", 9, index - 1), x.toString("utf8", index, x.length - 1));
+  }
+  async function PortalSuspended() {
+    try {
+      const x = await Promise.resolve(query.cursorFn(result));
+      rows = 0;
+      x === CLOSE ? write(Close(query.portal)) : (result = new Result, write(Execute("", query.cursorRows)));
+    } catch (err) {
+      write(Sync);
+      query.reject(err);
+    }
+  }
+  function CloseComplete() {
+    result.count && query.cursorFn(result);
+    query.resolve(result);
+  }
+  function CopyInResponse() {
+    stream = new Stream.Writable({
+      autoDestroy: true,
+      write(chunk2, encoding, callback) {
+        socket.write(bytes_default().d().raw(chunk2).end(), callback);
+      },
+      destroy(error2, callback) {
+        callback(error2);
+        socket.write(bytes_default().f().str(error2 + bytes_default.N).end());
+        stream = null;
+      },
+      final(callback) {
+        socket.write(bytes_default().c().end());
+        final = callback;
+        stream = null;
+      }
+    });
+    query.resolve(stream);
+  }
+  function CopyOutResponse() {
+    stream = new Stream.Readable({
+      read() {
+        socket.resume();
+      }
+    });
+    query.resolve(stream);
+  }
+  function CopyBothResponse() {
+    stream = new Stream.Duplex({
+      autoDestroy: true,
+      read() {
+        socket.resume();
+      },
+      write(chunk2, encoding, callback) {
+        socket.write(bytes_default().d().raw(chunk2).end(), callback);
+      },
+      destroy(error2, callback) {
+        callback(error2);
+        socket.write(bytes_default().f().str(error2 + bytes_default.N).end());
+        stream = null;
+      },
+      final(callback) {
+        socket.write(bytes_default().c().end());
+        final = callback;
+      }
+    });
+    query.resolve(stream);
+  }
+  function CopyData(x) {
+    stream && (stream.push(x.subarray(5)) || socket.pause());
+  }
+  function CopyDone() {
+    stream && stream.push(null);
+    stream = null;
+  }
+  function NoticeResponse(x) {
+    onnotice ? onnotice(parseError(x)) : console.log(parseError(x));
+  }
+  function EmptyQueryResponse() {}
+  function FunctionCallResponse() {
+    errored(Errors.notSupported("FunctionCallResponse"));
+  }
+  function NegotiateProtocolVersion() {
+    errored(Errors.notSupported("NegotiateProtocolVersion"));
+  }
+  function UnknownMessage(x) {
+    console.error("Postgres.js : Unknown Message:", x[0]);
+  }
+  function UnknownAuth(x, type) {
+    console.error("Postgres.js : Unknown Auth:", type);
+  }
+  function Bind(parameters, types2, statement = "", portal = "") {
+    let prev, type;
+    bytes_default().B().str(portal + bytes_default.N).str(statement + bytes_default.N).i16(0).i16(parameters.length);
+    parameters.forEach((x, i) => {
+      if (x === null)
+        return bytes_default.i32(4294967295);
+      type = types2[i];
+      parameters[i] = x = type in options.serializers ? options.serializers[type](x) : "" + x;
+      prev = bytes_default.i;
+      bytes_default.inc(4).str(x).i32(bytes_default.i - prev - 4, prev);
+    });
+    bytes_default.i16(0);
+    return bytes_default.end();
+  }
+  function Parse(str, parameters, types2, name = "") {
+    bytes_default().P().str(name + bytes_default.N).str(str + bytes_default.N).i16(parameters.length);
+    parameters.forEach((x, i) => bytes_default.i32(types2[i] || 0));
+    return bytes_default.end();
+  }
+  function Describe(x, name = "") {
+    return bytes_default().D().str(x).str(name + bytes_default.N).end();
+  }
+  function Execute(portal = "", rows2 = 0) {
+    return Buffer.concat([
+      bytes_default().E().str(portal + bytes_default.N).i32(rows2).end(),
+      Flush
+    ]);
+  }
+  function Close(portal = "") {
+    return Buffer.concat([
+      bytes_default().C().str("P").str(portal + bytes_default.N).end(),
+      bytes_default().S().end()
+    ]);
+  }
+  function StartupMessage() {
+    return cancelMessage || bytes_default().inc(4).i16(3).z(2).str(Object.entries(Object.assign({
+      user,
+      database,
+      client_encoding: "UTF8"
+    }, options.connection)).filter(([, v]) => v).map(([k, v]) => k + bytes_default.N + v).join(bytes_default.N)).z(2).end(0);
+  }
+}
+function parseError(x) {
+  const error = {};
+  let start = 5;
+  for (let i = 5;i < x.length - 1; i++) {
+    if (x[i] === 0) {
+      error[errorFields[x[start]]] = x.toString("utf8", start + 1, i);
+      start = i + 1;
+    }
+  }
+  return error;
+}
+function md5(x) {
+  return crypto5.createHash("md5").update(x).digest("hex");
+}
+function hmac(key, x) {
+  return crypto5.createHmac("sha256", key).update(x).digest();
+}
+function sha256(x) {
+  return crypto5.createHash("sha256").update(x).digest();
+}
+function xor(a, b2) {
+  const length = Math.max(a.length, b2.length);
+  const buffer2 = Buffer.allocUnsafe(length);
+  for (let i = 0;i < length; i++)
+    buffer2[i] = a[i] ^ b2[i];
+  return buffer2;
+}
+function timer(fn, seconds) {
+  seconds = typeof seconds === "function" ? seconds() : seconds;
+  if (!seconds)
+    return { cancel: noop, start: noop };
+  let timer2;
+  return {
+    cancel() {
+      timer2 && (clearTimeout(timer2), timer2 = null);
+    },
+    start() {
+      timer2 && clearTimeout(timer2);
+      timer2 = setTimeout(done, seconds * 1000, arguments);
+    }
+  };
+  function done(args) {
+    fn.apply(null, args);
+    timer2 = null;
+  }
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/subscribe.js
+var noop2 = () => {};
+function Subscribe(postgres2, options) {
+  const subscribers = new Map, slot = "postgresjs_" + Math.random().toString(36).slice(2), state = {};
+  let connection4, stream, ended = false;
+  const sql = subscribe.sql = postgres2({
+    ...options,
+    transform: { column: {}, value: {}, row: {} },
+    max: 1,
+    fetch_types: false,
+    idle_timeout: null,
+    max_lifetime: null,
+    connection: {
+      ...options.connection,
+      replication: "database"
+    },
+    onclose: async function() {
+      if (ended)
+        return;
+      stream = null;
+      state.pid = state.secret = undefined;
+      connected(await init(sql, slot, options.publications));
+      subscribers.forEach((event) => event.forEach(({ onsubscribe }) => onsubscribe()));
+    },
+    no_subscribe: true
+  });
+  const { end, close } = sql;
+  sql.end = async () => {
+    ended = true;
+    stream && await new Promise((r) => (stream.once("close", r), stream.end()));
+    return end();
+  };
+  sql.close = async () => {
+    stream && await new Promise((r) => (stream.once("close", r), stream.end()));
+    return close();
+  };
+  return subscribe;
+  async function subscribe(event, fn, onsubscribe = noop2, onerror = noop2) {
+    event = parseEvent(event);
+    if (!connection4)
+      connection4 = init(sql, slot, options.publications);
+    const subscriber2 = { fn, onsubscribe };
+    const fns = subscribers.has(event) ? subscribers.get(event).add(subscriber2) : subscribers.set(event, new Set([subscriber2])).get(event);
+    const unsubscribe = () => {
+      fns.delete(subscriber2);
+      fns.size === 0 && subscribers.delete(event);
+    };
+    return connection4.then((x) => {
+      connected(x);
+      onsubscribe();
+      stream && stream.on("error", onerror);
+      return { unsubscribe, state, sql };
+    });
+  }
+  function connected(x) {
+    stream = x.stream;
+    state.pid = x.state.pid;
+    state.secret = x.state.secret;
+  }
+  async function init(sql2, slot2, publications) {
+    if (!publications)
+      throw new Error("Missing publication names");
+    const xs = await sql2.unsafe(`CREATE_REPLICATION_SLOT ${slot2} TEMPORARY LOGICAL pgoutput NOEXPORT_SNAPSHOT`);
+    const [x] = xs;
+    const stream2 = await sql2.unsafe(`START_REPLICATION SLOT ${slot2} LOGICAL ${x.consistent_point} (proto_version '1', publication_names '${publications}')`).writable();
+    const state2 = {
+      lsn: Buffer.concat(x.consistent_point.split("/").map((x2) => Buffer.from(("00000000" + x2).slice(-8), "hex")))
+    };
+    stream2.on("data", data);
+    stream2.on("error", error);
+    stream2.on("close", sql2.close);
+    return { stream: stream2, state: xs.state };
+    function error(e) {
+      console.error("Unexpected error during logical streaming - reconnecting", e);
+    }
+    function data(x2) {
+      if (x2[0] === 119) {
+        parse(x2.subarray(25), state2, sql2.options.parsers, handle, options.transform);
+      } else if (x2[0] === 107 && x2[17]) {
+        state2.lsn = x2.subarray(1, 9);
+        pong();
+      }
+    }
+    function handle(a, b2) {
+      const path = b2.relation.schema + "." + b2.relation.table;
+      call("*", a, b2);
+      call("*:" + path, a, b2);
+      b2.relation.keys.length && call("*:" + path + "=" + b2.relation.keys.map((x2) => a[x2.name]), a, b2);
+      call(b2.command, a, b2);
+      call(b2.command + ":" + path, a, b2);
+      b2.relation.keys.length && call(b2.command + ":" + path + "=" + b2.relation.keys.map((x2) => a[x2.name]), a, b2);
+    }
+    function pong() {
+      const x2 = Buffer.alloc(34);
+      x2[0] = 114;
+      x2.fill(state2.lsn, 1);
+      x2.writeBigInt64BE(BigInt(Date.now() - Date.UTC(2000, 0, 1)) * BigInt(1000), 25);
+      stream2.write(x2);
+    }
+  }
+  function call(x, a, b2) {
+    subscribers.has(x) && subscribers.get(x).forEach(({ fn }) => fn(a, b2, x));
+  }
+}
+function Time(x) {
+  return new Date(Date.UTC(2000, 0, 1) + Number(x / BigInt(1000)));
+}
+function parse(x, state, parsers2, handle, transform) {
+  const char = (acc, [k, v]) => (acc[k.charCodeAt(0)] = v, acc);
+  Object.entries({
+    R: (x2) => {
+      let i = 1;
+      const r = state[x2.readUInt32BE(i)] = {
+        schema: x2.toString("utf8", i += 4, i = x2.indexOf(0, i)) || "pg_catalog",
+        table: x2.toString("utf8", i + 1, i = x2.indexOf(0, i + 1)),
+        columns: Array(x2.readUInt16BE(i += 2)),
+        keys: []
+      };
+      i += 2;
+      let columnIndex = 0, column;
+      while (i < x2.length) {
+        column = r.columns[columnIndex++] = {
+          key: x2[i++],
+          name: transform.column.from ? transform.column.from(x2.toString("utf8", i, i = x2.indexOf(0, i))) : x2.toString("utf8", i, i = x2.indexOf(0, i)),
+          type: x2.readUInt32BE(i += 1),
+          parser: parsers2[x2.readUInt32BE(i)],
+          atttypmod: x2.readUInt32BE(i += 4)
+        };
+        column.key && r.keys.push(column);
+        i += 4;
+      }
+    },
+    Y: () => {},
+    O: () => {},
+    B: (x2) => {
+      state.date = Time(x2.readBigInt64BE(9));
+      state.lsn = x2.subarray(1, 9);
+    },
+    I: (x2) => {
+      let i = 1;
+      const relation = state[x2.readUInt32BE(i)];
+      const { row } = tuples(x2, relation.columns, i += 7, transform);
+      handle(row, {
+        command: "insert",
+        relation
+      });
+    },
+    D: (x2) => {
+      let i = 1;
+      const relation = state[x2.readUInt32BE(i)];
+      i += 4;
+      const key = x2[i] === 75;
+      handle(key || x2[i] === 79 ? tuples(x2, relation.columns, i += 3, transform).row : null, {
+        command: "delete",
+        relation,
+        key
+      });
+    },
+    U: (x2) => {
+      let i = 1;
+      const relation = state[x2.readUInt32BE(i)];
+      i += 4;
+      const key = x2[i] === 75;
+      const xs = key || x2[i] === 79 ? tuples(x2, relation.columns, i += 3, transform) : null;
+      xs && (i = xs.i);
+      const { row } = tuples(x2, relation.columns, i + 3, transform);
+      handle(row, {
+        command: "update",
+        relation,
+        key,
+        old: xs && xs.row
+      });
+    },
+    T: () => {},
+    C: () => {}
+  }).reduce(char, {})[x[0]](x);
+}
+function tuples(x, columns, xi, transform) {
+  let type, column, value;
+  const row = transform.raw ? new Array(columns.length) : {};
+  for (let i = 0;i < columns.length; i++) {
+    type = x[xi++];
+    column = columns[i];
+    value = type === 110 ? null : type === 117 ? undefined : column.parser === undefined ? x.toString("utf8", xi + 4, xi += 4 + x.readUInt32BE(xi)) : column.parser.array === true ? column.parser(x.toString("utf8", xi + 5, xi += 4 + x.readUInt32BE(xi))) : column.parser(x.toString("utf8", xi + 4, xi += 4 + x.readUInt32BE(xi)));
+    transform.raw ? row[i] = transform.raw === true ? value : transform.value.from ? transform.value.from(value, column) : value : row[column.name] = transform.value.from ? transform.value.from(value, column) : value;
+  }
+  return { i: xi, row: transform.row.from ? transform.row.from(row) : row };
+}
+function parseEvent(x) {
+  const xs = x.match(/^(\*|insert|update|delete)?:?([^.]+?\.?[^=]+)?=?(.+)?/i) || [];
+  if (!xs)
+    throw new Error("Malformed subscribe pattern: " + x);
+  const [, command, path, key] = xs;
+  return (command || "*") + (path ? ":" + (path.indexOf(".") === -1 ? "public." + path : path) : "") + (key ? "=" + key : "");
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/large.js
+import Stream2 from "stream";
+function largeObject(sql, oid, mode = 131072 | 262144) {
+  return new Promise(async (resolve, reject) => {
+    await sql.begin(async (sql2) => {
+      let finish;
+      !oid && ([{ oid }] = await sql2`select lo_creat(-1) as oid`);
+      const [{ fd }] = await sql2`select lo_open(${oid}, ${mode}) as fd`;
+      const lo = {
+        writable,
+        readable,
+        close: () => sql2`select lo_close(${fd})`.then(finish),
+        tell: () => sql2`select lo_tell64(${fd})`,
+        read: (x) => sql2`select loread(${fd}, ${x}) as data`,
+        write: (x) => sql2`select lowrite(${fd}, ${x})`,
+        truncate: (x) => sql2`select lo_truncate64(${fd}, ${x})`,
+        seek: (x, whence = 0) => sql2`select lo_lseek64(${fd}, ${x}, ${whence})`,
+        size: () => sql2`
+          select
+            lo_lseek64(${fd}, location, 0) as position,
+            seek.size
+          from (
+            select
+              lo_lseek64($1, 0, 2) as size,
+              tell.location
+            from (select lo_tell64($1) as location) tell
+          ) seek
+        `
+      };
+      resolve(lo);
+      return new Promise(async (r) => finish = r);
+      async function readable({
+        highWaterMark = 2048 * 8,
+        start = 0,
+        end = Infinity
+      } = {}) {
+        let max = end - start;
+        start && await lo.seek(start);
+        return new Stream2.Readable({
+          highWaterMark,
+          async read(size2) {
+            const l = size2 > max ? size2 - max : size2;
+            max -= size2;
+            const [{ data }] = await lo.read(l);
+            this.push(data);
+            if (data.length < size2)
+              this.push(null);
+          }
+        });
+      }
+      async function writable({
+        highWaterMark = 2048 * 8,
+        start = 0
+      } = {}) {
+        start && await lo.seek(start);
+        return new Stream2.Writable({
+          highWaterMark,
+          write(chunk, encoding, callback) {
+            lo.write(chunk).then(() => callback(), callback);
+          }
+        });
+      }
+    }).catch(reject);
+  });
+}
+
+// ../../node_modules/.bun/postgres@3.4.9/node_modules/postgres/src/index.js
+Object.assign(Postgres, {
+  PostgresError,
+  toPascal,
+  pascal,
+  toCamel,
+  camel,
+  toKebab,
+  kebab,
+  fromPascal,
+  fromCamel,
+  fromKebab,
+  BigInt: {
+    to: 20,
+    from: [20],
+    parse: (x) => BigInt(x),
+    serialize: (x) => x.toString()
+  }
+});
+var src_default = Postgres;
+function Postgres(a, b2) {
+  const options = parseOptions(a, b2), subscribe = options.no_subscribe || Subscribe(Postgres, { ...options });
+  let ending = false;
+  const queries = queue_default(), connecting = queue_default(), reserved = queue_default(), closed = queue_default(), ended = queue_default(), open = queue_default(), busy = queue_default(), full = queue_default(), queues2 = { connecting, reserved, closed, ended, open, busy, full };
+  const connections = [...Array(options.max)].map(() => connection_default(options, queues2, { onopen, onend, onclose }));
+  const sql = Sql(handler);
+  Object.assign(sql, {
+    get parameters() {
+      return options.parameters;
+    },
+    largeObject: largeObject.bind(null, sql),
+    subscribe,
+    CLOSE,
+    END: CLOSE,
+    PostgresError,
+    options,
+    reserve,
+    listen,
+    begin,
+    close,
+    end
+  });
+  return sql;
+  function Sql(handler2) {
+    handler2.debug = options.debug;
+    Object.entries(options.types).reduce((acc, [name, type]) => {
+      acc[name] = (x) => new Parameter(x, type.to);
+      return acc;
+    }, typed);
+    Object.assign(sql2, {
+      types: typed,
+      typed,
+      unsafe,
+      notify,
+      array,
+      json,
+      file
+    });
+    return sql2;
+    function typed(value, type) {
+      return new Parameter(value, type);
+    }
+    function sql2(strings, ...args) {
+      const query = strings && Array.isArray(strings.raw) ? new Query(strings, args, handler2, cancel) : typeof strings === "string" && !args.length ? new Identifier(options.transform.column.to ? options.transform.column.to(strings) : strings) : new Builder(strings, args);
+      return query;
+    }
+    function unsafe(string, args = [], options2 = {}) {
+      arguments.length === 2 && !Array.isArray(args) && (options2 = args, args = []);
+      const query = new Query([string], args, handler2, cancel, {
+        prepare: false,
+        ...options2,
+        simple: "simple" in options2 ? options2.simple : args.length === 0
+      });
+      return query;
+    }
+    function file(path, args = [], options2 = {}) {
+      arguments.length === 2 && !Array.isArray(args) && (options2 = args, args = []);
+      const query = new Query([], args, (query2) => {
+        fs.readFile(path, "utf8", (err, string) => {
+          if (err)
+            return query2.reject(err);
+          query2.strings = [string];
+          handler2(query2);
+        });
+      }, cancel, {
+        ...options2,
+        simple: "simple" in options2 ? options2.simple : args.length === 0
+      });
+      return query;
+    }
+  }
+  async function listen(name, fn, onlisten) {
+    const listener = { fn, onlisten };
+    const sql2 = listen.sql || (listen.sql = Postgres({
+      ...options,
+      max: 1,
+      idle_timeout: null,
+      max_lifetime: null,
+      fetch_types: false,
+      onclose() {
+        Object.entries(listen.channels).forEach(([name2, { listeners }]) => {
+          delete listen.channels[name2];
+          Promise.all(listeners.map((l) => listen(name2, l.fn, l.onlisten).catch(() => {})));
+        });
+      },
+      onnotify(c, x) {
+        c in listen.channels && listen.channels[c].listeners.forEach((l) => l.fn(x));
+      }
+    }));
+    const channels = listen.channels || (listen.channels = {}), exists = name in channels;
+    if (exists) {
+      channels[name].listeners.push(listener);
+      const result2 = await channels[name].result;
+      listener.onlisten && listener.onlisten();
+      return { state: result2.state, unlisten };
+    }
+    channels[name] = { result: sql2`listen ${sql2.unsafe('"' + name.replace(/"/g, '""') + '"')}`, listeners: [listener] };
+    const result = await channels[name].result;
+    listener.onlisten && listener.onlisten();
+    return { state: result.state, unlisten };
+    async function unlisten() {
+      if (name in channels === false)
+        return;
+      channels[name].listeners = channels[name].listeners.filter((x) => x !== listener);
+      if (channels[name].listeners.length)
+        return;
+      delete channels[name];
+      return sql2`unlisten ${sql2.unsafe('"' + name.replace(/"/g, '""') + '"')}`;
+    }
+  }
+  async function notify(channel, payload) {
+    return await sql`select pg_notify(${channel}, ${"" + payload})`;
+  }
+  async function reserve() {
+    const queue = queue_default();
+    const c = open.length ? open.shift() : await new Promise((resolve, reject) => {
+      const query = { reserve: resolve, reject };
+      queries.push(query);
+      closed.length && connect3(closed.shift(), query);
+    });
+    move(c, reserved);
+    c.reserved = () => queue.length ? c.execute(queue.shift()) : move(c, reserved);
+    c.reserved.release = true;
+    const sql2 = Sql(handler2);
+    sql2.release = () => {
+      c.reserved = null;
+      onopen(c);
+    };
+    return sql2;
+    function handler2(q) {
+      c.queue === full ? queue.push(q) : c.execute(q) || move(c, full);
+    }
+  }
+  async function begin(options2, fn) {
+    !fn && (fn = options2, options2 = "");
+    const queries2 = queue_default();
+    let savepoints = 0, connection4, prepare = null;
+    try {
+      await sql.unsafe("begin " + options2.replace(/[^a-z ]/ig, ""), [], { onexecute }).execute();
+      return await Promise.race([
+        scope(connection4, fn),
+        new Promise((_, reject) => connection4.onclose = reject)
+      ]);
+    } catch (error) {
+      throw error;
+    }
+    async function scope(c, fn2, name) {
+      const sql2 = Sql(handler2);
+      sql2.savepoint = savepoint;
+      sql2.prepare = (x) => prepare = x.replace(/[^a-z0-9$-_. ]/gi);
+      let uncaughtError, result;
+      name && await sql2`savepoint ${sql2(name)}`;
+      try {
+        result = await new Promise((resolve, reject) => {
+          const x = fn2(sql2);
+          Promise.resolve(Array.isArray(x) ? Promise.all(x) : x).then(resolve, reject);
+        });
+        if (uncaughtError)
+          throw uncaughtError;
+      } catch (e) {
+        await (name ? sql2`rollback to ${sql2(name)}` : sql2`rollback`);
+        throw e instanceof PostgresError && e.code === "25P02" && uncaughtError || e;
+      }
+      if (!name) {
+        prepare ? await sql2`prepare transaction '${sql2.unsafe(prepare)}'` : await sql2`commit`;
+      }
+      return result;
+      function savepoint(name2, fn3) {
+        if (name2 && Array.isArray(name2.raw))
+          return savepoint((sql3) => sql3.apply(sql3, arguments));
+        arguments.length === 1 && (fn3 = name2, name2 = null);
+        return scope(c, fn3, "s" + savepoints++ + (name2 ? "_" + name2 : ""));
+      }
+      function handler2(q) {
+        q.catch((e) => uncaughtError || (uncaughtError = e));
+        c.queue === full ? queries2.push(q) : c.execute(q) || move(c, full);
+      }
+    }
+    function onexecute(c) {
+      connection4 = c;
+      move(c, reserved);
+      c.reserved = () => queries2.length ? c.execute(queries2.shift()) : move(c, reserved);
+    }
+  }
+  function move(c, queue) {
+    c.queue.remove(c);
+    queue.push(c);
+    c.queue = queue;
+    queue === open ? c.idleTimer.start() : c.idleTimer.cancel();
+    return c;
+  }
+  function json(x) {
+    return new Parameter(x, 3802);
+  }
+  function array(x, type) {
+    if (!Array.isArray(x))
+      return array(Array.from(arguments));
+    return new Parameter(x, type || (x.length ? inferType(x) || 25 : 0), options.shared.typeArrayMap);
+  }
+  function handler(query) {
+    if (ending)
+      return query.reject(Errors.connection("CONNECTION_ENDED", options, options));
+    if (open.length)
+      return go(open.shift(), query);
+    if (closed.length)
+      return connect3(closed.shift(), query);
+    busy.length ? go(busy.shift(), query) : queries.push(query);
+  }
+  function go(c, query) {
+    return c.execute(query) ? move(c, busy) : move(c, full);
+  }
+  function cancel(query) {
+    return new Promise((resolve, reject) => {
+      query.state ? query.active ? connection_default(options).cancel(query.state, resolve, reject) : query.cancelled = { resolve, reject } : (queries.remove(query), query.cancelled = true, query.reject(Errors.generic("57014", "canceling statement due to user request")), resolve());
+    });
+  }
+  async function end({ timeout = null } = {}) {
+    if (ending)
+      return ending;
+    await 1;
+    let timer2;
+    return ending = Promise.race([
+      new Promise((r) => timeout !== null && (timer2 = setTimeout(destroy, timeout * 1000, r))),
+      Promise.all(connections.map((c) => c.end()).concat(listen.sql ? listen.sql.end({ timeout: 0 }) : [], subscribe.sql ? subscribe.sql.end({ timeout: 0 }) : []))
+    ]).then(() => clearTimeout(timer2));
+  }
+  async function close() {
+    await Promise.all(connections.map((c) => c.end()));
+  }
+  async function destroy(resolve) {
+    await Promise.all(connections.map((c) => c.terminate()));
+    while (queries.length)
+      queries.shift().reject(Errors.connection("CONNECTION_DESTROYED", options));
+    resolve();
+  }
+  function connect3(c, query) {
+    move(c, connecting);
+    c.connect(query);
+    return c;
+  }
+  function onend(c) {
+    move(c, ended);
+  }
+  function onopen(c) {
+    if (queries.length === 0)
+      return move(c, open);
+    let max = Math.ceil(queries.length / (connecting.length + 1)), ready = true;
+    while (ready && queries.length && max-- > 0) {
+      const query = queries.shift();
+      if (query.reserve)
+        return query.reserve(c);
+      ready = c.execute(query);
+    }
+    ready ? move(c, busy) : move(c, full);
+  }
+  function onclose(c, e) {
+    move(c, closed);
+    c.reserved = null;
+    c.onclose && (c.onclose(e), c.onclose = null);
+    options.onclose && options.onclose(c.id);
+    queries.length && connect3(c, queries.shift());
+  }
+}
+function parseOptions(a, b2) {
+  if (a && a.shared)
+    return a;
+  const env = process.env, o = (!a || typeof a === "string" ? b2 : a) || {}, { url, multihost } = parseUrl(a), query = [...url.searchParams].reduce((a2, [b3, c]) => (a2[b3] = c, a2), {}), host = o.hostname || o.host || multihost || url.hostname || env.PGHOST || "localhost", port = o.port || url.port || env.PGPORT || 5432, user = o.user || o.username || url.username || env.PGUSERNAME || env.PGUSER || osUsername();
+  o.no_prepare && (o.prepare = false);
+  query.sslmode && (query.ssl = query.sslmode, delete query.sslmode);
+  "timeout" in o && (console.log("The timeout option is deprecated, use idle_timeout instead"), o.idle_timeout = o.timeout);
+  query.sslrootcert === "system" && (query.ssl = "verify-full");
+  const ints = ["idle_timeout", "connect_timeout", "max_lifetime", "max_pipeline", "backoff", "keep_alive"];
+  const defaults = {
+    max: globalThis.Cloudflare ? 3 : 10,
+    ssl: false,
+    sslnegotiation: null,
+    idle_timeout: null,
+    connect_timeout: 30,
+    max_lifetime,
+    max_pipeline: 100,
+    backoff,
+    keep_alive: 60,
+    prepare: true,
+    debug: false,
+    fetch_types: true,
+    publications: "alltables",
+    target_session_attrs: null
+  };
+  return {
+    host: Array.isArray(host) ? host : host.split(",").map((x) => x.split(":")[0]),
+    port: Array.isArray(port) ? port : host.split(",").map((x) => parseInt(x.split(":")[1] || port)),
+    path: o.path || host.indexOf("/") > -1 && host + "/.s.PGSQL." + port,
+    database: o.database || o.db || (url.pathname || "").slice(1) || env.PGDATABASE || user,
+    user,
+    pass: o.pass || o.password || url.password || env.PGPASSWORD || "",
+    ...Object.entries(defaults).reduce((acc, [k, d]) => {
+      const value = k in o ? o[k] : (k in query) ? query[k] === "disable" || query[k] === "false" ? false : query[k] : env["PG" + k.toUpperCase()] || d;
+      acc[k] = typeof value === "string" && ints.includes(k) ? +value : value;
+      return acc;
+    }, {}),
+    connection: {
+      application_name: env.PGAPPNAME || "postgres.js",
+      ...o.connection,
+      ...Object.entries(query).reduce((acc, [k, v]) => ((k in defaults) || (acc[k] = v), acc), {})
+    },
+    types: o.types || {},
+    target_session_attrs: tsa(o, url, env),
+    onnotice: o.onnotice,
+    onnotify: o.onnotify,
+    onclose: o.onclose,
+    onparameter: o.onparameter,
+    socket: o.socket,
+    transform: parseTransform(o.transform || { undefined: undefined }),
+    parameters: {},
+    shared: { retries: 0, typeArrayMap: {} },
+    ...mergeUserTypes(o.types)
+  };
+}
+function tsa(o, url, env) {
+  const x = o.target_session_attrs || url.searchParams.get("target_session_attrs") || env.PGTARGETSESSIONATTRS;
+  if (!x || ["read-write", "read-only", "primary", "standby", "prefer-standby"].includes(x))
+    return x;
+  throw new Error("target_session_attrs " + x + " is not supported");
+}
+function backoff(retries) {
+  return (0.5 + Math.random() / 2) * Math.min(3 ** retries / 100, 20);
+}
+function max_lifetime() {
+  return 60 * (30 + Math.random() * 30);
+}
+function parseTransform(x) {
+  return {
+    undefined: x.undefined,
+    column: {
+      from: typeof x.column === "function" ? x.column : x.column && x.column.from,
+      to: x.column && x.column.to
+    },
+    value: {
+      from: typeof x.value === "function" ? x.value : x.value && x.value.from,
+      to: x.value && x.value.to
+    },
+    row: {
+      from: typeof x.row === "function" ? x.row : x.row && x.row.from,
+      to: x.row && x.row.to
+    }
+  };
+}
+function parseUrl(url) {
+  if (!url || typeof url !== "string")
+    return { url: { searchParams: new Map } };
+  let host = url;
+  host = host.slice(host.indexOf("://") + 3).split(/[?/]/)[0];
+  host = decodeURIComponent(host.slice(host.indexOf("@") + 1));
+  const urlObj = new URL(url.replace(host, host.split(",")[0]));
+  return {
+    url: {
+      username: decodeURIComponent(urlObj.username),
+      password: decodeURIComponent(urlObj.password),
+      host: urlObj.host,
+      hostname: urlObj.hostname,
+      port: urlObj.port,
+      pathname: urlObj.pathname,
+      searchParams: urlObj.searchParams
+    },
+    multihost: host.indexOf(",") > -1 && host
+  };
+}
+function osUsername() {
+  try {
+    return os.userInfo().username;
+  } catch (_) {
+    return process.env.USERNAME || process.env.USER || process.env.LOGNAME;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/entity.js
+var entityKind = Symbol.for("drizzle:entityKind");
+var hasOwnEntityKind = Symbol.for("drizzle:hasOwnEntityKind");
+function is(value, type) {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  if (value instanceof type) {
+    return true;
+  }
+  if (!Object.prototype.hasOwnProperty.call(type, entityKind)) {
+    throw new Error(`Class "${type.name ?? "<unknown>"}" doesn't look like a Drizzle entity. If this is incorrect and the class is provided by Drizzle, please report this as a bug.`);
+  }
+  let cls = Object.getPrototypeOf(value).constructor;
+  if (cls) {
+    while (cls) {
+      if (entityKind in cls && cls[entityKind] === type[entityKind]) {
+        return true;
+      }
+      cls = Object.getPrototypeOf(cls);
+    }
+  }
+  return false;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/logger.js
+class ConsoleLogWriter {
+  static [entityKind] = "ConsoleLogWriter";
+  write(message) {
+    console.log(message);
+  }
+}
+
+class DefaultLogger {
+  static [entityKind] = "DefaultLogger";
+  writer;
+  constructor(config) {
+    this.writer = config?.writer ?? new ConsoleLogWriter;
+  }
+  logQuery(query, params) {
+    const stringifiedParams = params.map((p) => {
+      try {
+        return JSON.stringify(p);
+      } catch {
+        return String(p);
+      }
+    });
+    const paramsStr = stringifiedParams.length ? ` -- params: [${stringifiedParams.join(", ")}]` : "";
+    this.writer.write(`Query: ${query}${paramsStr}`);
+  }
+}
+
+class NoopLogger {
+  static [entityKind] = "NoopLogger";
+  logQuery() {}
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/query-promise.js
+class QueryPromise {
+  static [entityKind] = "QueryPromise";
+  [Symbol.toStringTag] = "QueryPromise";
+  catch(onRejected) {
+    return this.then(undefined, onRejected);
+  }
+  finally(onFinally) {
+    return this.then((value) => {
+      onFinally?.();
+      return value;
+    }, (reason) => {
+      onFinally?.();
+      throw reason;
+    });
+  }
+  then(onFulfilled, onRejected) {
+    return this.execute().then(onFulfilled, onRejected);
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/column.js
+class Column {
+  constructor(table, config) {
+    this.table = table;
+    this.config = config;
+    this.name = config.name;
+    this.keyAsName = config.keyAsName;
+    this.notNull = config.notNull;
+    this.default = config.default;
+    this.defaultFn = config.defaultFn;
+    this.onUpdateFn = config.onUpdateFn;
+    this.hasDefault = config.hasDefault;
+    this.primary = config.primaryKey;
+    this.isUnique = config.isUnique;
+    this.uniqueName = config.uniqueName;
+    this.uniqueType = config.uniqueType;
+    this.dataType = config.dataType;
+    this.columnType = config.columnType;
+    this.generated = config.generated;
+    this.generatedIdentity = config.generatedIdentity;
+  }
+  static [entityKind] = "Column";
+  name;
+  keyAsName;
+  primary;
+  notNull;
+  default;
+  defaultFn;
+  onUpdateFn;
+  hasDefault;
+  isUnique;
+  uniqueName;
+  uniqueType;
+  dataType;
+  columnType;
+  enumValues = undefined;
+  generated = undefined;
+  generatedIdentity = undefined;
+  config;
+  mapFromDriverValue(value) {
+    return value;
+  }
+  mapToDriverValue(value) {
+    return value;
+  }
+  shouldDisableInsert() {
+    return this.config.generated !== undefined && this.config.generated.type !== "byDefault";
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/column-builder.js
+class ColumnBuilder {
+  static [entityKind] = "ColumnBuilder";
+  config;
+  constructor(name, dataType, columnType) {
+    this.config = {
+      name,
+      keyAsName: name === "",
+      notNull: false,
+      default: undefined,
+      hasDefault: false,
+      primaryKey: false,
+      isUnique: false,
+      uniqueName: undefined,
+      uniqueType: undefined,
+      dataType,
+      columnType,
+      generated: undefined
+    };
+  }
+  $type() {
+    return this;
+  }
+  notNull() {
+    this.config.notNull = true;
+    return this;
+  }
+  default(value) {
+    this.config.default = value;
+    this.config.hasDefault = true;
+    return this;
+  }
+  $defaultFn(fn) {
+    this.config.defaultFn = fn;
+    this.config.hasDefault = true;
+    return this;
+  }
+  $default = this.$defaultFn;
+  $onUpdateFn(fn) {
+    this.config.onUpdateFn = fn;
+    this.config.hasDefault = true;
+    return this;
+  }
+  $onUpdate = this.$onUpdateFn;
+  primaryKey() {
+    this.config.primaryKey = true;
+    this.config.notNull = true;
+    return this;
+  }
+  setName(name) {
+    if (this.config.name !== "")
+      return;
+    this.config.name = name;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/table.utils.js
+var TableName = Symbol.for("drizzle:Name");
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/foreign-keys.js
+class ForeignKeyBuilder {
+  static [entityKind] = "PgForeignKeyBuilder";
+  reference;
+  _onUpdate = "no action";
+  _onDelete = "no action";
+  constructor(config, actions) {
+    this.reference = () => {
+      const { name, columns, foreignColumns } = config();
+      return { name, columns, foreignTable: foreignColumns[0].table, foreignColumns };
+    };
+    if (actions) {
+      this._onUpdate = actions.onUpdate;
+      this._onDelete = actions.onDelete;
+    }
+  }
+  onUpdate(action) {
+    this._onUpdate = action === undefined ? "no action" : action;
+    return this;
+  }
+  onDelete(action) {
+    this._onDelete = action === undefined ? "no action" : action;
+    return this;
+  }
+  build(table) {
+    return new ForeignKey(table, this);
+  }
+}
+
+class ForeignKey {
+  constructor(table, builder) {
+    this.table = table;
+    this.reference = builder.reference;
+    this.onUpdate = builder._onUpdate;
+    this.onDelete = builder._onDelete;
+  }
+  static [entityKind] = "PgForeignKey";
+  reference;
+  onUpdate;
+  onDelete;
+  getName() {
+    const { name, columns, foreignColumns } = this.reference();
+    const columnNames = columns.map((column) => column.name);
+    const foreignColumnNames = foreignColumns.map((column) => column.name);
+    const chunks = [
+      this.table[TableName],
+      ...columnNames,
+      foreignColumns[0].table[TableName],
+      ...foreignColumnNames
+    ];
+    return name ?? `${chunks.join("_")}_fk`;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/tracing-utils.js
+function iife(fn, ...args) {
+  return fn(...args);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/unique-constraint.js
+function uniqueKeyName(table, columns) {
+  return `${table[TableName]}_${columns.join("_")}_unique`;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/utils/array.js
+function parsePgArrayValue(arrayString, startFrom, inQuotes) {
+  for (let i = startFrom;i < arrayString.length; i++) {
+    const char = arrayString[i];
+    if (char === "\\") {
+      i++;
+      continue;
+    }
+    if (char === '"') {
+      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i + 1];
+    }
+    if (inQuotes) {
+      continue;
+    }
+    if (char === "," || char === "}") {
+      return [arrayString.slice(startFrom, i).replace(/\\/g, ""), i];
+    }
+  }
+  return [arrayString.slice(startFrom).replace(/\\/g, ""), arrayString.length];
+}
+function parsePgNestedArray(arrayString, startFrom = 0) {
+  const result = [];
+  let i = startFrom;
+  let lastCharIsComma = false;
+  while (i < arrayString.length) {
+    const char = arrayString[i];
+    if (char === ",") {
+      if (lastCharIsComma || i === startFrom) {
+        result.push("");
+      }
+      lastCharIsComma = true;
+      i++;
+      continue;
+    }
+    lastCharIsComma = false;
+    if (char === "\\") {
+      i += 2;
+      continue;
+    }
+    if (char === '"') {
+      const [value2, startFrom2] = parsePgArrayValue(arrayString, i + 1, true);
+      result.push(value2);
+      i = startFrom2;
+      continue;
+    }
+    if (char === "}") {
+      return [result, i + 1];
+    }
+    if (char === "{") {
+      const [value2, startFrom2] = parsePgNestedArray(arrayString, i + 1);
+      result.push(value2);
+      i = startFrom2;
+      continue;
+    }
+    const [value, newStartFrom] = parsePgArrayValue(arrayString, i, false);
+    result.push(value);
+    i = newStartFrom;
+  }
+  return [result, i];
+}
+function parsePgArray(arrayString) {
+  const [result] = parsePgNestedArray(arrayString, 1);
+  return result;
+}
+function makePgArray(array) {
+  return `{${array.map((item) => {
+    if (Array.isArray(item)) {
+      return makePgArray(item);
+    }
+    if (typeof item === "string") {
+      return `"${item.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}"`;
+    }
+    return `${item}`;
+  }).join(",")}}`;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/common.js
+class PgColumnBuilder extends ColumnBuilder {
+  foreignKeyConfigs = [];
+  static [entityKind] = "PgColumnBuilder";
+  array(size2) {
+    return new PgArrayBuilder(this.config.name, this, size2);
+  }
+  references(ref, actions = {}) {
+    this.foreignKeyConfigs.push({ ref, actions });
+    return this;
+  }
+  unique(name, config) {
+    this.config.isUnique = true;
+    this.config.uniqueName = name;
+    this.config.uniqueType = config?.nulls;
+    return this;
+  }
+  generatedAlwaysAs(as) {
+    this.config.generated = {
+      as,
+      type: "always",
+      mode: "stored"
+    };
+    return this;
+  }
+  buildForeignKeys(column, table) {
+    return this.foreignKeyConfigs.map(({ ref, actions }) => {
+      return iife((ref2, actions2) => {
+        const builder = new ForeignKeyBuilder(() => {
+          const foreignColumn = ref2();
+          return { columns: [column], foreignColumns: [foreignColumn] };
+        });
+        if (actions2.onUpdate) {
+          builder.onUpdate(actions2.onUpdate);
+        }
+        if (actions2.onDelete) {
+          builder.onDelete(actions2.onDelete);
+        }
+        return builder.build(table);
+      }, ref, actions);
+    });
+  }
+  buildExtraConfigColumn(table) {
+    return new ExtraConfigColumn(table, this.config);
+  }
+}
+
+class PgColumn extends Column {
+  constructor(table, config) {
+    if (!config.uniqueName) {
+      config.uniqueName = uniqueKeyName(table, [config.name]);
+    }
+    super(table, config);
+    this.table = table;
+  }
+  static [entityKind] = "PgColumn";
+}
+
+class ExtraConfigColumn extends PgColumn {
+  static [entityKind] = "ExtraConfigColumn";
+  getSQLType() {
+    return this.getSQLType();
+  }
+  indexConfig = {
+    order: this.config.order ?? "asc",
+    nulls: this.config.nulls ?? "last",
+    opClass: this.config.opClass
+  };
+  defaultConfig = {
+    order: "asc",
+    nulls: "last",
+    opClass: undefined
+  };
+  asc() {
+    this.indexConfig.order = "asc";
+    return this;
+  }
+  desc() {
+    this.indexConfig.order = "desc";
+    return this;
+  }
+  nullsFirst() {
+    this.indexConfig.nulls = "first";
+    return this;
+  }
+  nullsLast() {
+    this.indexConfig.nulls = "last";
+    return this;
+  }
+  op(opClass) {
+    this.indexConfig.opClass = opClass;
+    return this;
+  }
+}
+class PgArrayBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgArrayBuilder";
+  constructor(name, baseBuilder, size2) {
+    super(name, "array", "PgArray");
+    this.config.baseBuilder = baseBuilder;
+    this.config.size = size2;
+  }
+  build(table) {
+    const baseColumn = this.config.baseBuilder.build(table);
+    return new PgArray(table, this.config, baseColumn);
+  }
+}
+
+class PgArray extends PgColumn {
+  constructor(table, config, baseColumn, range) {
+    super(table, config);
+    this.baseColumn = baseColumn;
+    this.range = range;
+    this.size = config.size;
+  }
+  size;
+  static [entityKind] = "PgArray";
+  getSQLType() {
+    return `${this.baseColumn.getSQLType()}[${typeof this.size === "number" ? this.size : ""}]`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      value = parsePgArray(value);
+    }
+    return value.map((v) => this.baseColumn.mapFromDriverValue(v));
+  }
+  mapToDriverValue(value, isNestedArray = false) {
+    const a = value.map((v) => v === null ? null : is(this.baseColumn, PgArray) ? this.baseColumn.mapToDriverValue(v, true) : this.baseColumn.mapToDriverValue(v));
+    if (isNestedArray)
+      return a;
+    return makePgArray(a);
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/enum.js
+class PgEnumObjectColumn extends PgColumn {
+  static [entityKind] = "PgEnumObjectColumn";
+  enum;
+  enumValues = this.config.enum.enumValues;
+  constructor(table, config) {
+    super(table, config);
+    this.enum = config.enum;
+  }
+  getSQLType() {
+    return this.enum.enumName;
+  }
+}
+var isPgEnumSym = Symbol.for("drizzle:isPgEnum");
+function isPgEnum(obj) {
+  return !!obj && typeof obj === "function" && isPgEnumSym in obj && obj[isPgEnumSym] === true;
+}
+class PgEnumColumn extends PgColumn {
+  static [entityKind] = "PgEnumColumn";
+  enum = this.config.enum;
+  enumValues = this.config.enum.enumValues;
+  constructor(table, config) {
+    super(table, config);
+    this.enum = config.enum;
+  }
+  getSQLType() {
+    return this.enum.enumName;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/subquery.js
+class Subquery {
+  static [entityKind] = "Subquery";
+  constructor(sql, fields, alias, isWith = false, usedTables = []) {
+    this._ = {
+      brand: "Subquery",
+      sql,
+      selectedFields: fields,
+      alias,
+      isWith,
+      usedTables
+    };
+  }
+}
+
+class WithSubquery extends Subquery {
+  static [entityKind] = "WithSubquery";
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/version.js
+var version = "0.45.2";
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/tracing.js
+var otel;
+var rawTracer;
+var tracer = {
+  startActiveSpan(name, fn) {
+    if (!otel) {
+      return fn();
+    }
+    if (!rawTracer) {
+      rawTracer = otel.trace.getTracer("drizzle-orm", version);
+    }
+    return iife((otel2, rawTracer2) => rawTracer2.startActiveSpan(name, (span) => {
+      try {
+        return fn(span);
+      } catch (e) {
+        span.setStatus({
+          code: otel2.SpanStatusCode.ERROR,
+          message: e instanceof Error ? e.message : "Unknown error"
+        });
+        throw e;
+      } finally {
+        span.end();
+      }
+    }), otel, rawTracer);
+  }
+};
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/view-common.js
+var ViewBaseConfig = Symbol.for("drizzle:ViewBaseConfig");
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/table.js
+var Schema = Symbol.for("drizzle:Schema");
+var Columns = Symbol.for("drizzle:Columns");
+var ExtraConfigColumns = Symbol.for("drizzle:ExtraConfigColumns");
+var OriginalName = Symbol.for("drizzle:OriginalName");
+var BaseName = Symbol.for("drizzle:BaseName");
+var IsAlias = Symbol.for("drizzle:IsAlias");
+var ExtraConfigBuilder = Symbol.for("drizzle:ExtraConfigBuilder");
+var IsDrizzleTable = Symbol.for("drizzle:IsDrizzleTable");
+
+class Table {
+  static [entityKind] = "Table";
+  static Symbol = {
+    Name: TableName,
+    Schema,
+    OriginalName,
+    Columns,
+    ExtraConfigColumns,
+    BaseName,
+    IsAlias,
+    ExtraConfigBuilder
+  };
+  [TableName];
+  [OriginalName];
+  [Schema];
+  [Columns];
+  [ExtraConfigColumns];
+  [BaseName];
+  [IsAlias] = false;
+  [IsDrizzleTable] = true;
+  [ExtraConfigBuilder] = undefined;
+  constructor(name, schema, baseName) {
+    this[TableName] = this[OriginalName] = name;
+    this[Schema] = schema;
+    this[BaseName] = baseName;
+  }
+}
+function getTableName(table) {
+  return table[TableName];
+}
+function getTableUniqueName(table) {
+  return `${table[Schema] ?? "public"}.${table[TableName]}`;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/sql/sql.js
+function isSQLWrapper(value) {
+  return value !== null && value !== undefined && typeof value.getSQL === "function";
+}
+function mergeQueries(queries) {
+  const result = { sql: "", params: [] };
+  for (const query of queries) {
+    result.sql += query.sql;
+    result.params.push(...query.params);
+    if (query.typings?.length) {
+      if (!result.typings) {
+        result.typings = [];
+      }
+      result.typings.push(...query.typings);
+    }
+  }
+  return result;
+}
+
+class StringChunk {
+  static [entityKind] = "StringChunk";
+  value;
+  constructor(value) {
+    this.value = Array.isArray(value) ? value : [value];
+  }
+  getSQL() {
+    return new SQL([this]);
+  }
+}
+
+class SQL {
+  constructor(queryChunks) {
+    this.queryChunks = queryChunks;
+    for (const chunk of queryChunks) {
+      if (is(chunk, Table)) {
+        const schemaName = chunk[Table.Symbol.Schema];
+        this.usedTables.push(schemaName === undefined ? chunk[Table.Symbol.Name] : schemaName + "." + chunk[Table.Symbol.Name]);
+      }
+    }
+  }
+  static [entityKind] = "SQL";
+  decoder = noopDecoder;
+  shouldInlineParams = false;
+  usedTables = [];
+  append(query) {
+    this.queryChunks.push(...query.queryChunks);
+    return this;
+  }
+  toQuery(config) {
+    return tracer.startActiveSpan("drizzle.buildSQL", (span) => {
+      const query = this.buildQueryFromSourceParams(this.queryChunks, config);
+      span?.setAttributes({
+        "drizzle.query.text": query.sql,
+        "drizzle.query.params": JSON.stringify(query.params)
+      });
+      return query;
+    });
+  }
+  buildQueryFromSourceParams(chunks, _config) {
+    const config = Object.assign({}, _config, {
+      inlineParams: _config.inlineParams || this.shouldInlineParams,
+      paramStartIndex: _config.paramStartIndex || { value: 0 }
+    });
+    const {
+      casing,
+      escapeName,
+      escapeParam,
+      prepareTyping,
+      inlineParams,
+      paramStartIndex
+    } = config;
+    return mergeQueries(chunks.map((chunk) => {
+      if (is(chunk, StringChunk)) {
+        return { sql: chunk.value.join(""), params: [] };
+      }
+      if (is(chunk, Name)) {
+        return { sql: escapeName(chunk.value), params: [] };
+      }
+      if (chunk === undefined) {
+        return { sql: "", params: [] };
+      }
+      if (Array.isArray(chunk)) {
+        const result = [new StringChunk("(")];
+        for (const [i, p] of chunk.entries()) {
+          result.push(p);
+          if (i < chunk.length - 1) {
+            result.push(new StringChunk(", "));
+          }
+        }
+        result.push(new StringChunk(")"));
+        return this.buildQueryFromSourceParams(result, config);
+      }
+      if (is(chunk, SQL)) {
+        return this.buildQueryFromSourceParams(chunk.queryChunks, {
+          ...config,
+          inlineParams: inlineParams || chunk.shouldInlineParams
+        });
+      }
+      if (is(chunk, Table)) {
+        const schemaName = chunk[Table.Symbol.Schema];
+        const tableName = chunk[Table.Symbol.Name];
+        return {
+          sql: schemaName === undefined || chunk[IsAlias] ? escapeName(tableName) : escapeName(schemaName) + "." + escapeName(tableName),
+          params: []
+        };
+      }
+      if (is(chunk, Column)) {
+        const columnName = casing.getColumnCasing(chunk);
+        if (_config.invokeSource === "indexes") {
+          return { sql: escapeName(columnName), params: [] };
+        }
+        const schemaName = chunk.table[Table.Symbol.Schema];
+        return {
+          sql: chunk.table[IsAlias] || schemaName === undefined ? escapeName(chunk.table[Table.Symbol.Name]) + "." + escapeName(columnName) : escapeName(schemaName) + "." + escapeName(chunk.table[Table.Symbol.Name]) + "." + escapeName(columnName),
+          params: []
+        };
+      }
+      if (is(chunk, View)) {
+        const schemaName = chunk[ViewBaseConfig].schema;
+        const viewName = chunk[ViewBaseConfig].name;
+        return {
+          sql: schemaName === undefined || chunk[ViewBaseConfig].isAlias ? escapeName(viewName) : escapeName(schemaName) + "." + escapeName(viewName),
+          params: []
+        };
+      }
+      if (is(chunk, Param)) {
+        if (is(chunk.value, Placeholder)) {
+          return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+        }
+        const mappedValue = chunk.value === null ? null : chunk.encoder.mapToDriverValue(chunk.value);
+        if (is(mappedValue, SQL)) {
+          return this.buildQueryFromSourceParams([mappedValue], config);
+        }
+        if (inlineParams) {
+          return { sql: this.mapInlineParam(mappedValue, config), params: [] };
+        }
+        let typings = ["none"];
+        if (prepareTyping) {
+          typings = [prepareTyping(chunk.encoder)];
+        }
+        return { sql: escapeParam(paramStartIndex.value++, mappedValue), params: [mappedValue], typings };
+      }
+      if (is(chunk, Placeholder)) {
+        return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+      }
+      if (is(chunk, SQL.Aliased) && chunk.fieldAlias !== undefined) {
+        return { sql: escapeName(chunk.fieldAlias), params: [] };
+      }
+      if (is(chunk, Subquery)) {
+        if (chunk._.isWith) {
+          return { sql: escapeName(chunk._.alias), params: [] };
+        }
+        return this.buildQueryFromSourceParams([
+          new StringChunk("("),
+          chunk._.sql,
+          new StringChunk(") "),
+          new Name(chunk._.alias)
+        ], config);
+      }
+      if (isPgEnum(chunk)) {
+        if (chunk.schema) {
+          return { sql: escapeName(chunk.schema) + "." + escapeName(chunk.enumName), params: [] };
+        }
+        return { sql: escapeName(chunk.enumName), params: [] };
+      }
+      if (isSQLWrapper(chunk)) {
+        if (chunk.shouldOmitSQLParens?.()) {
+          return this.buildQueryFromSourceParams([chunk.getSQL()], config);
+        }
+        return this.buildQueryFromSourceParams([
+          new StringChunk("("),
+          chunk.getSQL(),
+          new StringChunk(")")
+        ], config);
+      }
+      if (inlineParams) {
+        return { sql: this.mapInlineParam(chunk, config), params: [] };
+      }
+      return { sql: escapeParam(paramStartIndex.value++, chunk), params: [chunk], typings: ["none"] };
+    }));
+  }
+  mapInlineParam(chunk, { escapeString }) {
+    if (chunk === null) {
+      return "null";
+    }
+    if (typeof chunk === "number" || typeof chunk === "boolean") {
+      return chunk.toString();
+    }
+    if (typeof chunk === "string") {
+      return escapeString(chunk);
+    }
+    if (typeof chunk === "object") {
+      const mappedValueAsString = chunk.toString();
+      if (mappedValueAsString === "[object Object]") {
+        return escapeString(JSON.stringify(chunk));
+      }
+      return escapeString(mappedValueAsString);
+    }
+    throw new Error("Unexpected param value: " + chunk);
+  }
+  getSQL() {
+    return this;
+  }
+  as(alias) {
+    if (alias === undefined) {
+      return this;
+    }
+    return new SQL.Aliased(this, alias);
+  }
+  mapWith(decoder) {
+    this.decoder = typeof decoder === "function" ? { mapFromDriverValue: decoder } : decoder;
+    return this;
+  }
+  inlineParams() {
+    this.shouldInlineParams = true;
+    return this;
+  }
+  if(condition) {
+    return condition ? this : undefined;
+  }
+}
+
+class Name {
+  constructor(value) {
+    this.value = value;
+  }
+  static [entityKind] = "Name";
+  brand;
+  getSQL() {
+    return new SQL([this]);
+  }
+}
+function isDriverValueEncoder(value) {
+  return typeof value === "object" && value !== null && "mapToDriverValue" in value && typeof value.mapToDriverValue === "function";
+}
+var noopDecoder = {
+  mapFromDriverValue: (value) => value
+};
+var noopEncoder = {
+  mapToDriverValue: (value) => value
+};
+var noopMapper = {
+  ...noopDecoder,
+  ...noopEncoder
+};
+
+class Param {
+  constructor(value, encoder = noopEncoder) {
+    this.value = value;
+    this.encoder = encoder;
+  }
+  static [entityKind] = "Param";
+  brand;
+  getSQL() {
+    return new SQL([this]);
+  }
+}
+function sql(strings, ...params) {
+  const queryChunks = [];
+  if (params.length > 0 || strings.length > 0 && strings[0] !== "") {
+    queryChunks.push(new StringChunk(strings[0]));
+  }
+  for (const [paramIndex, param2] of params.entries()) {
+    queryChunks.push(param2, new StringChunk(strings[paramIndex + 1]));
+  }
+  return new SQL(queryChunks);
+}
+((sql2) => {
+  function empty() {
+    return new SQL([]);
+  }
+  sql2.empty = empty;
+  function fromList(list) {
+    return new SQL(list);
+  }
+  sql2.fromList = fromList;
+  function raw(str) {
+    return new SQL([new StringChunk(str)]);
+  }
+  sql2.raw = raw;
+  function join(chunks, separator) {
+    const result = [];
+    for (const [i, chunk] of chunks.entries()) {
+      if (i > 0 && separator !== undefined) {
+        result.push(separator);
+      }
+      result.push(chunk);
+    }
+    return new SQL(result);
+  }
+  sql2.join = join;
+  function identifier(value) {
+    return new Name(value);
+  }
+  sql2.identifier = identifier;
+  function placeholder2(name2) {
+    return new Placeholder(name2);
+  }
+  sql2.placeholder = placeholder2;
+  function param2(value, encoder) {
+    return new Param(value, encoder);
+  }
+  sql2.param = param2;
+})(sql || (sql = {}));
+((SQL2) => {
+
+  class Aliased {
+    constructor(sql2, fieldAlias) {
+      this.sql = sql2;
+      this.fieldAlias = fieldAlias;
+    }
+    static [entityKind] = "SQL.Aliased";
+    isSelectionField = false;
+    getSQL() {
+      return this.sql;
+    }
+    clone() {
+      return new Aliased(this.sql, this.fieldAlias);
+    }
+  }
+  SQL2.Aliased = Aliased;
+})(SQL || (SQL = {}));
+
+class Placeholder {
+  constructor(name2) {
+    this.name = name2;
+  }
+  static [entityKind] = "Placeholder";
+  getSQL() {
+    return new SQL([this]);
+  }
+}
+function fillPlaceholders(params, values2) {
+  return params.map((p) => {
+    if (is(p, Placeholder)) {
+      if (!(p.name in values2)) {
+        throw new Error(`No value for placeholder "${p.name}" was provided`);
+      }
+      return values2[p.name];
+    }
+    if (is(p, Param) && is(p.value, Placeholder)) {
+      if (!(p.value.name in values2)) {
+        throw new Error(`No value for placeholder "${p.value.name}" was provided`);
+      }
+      return p.encoder.mapToDriverValue(values2[p.value.name]);
+    }
+    return p;
+  });
+}
+var IsDrizzleView = Symbol.for("drizzle:IsDrizzleView");
+
+class View {
+  static [entityKind] = "View";
+  [ViewBaseConfig];
+  [IsDrizzleView] = true;
+  constructor({ name: name2, schema, selectedFields, query }) {
+    this[ViewBaseConfig] = {
+      name: name2,
+      originalName: name2,
+      schema,
+      selectedFields,
+      query,
+      isExisting: !query,
+      isAlias: false
+    };
+  }
+  getSQL() {
+    return new SQL([this]);
+  }
+}
+Column.prototype.getSQL = function() {
+  return new SQL([this]);
+};
+Table.prototype.getSQL = function() {
+  return new SQL([this]);
+};
+Subquery.prototype.getSQL = function() {
+  return new SQL([this]);
+};
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/alias.js
+class ColumnAliasProxyHandler {
+  constructor(table) {
+    this.table = table;
+  }
+  static [entityKind] = "ColumnAliasProxyHandler";
+  get(columnObj, prop) {
+    if (prop === "table") {
+      return this.table;
+    }
+    return columnObj[prop];
+  }
+}
+
+class TableAliasProxyHandler {
+  constructor(alias, replaceOriginalName) {
+    this.alias = alias;
+    this.replaceOriginalName = replaceOriginalName;
+  }
+  static [entityKind] = "TableAliasProxyHandler";
+  get(target, prop) {
+    if (prop === Table.Symbol.IsAlias) {
+      return true;
+    }
+    if (prop === Table.Symbol.Name) {
+      return this.alias;
+    }
+    if (this.replaceOriginalName && prop === Table.Symbol.OriginalName) {
+      return this.alias;
+    }
+    if (prop === ViewBaseConfig) {
+      return {
+        ...target[ViewBaseConfig],
+        name: this.alias,
+        isAlias: true
+      };
+    }
+    if (prop === Table.Symbol.Columns) {
+      const columns = target[Table.Symbol.Columns];
+      if (!columns) {
+        return columns;
+      }
+      const proxiedColumns = {};
+      Object.keys(columns).map((key) => {
+        proxiedColumns[key] = new Proxy(columns[key], new ColumnAliasProxyHandler(new Proxy(target, this)));
+      });
+      return proxiedColumns;
+    }
+    const value = target[prop];
+    if (is(value, Column)) {
+      return new Proxy(value, new ColumnAliasProxyHandler(new Proxy(target, this)));
+    }
+    return value;
+  }
+}
+function aliasedTable(table, tableAlias) {
+  return new Proxy(table, new TableAliasProxyHandler(tableAlias, false));
+}
+function aliasedTableColumn(column, tableAlias) {
+  return new Proxy(column, new ColumnAliasProxyHandler(new Proxy(column.table, new TableAliasProxyHandler(tableAlias, false))));
+}
+function mapColumnsInAliasedSQLToAlias(query, alias) {
+  return new SQL.Aliased(mapColumnsInSQLToAlias(query.sql, alias), query.fieldAlias);
+}
+function mapColumnsInSQLToAlias(query, alias) {
+  return sql.join(query.queryChunks.map((c) => {
+    if (is(c, Column)) {
+      return aliasedTableColumn(c, alias);
+    }
+    if (is(c, SQL)) {
+      return mapColumnsInSQLToAlias(c, alias);
+    }
+    if (is(c, SQL.Aliased)) {
+      return mapColumnsInAliasedSQLToAlias(c, alias);
+    }
+    return c;
+  }));
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/selection-proxy.js
+class SelectionProxyHandler {
+  static [entityKind] = "SelectionProxyHandler";
+  config;
+  constructor(config) {
+    this.config = { ...config };
+  }
+  get(subquery, prop) {
+    if (prop === "_") {
+      return {
+        ...subquery["_"],
+        selectedFields: new Proxy(subquery._.selectedFields, this)
+      };
+    }
+    if (prop === ViewBaseConfig) {
+      return {
+        ...subquery[ViewBaseConfig],
+        selectedFields: new Proxy(subquery[ViewBaseConfig].selectedFields, this)
+      };
+    }
+    if (typeof prop === "symbol") {
+      return subquery[prop];
+    }
+    const columns = is(subquery, Subquery) ? subquery._.selectedFields : is(subquery, View) ? subquery[ViewBaseConfig].selectedFields : subquery;
+    const value = columns[prop];
+    if (is(value, SQL.Aliased)) {
+      if (this.config.sqlAliasedBehavior === "sql" && !value.isSelectionField) {
+        return value.sql;
+      }
+      const newValue = value.clone();
+      newValue.isSelectionField = true;
+      return newValue;
+    }
+    if (is(value, SQL)) {
+      if (this.config.sqlBehavior === "sql") {
+        return value;
+      }
+      throw new Error(`You tried to reference "${prop}" field from a subquery, which is a raw SQL field, but it doesn't have an alias declared. Please add an alias to the field using ".as('alias')" method.`);
+    }
+    if (is(value, Column)) {
+      if (this.config.alias) {
+        return new Proxy(value, new ColumnAliasProxyHandler(new Proxy(value.table, new TableAliasProxyHandler(this.config.alias, this.config.replaceOriginalName ?? false))));
+      }
+      return value;
+    }
+    if (typeof value !== "object" || value === null) {
+      return value;
+    }
+    return new Proxy(value, new SelectionProxyHandler(this.config));
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/utils.js
+function mapResultRow(columns, row, joinsNotNullableMap) {
+  const nullifyMap = {};
+  const result = columns.reduce((result2, { path, field }, columnIndex) => {
+    let decoder;
+    if (is(field, Column)) {
+      decoder = field;
+    } else if (is(field, SQL)) {
+      decoder = field.decoder;
+    } else if (is(field, Subquery)) {
+      decoder = field._.sql.decoder;
+    } else {
+      decoder = field.sql.decoder;
+    }
+    let node = result2;
+    for (const [pathChunkIndex, pathChunk] of path.entries()) {
+      if (pathChunkIndex < path.length - 1) {
+        if (!(pathChunk in node)) {
+          node[pathChunk] = {};
+        }
+        node = node[pathChunk];
+      } else {
+        const rawValue = row[columnIndex];
+        const value = node[pathChunk] = rawValue === null ? null : decoder.mapFromDriverValue(rawValue);
+        if (joinsNotNullableMap && is(field, Column) && path.length === 2) {
+          const objectName = path[0];
+          if (!(objectName in nullifyMap)) {
+            nullifyMap[objectName] = value === null ? getTableName(field.table) : false;
+          } else if (typeof nullifyMap[objectName] === "string" && nullifyMap[objectName] !== getTableName(field.table)) {
+            nullifyMap[objectName] = false;
+          }
+        }
+      }
+    }
+    return result2;
+  }, {});
+  if (joinsNotNullableMap && Object.keys(nullifyMap).length > 0) {
+    for (const [objectName, tableName] of Object.entries(nullifyMap)) {
+      if (typeof tableName === "string" && !joinsNotNullableMap[tableName]) {
+        result[objectName] = null;
+      }
+    }
+  }
+  return result;
+}
+function orderSelectedFields(fields, pathPrefix) {
+  return Object.entries(fields).reduce((result, [name, field]) => {
+    if (typeof name !== "string") {
+      return result;
+    }
+    const newPath = pathPrefix ? [...pathPrefix, name] : [name];
+    if (is(field, Column) || is(field, SQL) || is(field, SQL.Aliased) || is(field, Subquery)) {
+      result.push({ path: newPath, field });
+    } else if (is(field, Table)) {
+      result.push(...orderSelectedFields(field[Table.Symbol.Columns], newPath));
+    } else {
+      result.push(...orderSelectedFields(field, newPath));
+    }
+    return result;
+  }, []);
+}
+function haveSameKeys(left, right) {
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+  for (const [index, key] of leftKeys.entries()) {
+    if (key !== rightKeys[index]) {
+      return false;
+    }
+  }
+  return true;
+}
+function mapUpdateSet(table, values2) {
+  const entries = Object.entries(values2).filter(([, value]) => value !== undefined).map(([key, value]) => {
+    if (is(value, SQL) || is(value, Column)) {
+      return [key, value];
+    } else {
+      return [key, new Param(value, table[Table.Symbol.Columns][key])];
+    }
+  });
+  if (entries.length === 0) {
+    throw new Error("No values to set");
+  }
+  return Object.fromEntries(entries);
+}
+function applyMixins(baseClass, extendedClasses) {
+  for (const extendedClass of extendedClasses) {
+    for (const name of Object.getOwnPropertyNames(extendedClass.prototype)) {
+      if (name === "constructor")
+        continue;
+      Object.defineProperty(baseClass.prototype, name, Object.getOwnPropertyDescriptor(extendedClass.prototype, name) || /* @__PURE__ */ Object.create(null));
+    }
+  }
+}
+function getTableColumns(table) {
+  return table[Table.Symbol.Columns];
+}
+function getTableLikeName(table) {
+  return is(table, Subquery) ? table._.alias : is(table, View) ? table[ViewBaseConfig].name : is(table, SQL) ? undefined : table[Table.Symbol.IsAlias] ? table[Table.Symbol.Name] : table[Table.Symbol.BaseName];
+}
+function getColumnNameAndConfig(a, b2) {
+  return {
+    name: typeof a === "string" && a.length > 0 ? a : "",
+    config: typeof a === "object" ? a : b2
+  };
+}
+function isConfig(data) {
+  if (typeof data !== "object" || data === null)
+    return false;
+  if (data.constructor.name !== "Object")
+    return false;
+  if ("logger" in data) {
+    const type = typeof data["logger"];
+    if (type !== "boolean" && (type !== "object" || typeof data["logger"]["logQuery"] !== "function") && type !== "undefined")
+      return false;
+    return true;
+  }
+  if ("schema" in data) {
+    const type = typeof data["schema"];
+    if (type !== "object" && type !== "undefined")
+      return false;
+    return true;
+  }
+  if ("casing" in data) {
+    const type = typeof data["casing"];
+    if (type !== "string" && type !== "undefined")
+      return false;
+    return true;
+  }
+  if ("mode" in data) {
+    if (data["mode"] !== "default" || data["mode"] !== "planetscale" || data["mode"] !== undefined)
+      return false;
+    return true;
+  }
+  if ("connection" in data) {
+    const type = typeof data["connection"];
+    if (type !== "string" && type !== "object" && type !== "undefined")
+      return false;
+    return true;
+  }
+  if ("client" in data) {
+    const type = typeof data["client"];
+    if (type !== "object" && type !== "function" && type !== "undefined")
+      return false;
+    return true;
+  }
+  if (Object.keys(data).length === 0)
+    return true;
+  return false;
+}
+var textDecoder = typeof TextDecoder === "undefined" ? null : new TextDecoder;
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/int.common.js
+class PgIntColumnBaseBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgIntColumnBaseBuilder";
+  generatedAlwaysAsIdentity(sequence) {
+    if (sequence) {
+      const { name, ...options } = sequence;
+      this.config.generatedIdentity = {
+        type: "always",
+        sequenceName: name,
+        sequenceOptions: options
+      };
+    } else {
+      this.config.generatedIdentity = {
+        type: "always"
+      };
+    }
+    this.config.hasDefault = true;
+    this.config.notNull = true;
+    return this;
+  }
+  generatedByDefaultAsIdentity(sequence) {
+    if (sequence) {
+      const { name, ...options } = sequence;
+      this.config.generatedIdentity = {
+        type: "byDefault",
+        sequenceName: name,
+        sequenceOptions: options
+      };
+    } else {
+      this.config.generatedIdentity = {
+        type: "byDefault"
+      };
+    }
+    this.config.hasDefault = true;
+    this.config.notNull = true;
+    return this;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/bigint.js
+class PgBigInt53Builder extends PgIntColumnBaseBuilder {
+  static [entityKind] = "PgBigInt53Builder";
+  constructor(name) {
+    super(name, "number", "PgBigInt53");
+  }
+  build(table) {
+    return new PgBigInt53(table, this.config);
+  }
+}
+
+class PgBigInt53 extends PgColumn {
+  static [entityKind] = "PgBigInt53";
+  getSQLType() {
+    return "bigint";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "number") {
+      return value;
+    }
+    return Number(value);
+  }
+}
+
+class PgBigInt64Builder extends PgIntColumnBaseBuilder {
+  static [entityKind] = "PgBigInt64Builder";
+  constructor(name) {
+    super(name, "bigint", "PgBigInt64");
+  }
+  build(table) {
+    return new PgBigInt64(table, this.config);
+  }
+}
+
+class PgBigInt64 extends PgColumn {
+  static [entityKind] = "PgBigInt64";
+  getSQLType() {
+    return "bigint";
+  }
+  mapFromDriverValue(value) {
+    return BigInt(value);
+  }
+}
+function bigint(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (config.mode === "number") {
+    return new PgBigInt53Builder(name);
+  }
+  return new PgBigInt64Builder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/bigserial.js
+class PgBigSerial53Builder extends PgColumnBuilder {
+  static [entityKind] = "PgBigSerial53Builder";
+  constructor(name) {
+    super(name, "number", "PgBigSerial53");
+    this.config.hasDefault = true;
+    this.config.notNull = true;
+  }
+  build(table) {
+    return new PgBigSerial53(table, this.config);
+  }
+}
+
+class PgBigSerial53 extends PgColumn {
+  static [entityKind] = "PgBigSerial53";
+  getSQLType() {
+    return "bigserial";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "number") {
+      return value;
+    }
+    return Number(value);
+  }
+}
+
+class PgBigSerial64Builder extends PgColumnBuilder {
+  static [entityKind] = "PgBigSerial64Builder";
+  constructor(name) {
+    super(name, "bigint", "PgBigSerial64");
+    this.config.hasDefault = true;
+  }
+  build(table) {
+    return new PgBigSerial64(table, this.config);
+  }
+}
+
+class PgBigSerial64 extends PgColumn {
+  static [entityKind] = "PgBigSerial64";
+  getSQLType() {
+    return "bigserial";
+  }
+  mapFromDriverValue(value) {
+    return BigInt(value);
+  }
+}
+function bigserial(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (config.mode === "number") {
+    return new PgBigSerial53Builder(name);
+  }
+  return new PgBigSerial64Builder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/boolean.js
+class PgBooleanBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgBooleanBuilder";
+  constructor(name) {
+    super(name, "boolean", "PgBoolean");
+  }
+  build(table) {
+    return new PgBoolean(table, this.config);
+  }
+}
+
+class PgBoolean extends PgColumn {
+  static [entityKind] = "PgBoolean";
+  getSQLType() {
+    return "boolean";
+  }
+}
+function boolean(name) {
+  return new PgBooleanBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/char.js
+class PgCharBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgCharBuilder";
+  constructor(name, config) {
+    super(name, "string", "PgChar");
+    this.config.length = config.length;
+    this.config.enumValues = config.enum;
+  }
+  build(table) {
+    return new PgChar(table, this.config);
+  }
+}
+
+class PgChar extends PgColumn {
+  static [entityKind] = "PgChar";
+  length = this.config.length;
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return this.length === undefined ? `char` : `char(${this.length})`;
+  }
+}
+function char(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgCharBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/cidr.js
+class PgCidrBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgCidrBuilder";
+  constructor(name) {
+    super(name, "string", "PgCidr");
+  }
+  build(table) {
+    return new PgCidr(table, this.config);
+  }
+}
+
+class PgCidr extends PgColumn {
+  static [entityKind] = "PgCidr";
+  getSQLType() {
+    return "cidr";
+  }
+}
+function cidr(name) {
+  return new PgCidrBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/custom.js
+class PgCustomColumnBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgCustomColumnBuilder";
+  constructor(name, fieldConfig, customTypeParams) {
+    super(name, "custom", "PgCustomColumn");
+    this.config.fieldConfig = fieldConfig;
+    this.config.customTypeParams = customTypeParams;
+  }
+  build(table) {
+    return new PgCustomColumn(table, this.config);
+  }
+}
+
+class PgCustomColumn extends PgColumn {
+  static [entityKind] = "PgCustomColumn";
+  sqlName;
+  mapTo;
+  mapFrom;
+  constructor(table, config) {
+    super(table, config);
+    this.sqlName = config.customTypeParams.dataType(config.fieldConfig);
+    this.mapTo = config.customTypeParams.toDriver;
+    this.mapFrom = config.customTypeParams.fromDriver;
+  }
+  getSQLType() {
+    return this.sqlName;
+  }
+  mapFromDriverValue(value) {
+    return typeof this.mapFrom === "function" ? this.mapFrom(value) : value;
+  }
+  mapToDriverValue(value) {
+    return typeof this.mapTo === "function" ? this.mapTo(value) : value;
+  }
+}
+function customType(customTypeParams) {
+  return (a, b2) => {
+    const { name, config } = getColumnNameAndConfig(a, b2);
+    return new PgCustomColumnBuilder(name, config, customTypeParams);
+  };
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/date.common.js
+class PgDateColumnBaseBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgDateColumnBaseBuilder";
+  defaultNow() {
+    return this.default(sql`now()`);
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/date.js
+class PgDateBuilder extends PgDateColumnBaseBuilder {
+  static [entityKind] = "PgDateBuilder";
+  constructor(name) {
+    super(name, "date", "PgDate");
+  }
+  build(table) {
+    return new PgDate(table, this.config);
+  }
+}
+
+class PgDate extends PgColumn {
+  static [entityKind] = "PgDate";
+  getSQLType() {
+    return "date";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string")
+      return new Date(value);
+    return value;
+  }
+  mapToDriverValue(value) {
+    return value.toISOString();
+  }
+}
+
+class PgDateStringBuilder extends PgDateColumnBaseBuilder {
+  static [entityKind] = "PgDateStringBuilder";
+  constructor(name) {
+    super(name, "string", "PgDateString");
+  }
+  build(table) {
+    return new PgDateString(table, this.config);
+  }
+}
+
+class PgDateString extends PgColumn {
+  static [entityKind] = "PgDateString";
+  getSQLType() {
+    return "date";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string")
+      return value;
+    return value.toISOString().slice(0, -14);
+  }
+}
+function date(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (config?.mode === "date") {
+    return new PgDateBuilder(name);
+  }
+  return new PgDateStringBuilder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/double-precision.js
+class PgDoublePrecisionBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgDoublePrecisionBuilder";
+  constructor(name) {
+    super(name, "number", "PgDoublePrecision");
+  }
+  build(table) {
+    return new PgDoublePrecision(table, this.config);
+  }
+}
+
+class PgDoublePrecision extends PgColumn {
+  static [entityKind] = "PgDoublePrecision";
+  getSQLType() {
+    return "double precision";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number.parseFloat(value);
+    }
+    return value;
+  }
+}
+function doublePrecision(name) {
+  return new PgDoublePrecisionBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/inet.js
+class PgInetBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgInetBuilder";
+  constructor(name) {
+    super(name, "string", "PgInet");
+  }
+  build(table) {
+    return new PgInet(table, this.config);
+  }
+}
+
+class PgInet extends PgColumn {
+  static [entityKind] = "PgInet";
+  getSQLType() {
+    return "inet";
+  }
+}
+function inet(name) {
+  return new PgInetBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/integer.js
+class PgIntegerBuilder extends PgIntColumnBaseBuilder {
+  static [entityKind] = "PgIntegerBuilder";
+  constructor(name) {
+    super(name, "number", "PgInteger");
+  }
+  build(table) {
+    return new PgInteger(table, this.config);
+  }
+}
+
+class PgInteger extends PgColumn {
+  static [entityKind] = "PgInteger";
+  getSQLType() {
+    return "integer";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      return Number.parseInt(value);
+    }
+    return value;
+  }
+}
+function integer(name) {
+  return new PgIntegerBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/interval.js
+class PgIntervalBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgIntervalBuilder";
+  constructor(name, intervalConfig) {
+    super(name, "string", "PgInterval");
+    this.config.intervalConfig = intervalConfig;
+  }
+  build(table) {
+    return new PgInterval(table, this.config);
+  }
+}
+
+class PgInterval extends PgColumn {
+  static [entityKind] = "PgInterval";
+  fields = this.config.intervalConfig.fields;
+  precision = this.config.intervalConfig.precision;
+  getSQLType() {
+    const fields = this.fields ? ` ${this.fields}` : "";
+    const precision = this.precision ? `(${this.precision})` : "";
+    return `interval${fields}${precision}`;
+  }
+}
+function interval(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgIntervalBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/json.js
+class PgJsonBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgJsonBuilder";
+  constructor(name) {
+    super(name, "json", "PgJson");
+  }
+  build(table) {
+    return new PgJson(table, this.config);
+  }
+}
+
+class PgJson extends PgColumn {
+  static [entityKind] = "PgJson";
+  constructor(table, config) {
+    super(table, config);
+  }
+  getSQLType() {
+    return "json";
+  }
+  mapToDriverValue(value) {
+    return JSON.stringify(value);
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  }
+}
+function json(name) {
+  return new PgJsonBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/jsonb.js
+class PgJsonbBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgJsonbBuilder";
+  constructor(name) {
+    super(name, "json", "PgJsonb");
+  }
+  build(table) {
+    return new PgJsonb(table, this.config);
+  }
+}
+
+class PgJsonb extends PgColumn {
+  static [entityKind] = "PgJsonb";
+  constructor(table, config) {
+    super(table, config);
+  }
+  getSQLType() {
+    return "jsonb";
+  }
+  mapToDriverValue(value) {
+    return JSON.stringify(value);
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
+    return value;
+  }
+}
+function jsonb(name) {
+  return new PgJsonbBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/line.js
+class PgLineBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgLineBuilder";
+  constructor(name) {
+    super(name, "array", "PgLine");
+  }
+  build(table) {
+    return new PgLineTuple(table, this.config);
+  }
+}
+
+class PgLineTuple extends PgColumn {
+  static [entityKind] = "PgLine";
+  getSQLType() {
+    return "line";
+  }
+  mapFromDriverValue(value) {
+    const [a, b2, c] = value.slice(1, -1).split(",");
+    return [Number.parseFloat(a), Number.parseFloat(b2), Number.parseFloat(c)];
+  }
+  mapToDriverValue(value) {
+    return `{${value[0]},${value[1]},${value[2]}}`;
+  }
+}
+
+class PgLineABCBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgLineABCBuilder";
+  constructor(name) {
+    super(name, "json", "PgLineABC");
+  }
+  build(table) {
+    return new PgLineABC(table, this.config);
+  }
+}
+
+class PgLineABC extends PgColumn {
+  static [entityKind] = "PgLineABC";
+  getSQLType() {
+    return "line";
+  }
+  mapFromDriverValue(value) {
+    const [a, b2, c] = value.slice(1, -1).split(",");
+    return { a: Number.parseFloat(a), b: Number.parseFloat(b2), c: Number.parseFloat(c) };
+  }
+  mapToDriverValue(value) {
+    return `{${value.a},${value.b},${value.c}}`;
+  }
+}
+function line(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (!config?.mode || config.mode === "tuple") {
+    return new PgLineBuilder(name);
+  }
+  return new PgLineABCBuilder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/macaddr.js
+class PgMacaddrBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgMacaddrBuilder";
+  constructor(name) {
+    super(name, "string", "PgMacaddr");
+  }
+  build(table) {
+    return new PgMacaddr(table, this.config);
+  }
+}
+
+class PgMacaddr extends PgColumn {
+  static [entityKind] = "PgMacaddr";
+  getSQLType() {
+    return "macaddr";
+  }
+}
+function macaddr(name) {
+  return new PgMacaddrBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/macaddr8.js
+class PgMacaddr8Builder extends PgColumnBuilder {
+  static [entityKind] = "PgMacaddr8Builder";
+  constructor(name) {
+    super(name, "string", "PgMacaddr8");
+  }
+  build(table) {
+    return new PgMacaddr8(table, this.config);
+  }
+}
+
+class PgMacaddr8 extends PgColumn {
+  static [entityKind] = "PgMacaddr8";
+  getSQLType() {
+    return "macaddr8";
+  }
+}
+function macaddr8(name) {
+  return new PgMacaddr8Builder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/numeric.js
+class PgNumericBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgNumericBuilder";
+  constructor(name, precision, scale) {
+    super(name, "string", "PgNumeric");
+    this.config.precision = precision;
+    this.config.scale = scale;
+  }
+  build(table) {
+    return new PgNumeric(table, this.config);
+  }
+}
+
+class PgNumeric extends PgColumn {
+  static [entityKind] = "PgNumeric";
+  precision;
+  scale;
+  constructor(table, config) {
+    super(table, config);
+    this.precision = config.precision;
+    this.scale = config.scale;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string")
+      return value;
+    return String(value);
+  }
+  getSQLType() {
+    if (this.precision !== undefined && this.scale !== undefined) {
+      return `numeric(${this.precision}, ${this.scale})`;
+    } else if (this.precision === undefined) {
+      return "numeric";
+    } else {
+      return `numeric(${this.precision})`;
+    }
+  }
+}
+
+class PgNumericNumberBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgNumericNumberBuilder";
+  constructor(name, precision, scale) {
+    super(name, "number", "PgNumericNumber");
+    this.config.precision = precision;
+    this.config.scale = scale;
+  }
+  build(table) {
+    return new PgNumericNumber(table, this.config);
+  }
+}
+
+class PgNumericNumber extends PgColumn {
+  static [entityKind] = "PgNumericNumber";
+  precision;
+  scale;
+  constructor(table, config) {
+    super(table, config);
+    this.precision = config.precision;
+    this.scale = config.scale;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "number")
+      return value;
+    return Number(value);
+  }
+  mapToDriverValue = String;
+  getSQLType() {
+    if (this.precision !== undefined && this.scale !== undefined) {
+      return `numeric(${this.precision}, ${this.scale})`;
+    } else if (this.precision === undefined) {
+      return "numeric";
+    } else {
+      return `numeric(${this.precision})`;
+    }
+  }
+}
+
+class PgNumericBigIntBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgNumericBigIntBuilder";
+  constructor(name, precision, scale) {
+    super(name, "bigint", "PgNumericBigInt");
+    this.config.precision = precision;
+    this.config.scale = scale;
+  }
+  build(table) {
+    return new PgNumericBigInt(table, this.config);
+  }
+}
+
+class PgNumericBigInt extends PgColumn {
+  static [entityKind] = "PgNumericBigInt";
+  precision;
+  scale;
+  constructor(table, config) {
+    super(table, config);
+    this.precision = config.precision;
+    this.scale = config.scale;
+  }
+  mapFromDriverValue = BigInt;
+  mapToDriverValue = String;
+  getSQLType() {
+    if (this.precision !== undefined && this.scale !== undefined) {
+      return `numeric(${this.precision}, ${this.scale})`;
+    } else if (this.precision === undefined) {
+      return "numeric";
+    } else {
+      return `numeric(${this.precision})`;
+    }
+  }
+}
+function numeric(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  const mode = config?.mode;
+  return mode === "number" ? new PgNumericNumberBuilder(name, config?.precision, config?.scale) : mode === "bigint" ? new PgNumericBigIntBuilder(name, config?.precision, config?.scale) : new PgNumericBuilder(name, config?.precision, config?.scale);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/point.js
+class PgPointTupleBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgPointTupleBuilder";
+  constructor(name) {
+    super(name, "array", "PgPointTuple");
+  }
+  build(table) {
+    return new PgPointTuple(table, this.config);
+  }
+}
+
+class PgPointTuple extends PgColumn {
+  static [entityKind] = "PgPointTuple";
+  getSQLType() {
+    return "point";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      const [x, y] = value.slice(1, -1).split(",");
+      return [Number.parseFloat(x), Number.parseFloat(y)];
+    }
+    return [value.x, value.y];
+  }
+  mapToDriverValue(value) {
+    return `(${value[0]},${value[1]})`;
+  }
+}
+
+class PgPointObjectBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgPointObjectBuilder";
+  constructor(name) {
+    super(name, "json", "PgPointObject");
+  }
+  build(table) {
+    return new PgPointObject(table, this.config);
+  }
+}
+
+class PgPointObject extends PgColumn {
+  static [entityKind] = "PgPointObject";
+  getSQLType() {
+    return "point";
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string") {
+      const [x, y] = value.slice(1, -1).split(",");
+      return { x: Number.parseFloat(x), y: Number.parseFloat(y) };
+    }
+    return value;
+  }
+  mapToDriverValue(value) {
+    return `(${value.x},${value.y})`;
+  }
+}
+function point(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (!config?.mode || config.mode === "tuple") {
+    return new PgPointTupleBuilder(name);
+  }
+  return new PgPointObjectBuilder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/utils.js
+function hexToBytes(hex) {
+  const bytes = [];
+  for (let c = 0;c < hex.length; c += 2) {
+    bytes.push(Number.parseInt(hex.slice(c, c + 2), 16));
+  }
+  return new Uint8Array(bytes);
+}
+function bytesToFloat64(bytes, offset) {
+  const buffer2 = new ArrayBuffer(8);
+  const view = new DataView(buffer2);
+  for (let i = 0;i < 8; i++) {
+    view.setUint8(i, bytes[offset + i]);
+  }
+  return view.getFloat64(0, true);
+}
+function parseEWKB(hex) {
+  const bytes = hexToBytes(hex);
+  let offset = 0;
+  const byteOrder = bytes[offset];
+  offset += 1;
+  const view = new DataView(bytes.buffer);
+  const geomType = view.getUint32(offset, byteOrder === 1);
+  offset += 4;
+  let _srid;
+  if (geomType & 536870912) {
+    _srid = view.getUint32(offset, byteOrder === 1);
+    offset += 4;
+  }
+  if ((geomType & 65535) === 1) {
+    const x = bytesToFloat64(bytes, offset);
+    offset += 8;
+    const y = bytesToFloat64(bytes, offset);
+    offset += 8;
+    return [x, y];
+  }
+  throw new Error("Unsupported geometry type");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/postgis_extension/geometry.js
+class PgGeometryBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgGeometryBuilder";
+  constructor(name) {
+    super(name, "array", "PgGeometry");
+  }
+  build(table) {
+    return new PgGeometry(table, this.config);
+  }
+}
+
+class PgGeometry extends PgColumn {
+  static [entityKind] = "PgGeometry";
+  getSQLType() {
+    return "geometry(point)";
+  }
+  mapFromDriverValue(value) {
+    return parseEWKB(value);
+  }
+  mapToDriverValue(value) {
+    return `point(${value[0]} ${value[1]})`;
+  }
+}
+
+class PgGeometryObjectBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgGeometryObjectBuilder";
+  constructor(name) {
+    super(name, "json", "PgGeometryObject");
+  }
+  build(table) {
+    return new PgGeometryObject(table, this.config);
+  }
+}
+
+class PgGeometryObject extends PgColumn {
+  static [entityKind] = "PgGeometryObject";
+  getSQLType() {
+    return "geometry(point)";
+  }
+  mapFromDriverValue(value) {
+    const parsed = parseEWKB(value);
+    return { x: parsed[0], y: parsed[1] };
+  }
+  mapToDriverValue(value) {
+    return `point(${value.x} ${value.y})`;
+  }
+}
+function geometry(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (!config?.mode || config.mode === "tuple") {
+    return new PgGeometryBuilder(name);
+  }
+  return new PgGeometryObjectBuilder(name);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/real.js
+class PgRealBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgRealBuilder";
+  constructor(name, length) {
+    super(name, "number", "PgReal");
+    this.config.length = length;
+  }
+  build(table) {
+    return new PgReal(table, this.config);
+  }
+}
+
+class PgReal extends PgColumn {
+  static [entityKind] = "PgReal";
+  constructor(table, config) {
+    super(table, config);
+  }
+  getSQLType() {
+    return "real";
+  }
+  mapFromDriverValue = (value) => {
+    if (typeof value === "string") {
+      return Number.parseFloat(value);
+    }
+    return value;
+  };
+}
+function real(name) {
+  return new PgRealBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/serial.js
+class PgSerialBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgSerialBuilder";
+  constructor(name) {
+    super(name, "number", "PgSerial");
+    this.config.hasDefault = true;
+    this.config.notNull = true;
+  }
+  build(table) {
+    return new PgSerial(table, this.config);
+  }
+}
+
+class PgSerial extends PgColumn {
+  static [entityKind] = "PgSerial";
+  getSQLType() {
+    return "serial";
+  }
+}
+function serial(name) {
+  return new PgSerialBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/smallint.js
+class PgSmallIntBuilder extends PgIntColumnBaseBuilder {
+  static [entityKind] = "PgSmallIntBuilder";
+  constructor(name) {
+    super(name, "number", "PgSmallInt");
+  }
+  build(table) {
+    return new PgSmallInt(table, this.config);
+  }
+}
+
+class PgSmallInt extends PgColumn {
+  static [entityKind] = "PgSmallInt";
+  getSQLType() {
+    return "smallint";
+  }
+  mapFromDriverValue = (value) => {
+    if (typeof value === "string") {
+      return Number(value);
+    }
+    return value;
+  };
+}
+function smallint(name) {
+  return new PgSmallIntBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/smallserial.js
+class PgSmallSerialBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgSmallSerialBuilder";
+  constructor(name) {
+    super(name, "number", "PgSmallSerial");
+    this.config.hasDefault = true;
+    this.config.notNull = true;
+  }
+  build(table) {
+    return new PgSmallSerial(table, this.config);
+  }
+}
+
+class PgSmallSerial extends PgColumn {
+  static [entityKind] = "PgSmallSerial";
+  getSQLType() {
+    return "smallserial";
+  }
+}
+function smallserial(name) {
+  return new PgSmallSerialBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/text.js
+class PgTextBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgTextBuilder";
+  constructor(name, config) {
+    super(name, "string", "PgText");
+    this.config.enumValues = config.enum;
+  }
+  build(table) {
+    return new PgText(table, this.config);
+  }
+}
+
+class PgText extends PgColumn {
+  static [entityKind] = "PgText";
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return "text";
+  }
+}
+function text(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgTextBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/time.js
+class PgTimeBuilder extends PgDateColumnBaseBuilder {
+  constructor(name, withTimezone, precision) {
+    super(name, "string", "PgTime");
+    this.withTimezone = withTimezone;
+    this.precision = precision;
+    this.config.withTimezone = withTimezone;
+    this.config.precision = precision;
+  }
+  static [entityKind] = "PgTimeBuilder";
+  build(table) {
+    return new PgTime(table, this.config);
+  }
+}
+
+class PgTime extends PgColumn {
+  static [entityKind] = "PgTime";
+  withTimezone;
+  precision;
+  constructor(table, config) {
+    super(table, config);
+    this.withTimezone = config.withTimezone;
+    this.precision = config.precision;
+  }
+  getSQLType() {
+    const precision = this.precision === undefined ? "" : `(${this.precision})`;
+    return `time${precision}${this.withTimezone ? " with time zone" : ""}`;
+  }
+}
+function time(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgTimeBuilder(name, config.withTimezone ?? false, config.precision);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/timestamp.js
+class PgTimestampBuilder extends PgDateColumnBaseBuilder {
+  static [entityKind] = "PgTimestampBuilder";
+  constructor(name, withTimezone, precision) {
+    super(name, "date", "PgTimestamp");
+    this.config.withTimezone = withTimezone;
+    this.config.precision = precision;
+  }
+  build(table) {
+    return new PgTimestamp(table, this.config);
+  }
+}
+
+class PgTimestamp extends PgColumn {
+  static [entityKind] = "PgTimestamp";
+  withTimezone;
+  precision;
+  constructor(table, config) {
+    super(table, config);
+    this.withTimezone = config.withTimezone;
+    this.precision = config.precision;
+  }
+  getSQLType() {
+    const precision = this.precision === undefined ? "" : ` (${this.precision})`;
+    return `timestamp${precision}${this.withTimezone ? " with time zone" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string")
+      return new Date(this.withTimezone ? value : value + "+0000");
+    return value;
+  }
+  mapToDriverValue = (value) => {
+    return value.toISOString();
+  };
+}
+
+class PgTimestampStringBuilder extends PgDateColumnBaseBuilder {
+  static [entityKind] = "PgTimestampStringBuilder";
+  constructor(name, withTimezone, precision) {
+    super(name, "string", "PgTimestampString");
+    this.config.withTimezone = withTimezone;
+    this.config.precision = precision;
+  }
+  build(table) {
+    return new PgTimestampString(table, this.config);
+  }
+}
+
+class PgTimestampString extends PgColumn {
+  static [entityKind] = "PgTimestampString";
+  withTimezone;
+  precision;
+  constructor(table, config) {
+    super(table, config);
+    this.withTimezone = config.withTimezone;
+    this.precision = config.precision;
+  }
+  getSQLType() {
+    const precision = this.precision === undefined ? "" : `(${this.precision})`;
+    return `timestamp${precision}${this.withTimezone ? " with time zone" : ""}`;
+  }
+  mapFromDriverValue(value) {
+    if (typeof value === "string")
+      return value;
+    const shortened = value.toISOString().slice(0, -1).replace("T", " ");
+    if (this.withTimezone) {
+      const offset = value.getTimezoneOffset();
+      const sign = offset <= 0 ? "+" : "-";
+      return `${shortened}${sign}${Math.floor(Math.abs(offset) / 60).toString().padStart(2, "0")}`;
+    }
+    return shortened;
+  }
+}
+function timestamp(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  if (config?.mode === "string") {
+    return new PgTimestampStringBuilder(name, config.withTimezone ?? false, config.precision);
+  }
+  return new PgTimestampBuilder(name, config?.withTimezone ?? false, config?.precision);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/uuid.js
+class PgUUIDBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgUUIDBuilder";
+  constructor(name) {
+    super(name, "string", "PgUUID");
+  }
+  defaultRandom() {
+    return this.default(sql`gen_random_uuid()`);
+  }
+  build(table) {
+    return new PgUUID(table, this.config);
+  }
+}
+
+class PgUUID extends PgColumn {
+  static [entityKind] = "PgUUID";
+  getSQLType() {
+    return "uuid";
+  }
+}
+function uuid(name) {
+  return new PgUUIDBuilder(name ?? "");
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/varchar.js
+class PgVarcharBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgVarcharBuilder";
+  constructor(name, config) {
+    super(name, "string", "PgVarchar");
+    this.config.length = config.length;
+    this.config.enumValues = config.enum;
+  }
+  build(table) {
+    return new PgVarchar(table, this.config);
+  }
+}
+
+class PgVarchar extends PgColumn {
+  static [entityKind] = "PgVarchar";
+  length = this.config.length;
+  enumValues = this.config.enumValues;
+  getSQLType() {
+    return this.length === undefined ? `varchar` : `varchar(${this.length})`;
+  }
+}
+function varchar(a, b2 = {}) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgVarcharBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/vector_extension/bit.js
+class PgBinaryVectorBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgBinaryVectorBuilder";
+  constructor(name, config) {
+    super(name, "string", "PgBinaryVector");
+    this.config.dimensions = config.dimensions;
+  }
+  build(table) {
+    return new PgBinaryVector(table, this.config);
+  }
+}
+
+class PgBinaryVector extends PgColumn {
+  static [entityKind] = "PgBinaryVector";
+  dimensions = this.config.dimensions;
+  getSQLType() {
+    return `bit(${this.dimensions})`;
+  }
+}
+function bit(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgBinaryVectorBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/vector_extension/halfvec.js
+class PgHalfVectorBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgHalfVectorBuilder";
+  constructor(name, config) {
+    super(name, "array", "PgHalfVector");
+    this.config.dimensions = config.dimensions;
+  }
+  build(table) {
+    return new PgHalfVector(table, this.config);
+  }
+}
+
+class PgHalfVector extends PgColumn {
+  static [entityKind] = "PgHalfVector";
+  dimensions = this.config.dimensions;
+  getSQLType() {
+    return `halfvec(${this.dimensions})`;
+  }
+  mapToDriverValue(value) {
+    return JSON.stringify(value);
+  }
+  mapFromDriverValue(value) {
+    return value.slice(1, -1).split(",").map((v) => Number.parseFloat(v));
+  }
+}
+function halfvec(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgHalfVectorBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/vector_extension/sparsevec.js
+class PgSparseVectorBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgSparseVectorBuilder";
+  constructor(name, config) {
+    super(name, "string", "PgSparseVector");
+    this.config.dimensions = config.dimensions;
+  }
+  build(table) {
+    return new PgSparseVector(table, this.config);
+  }
+}
+
+class PgSparseVector extends PgColumn {
+  static [entityKind] = "PgSparseVector";
+  dimensions = this.config.dimensions;
+  getSQLType() {
+    return `sparsevec(${this.dimensions})`;
+  }
+}
+function sparsevec(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgSparseVectorBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/vector_extension/vector.js
+class PgVectorBuilder extends PgColumnBuilder {
+  static [entityKind] = "PgVectorBuilder";
+  constructor(name, config) {
+    super(name, "array", "PgVector");
+    this.config.dimensions = config.dimensions;
+  }
+  build(table) {
+    return new PgVector(table, this.config);
+  }
+}
+
+class PgVector extends PgColumn {
+  static [entityKind] = "PgVector";
+  dimensions = this.config.dimensions;
+  getSQLType() {
+    return `vector(${this.dimensions})`;
+  }
+  mapToDriverValue(value) {
+    return JSON.stringify(value);
+  }
+  mapFromDriverValue(value) {
+    return value.slice(1, -1).split(",").map((v) => Number.parseFloat(v));
+  }
+}
+function vector(a, b2) {
+  const { name, config } = getColumnNameAndConfig(a, b2);
+  return new PgVectorBuilder(name, config);
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/columns/all.js
+function getPgColumnBuilders() {
+  return {
+    bigint,
+    bigserial,
+    boolean,
+    char,
+    cidr,
+    customType,
+    date,
+    doublePrecision,
+    inet,
+    integer,
+    interval,
+    json,
+    jsonb,
+    line,
+    macaddr,
+    macaddr8,
+    numeric,
+    point,
+    geometry,
+    real,
+    serial,
+    smallint,
+    smallserial,
+    text,
+    time,
+    timestamp,
+    uuid,
+    varchar,
+    bit,
+    halfvec,
+    sparsevec,
+    vector
+  };
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/table.js
+var InlineForeignKeys = Symbol.for("drizzle:PgInlineForeignKeys");
+var EnableRLS = Symbol.for("drizzle:EnableRLS");
+
+class PgTable extends Table {
+  static [entityKind] = "PgTable";
+  static Symbol = Object.assign({}, Table.Symbol, {
+    InlineForeignKeys,
+    EnableRLS
+  });
+  [InlineForeignKeys] = [];
+  [EnableRLS] = false;
+  [Table.Symbol.ExtraConfigBuilder] = undefined;
+  [Table.Symbol.ExtraConfigColumns] = {};
+}
+function pgTableWithSchema(name, columns, extraConfig, schema, baseName = name) {
+  const rawTable = new PgTable(name, schema, baseName);
+  const parsedColumns = typeof columns === "function" ? columns(getPgColumnBuilders()) : columns;
+  const builtColumns = Object.fromEntries(Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
+    const colBuilder = colBuilderBase;
+    colBuilder.setName(name2);
+    const column = colBuilder.build(rawTable);
+    rawTable[InlineForeignKeys].push(...colBuilder.buildForeignKeys(column, rawTable));
+    return [name2, column];
+  }));
+  const builtColumnsForExtraConfig = Object.fromEntries(Object.entries(parsedColumns).map(([name2, colBuilderBase]) => {
+    const colBuilder = colBuilderBase;
+    colBuilder.setName(name2);
+    const column = colBuilder.buildExtraConfigColumn(rawTable);
+    return [name2, column];
+  }));
+  const table = Object.assign(rawTable, builtColumns);
+  table[Table.Symbol.Columns] = builtColumns;
+  table[Table.Symbol.ExtraConfigColumns] = builtColumnsForExtraConfig;
+  if (extraConfig) {
+    table[PgTable.Symbol.ExtraConfigBuilder] = extraConfig;
+  }
+  return Object.assign(table, {
+    enableRLS: () => {
+      table[PgTable.Symbol.EnableRLS] = true;
+      return table;
+    }
+  });
+}
+var pgTable = (name, columns, extraConfig) => {
+  return pgTableWithSchema(name, columns, extraConfig, undefined);
+};
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/primary-keys.js
+class PrimaryKeyBuilder {
+  static [entityKind] = "PgPrimaryKeyBuilder";
+  columns;
+  name;
+  constructor(columns, name) {
+    this.columns = columns;
+    this.name = name;
+  }
+  build(table) {
+    return new PrimaryKey(table, this.columns, this.name);
+  }
+}
+
+class PrimaryKey {
+  constructor(table, columns, name) {
+    this.table = table;
+    this.columns = columns;
+    this.name = name;
+  }
+  static [entityKind] = "PgPrimaryKey";
+  columns;
+  name;
+  getName() {
+    return this.name ?? `${this.table[PgTable.Symbol.Name]}_${this.columns.map((column) => column.name).join("_")}_pk`;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/casing.js
+function toSnakeCase(input) {
+  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
+  return words.map((word) => word.toLowerCase()).join("_");
+}
+function toCamelCase(input) {
+  const words = input.replace(/['\u2019]/g, "").match(/[\da-z]+|[A-Z]+(?![a-z])|[A-Z][\da-z]+/g) ?? [];
+  return words.reduce((acc, word, i) => {
+    const formattedWord = i === 0 ? word.toLowerCase() : `${word[0].toUpperCase()}${word.slice(1)}`;
+    return acc + formattedWord;
+  }, "");
+}
+function noopCase(input) {
+  return input;
+}
+
+class CasingCache {
+  static [entityKind] = "CasingCache";
+  cache = {};
+  cachedTables = {};
+  convert;
+  constructor(casing) {
+    this.convert = casing === "snake_case" ? toSnakeCase : casing === "camelCase" ? toCamelCase : noopCase;
+  }
+  getColumnCasing(column) {
+    if (!column.keyAsName)
+      return column.name;
+    const schema = column.table[Table.Symbol.Schema] ?? "public";
+    const tableName = column.table[Table.Symbol.OriginalName];
+    const key = `${schema}.${tableName}.${column.name}`;
+    if (!this.cache[key]) {
+      this.cacheTable(column.table);
+    }
+    return this.cache[key];
+  }
+  cacheTable(table) {
+    const schema = table[Table.Symbol.Schema] ?? "public";
+    const tableName = table[Table.Symbol.OriginalName];
+    const tableKey = `${schema}.${tableName}`;
+    if (!this.cachedTables[tableKey]) {
+      for (const column of Object.values(table[Table.Symbol.Columns])) {
+        const columnKey = `${tableKey}.${column.name}`;
+        this.cache[columnKey] = this.convert(column.name);
+      }
+      this.cachedTables[tableKey] = true;
+    }
+  }
+  clearCache() {
+    this.cache = {};
+    this.cachedTables = {};
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/errors.js
+class DrizzleError extends Error {
+  static [entityKind] = "DrizzleError";
+  constructor({ message, cause }) {
+    super(message);
+    this.name = "DrizzleError";
+    this.cause = cause;
+  }
+}
+
+class DrizzleQueryError extends Error {
+  constructor(query, params, cause) {
+    super(`Failed query: ${query}
+params: ${params}`);
+    this.query = query;
+    this.params = params;
+    this.cause = cause;
+    Error.captureStackTrace(this, DrizzleQueryError);
+    if (cause)
+      this.cause = cause;
+  }
+}
+
+class TransactionRollbackError extends DrizzleError {
+  static [entityKind] = "TransactionRollbackError";
+  constructor() {
+    super({ message: "Rollback" });
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/sql/expressions/conditions.js
+function bindIfParam(value, column) {
+  if (isDriverValueEncoder(column) && !isSQLWrapper(value) && !is(value, Param) && !is(value, Placeholder) && !is(value, Column) && !is(value, Table) && !is(value, View)) {
+    return new Param(value, column);
+  }
+  return value;
+}
+var eq = (left, right) => {
+  return sql`${left} = ${bindIfParam(right, left)}`;
+};
+var ne = (left, right) => {
+  return sql`${left} <> ${bindIfParam(right, left)}`;
+};
+function and(...unfilteredConditions) {
+  const conditions = unfilteredConditions.filter((c) => c !== undefined);
+  if (conditions.length === 0) {
+    return;
+  }
+  if (conditions.length === 1) {
+    return new SQL(conditions);
+  }
+  return new SQL([
+    new StringChunk("("),
+    sql.join(conditions, new StringChunk(" and ")),
+    new StringChunk(")")
+  ]);
+}
+function or(...unfilteredConditions) {
+  const conditions = unfilteredConditions.filter((c) => c !== undefined);
+  if (conditions.length === 0) {
+    return;
+  }
+  if (conditions.length === 1) {
+    return new SQL(conditions);
+  }
+  return new SQL([
+    new StringChunk("("),
+    sql.join(conditions, new StringChunk(" or ")),
+    new StringChunk(")")
+  ]);
+}
+function not(condition) {
+  return sql`not ${condition}`;
+}
+var gt = (left, right) => {
+  return sql`${left} > ${bindIfParam(right, left)}`;
+};
+var gte = (left, right) => {
+  return sql`${left} >= ${bindIfParam(right, left)}`;
+};
+var lt = (left, right) => {
+  return sql`${left} < ${bindIfParam(right, left)}`;
+};
+var lte = (left, right) => {
+  return sql`${left} <= ${bindIfParam(right, left)}`;
+};
+function inArray(column, values2) {
+  if (Array.isArray(values2)) {
+    if (values2.length === 0) {
+      return sql`false`;
+    }
+    return sql`${column} in ${values2.map((v) => bindIfParam(v, column))}`;
+  }
+  return sql`${column} in ${bindIfParam(values2, column)}`;
+}
+function notInArray(column, values2) {
+  if (Array.isArray(values2)) {
+    if (values2.length === 0) {
+      return sql`true`;
+    }
+    return sql`${column} not in ${values2.map((v) => bindIfParam(v, column))}`;
+  }
+  return sql`${column} not in ${bindIfParam(values2, column)}`;
+}
+function isNull(value) {
+  return sql`${value} is null`;
+}
+function isNotNull(value) {
+  return sql`${value} is not null`;
+}
+function exists(subquery) {
+  return sql`exists ${subquery}`;
+}
+function notExists(subquery) {
+  return sql`not exists ${subquery}`;
+}
+function between(column, min, max) {
+  return sql`${column} between ${bindIfParam(min, column)} and ${bindIfParam(max, column)}`;
+}
+function notBetween(column, min, max) {
+  return sql`${column} not between ${bindIfParam(min, column)} and ${bindIfParam(max, column)}`;
+}
+function like(column, value) {
+  return sql`${column} like ${value}`;
+}
+function notLike(column, value) {
+  return sql`${column} not like ${value}`;
+}
+function ilike(column, value) {
+  return sql`${column} ilike ${value}`;
+}
+function notIlike(column, value) {
+  return sql`${column} not ilike ${value}`;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/sql/expressions/select.js
+function asc(column) {
+  return sql`${column} asc`;
+}
+function desc(column) {
+  return sql`${column} desc`;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/relations.js
+class Relation {
+  constructor(sourceTable, referencedTable, relationName) {
+    this.sourceTable = sourceTable;
+    this.referencedTable = referencedTable;
+    this.relationName = relationName;
+    this.referencedTableName = referencedTable[Table.Symbol.Name];
+  }
+  static [entityKind] = "Relation";
+  referencedTableName;
+  fieldName;
+}
+
+class Relations {
+  constructor(table, config) {
+    this.table = table;
+    this.config = config;
+  }
+  static [entityKind] = "Relations";
+}
+
+class One extends Relation {
+  constructor(sourceTable, referencedTable, config, isNullable) {
+    super(sourceTable, referencedTable, config?.relationName);
+    this.config = config;
+    this.isNullable = isNullable;
+  }
+  static [entityKind] = "One";
+  withFieldName(fieldName) {
+    const relation = new One(this.sourceTable, this.referencedTable, this.config, this.isNullable);
+    relation.fieldName = fieldName;
+    return relation;
+  }
+}
+
+class Many extends Relation {
+  constructor(sourceTable, referencedTable, config) {
+    super(sourceTable, referencedTable, config?.relationName);
+    this.config = config;
+  }
+  static [entityKind] = "Many";
+  withFieldName(fieldName) {
+    const relation = new Many(this.sourceTable, this.referencedTable, this.config);
+    relation.fieldName = fieldName;
+    return relation;
+  }
+}
+function getOperators() {
+  return {
+    and,
+    between,
+    eq,
+    exists,
+    gt,
+    gte,
+    ilike,
+    inArray,
+    isNull,
+    isNotNull,
+    like,
+    lt,
+    lte,
+    ne,
+    not,
+    notBetween,
+    notExists,
+    notLike,
+    notIlike,
+    notInArray,
+    or,
+    sql
+  };
+}
+function getOrderByOperators() {
+  return {
+    sql,
+    asc,
+    desc
+  };
+}
+function extractTablesRelationalConfig(schema, configHelpers) {
+  if (Object.keys(schema).length === 1 && "default" in schema && !is(schema["default"], Table)) {
+    schema = schema["default"];
+  }
+  const tableNamesMap = {};
+  const relationsBuffer = {};
+  const tablesConfig = {};
+  for (const [key, value] of Object.entries(schema)) {
+    if (is(value, Table)) {
+      const dbName = getTableUniqueName(value);
+      const bufferedRelations = relationsBuffer[dbName];
+      tableNamesMap[dbName] = key;
+      tablesConfig[key] = {
+        tsName: key,
+        dbName: value[Table.Symbol.Name],
+        schema: value[Table.Symbol.Schema],
+        columns: value[Table.Symbol.Columns],
+        relations: bufferedRelations?.relations ?? {},
+        primaryKey: bufferedRelations?.primaryKey ?? []
+      };
+      for (const column of Object.values(value[Table.Symbol.Columns])) {
+        if (column.primary) {
+          tablesConfig[key].primaryKey.push(column);
+        }
+      }
+      const extraConfig = value[Table.Symbol.ExtraConfigBuilder]?.(value[Table.Symbol.ExtraConfigColumns]);
+      if (extraConfig) {
+        for (const configEntry of Object.values(extraConfig)) {
+          if (is(configEntry, PrimaryKeyBuilder)) {
+            tablesConfig[key].primaryKey.push(...configEntry.columns);
+          }
+        }
+      }
+    } else if (is(value, Relations)) {
+      const dbName = getTableUniqueName(value.table);
+      const tableName = tableNamesMap[dbName];
+      const relations2 = value.config(configHelpers(value.table));
+      let primaryKey;
+      for (const [relationName, relation] of Object.entries(relations2)) {
+        if (tableName) {
+          const tableConfig = tablesConfig[tableName];
+          tableConfig.relations[relationName] = relation;
+          if (primaryKey) {
+            tableConfig.primaryKey.push(...primaryKey);
+          }
+        } else {
+          if (!(dbName in relationsBuffer)) {
+            relationsBuffer[dbName] = {
+              relations: {},
+              primaryKey
+            };
+          }
+          relationsBuffer[dbName].relations[relationName] = relation;
+        }
+      }
+    }
+  }
+  return { tables: tablesConfig, tableNamesMap };
+}
+function createOne(sourceTable) {
+  return function one(table, config) {
+    return new One(sourceTable, table, config, config?.fields.reduce((res, f) => res && f.notNull, true) ?? false);
+  };
+}
+function createMany(sourceTable) {
+  return function many(referencedTable, config) {
+    return new Many(sourceTable, referencedTable, config);
+  };
+}
+function normalizeRelation(schema, tableNamesMap, relation) {
+  if (is(relation, One) && relation.config) {
+    return {
+      fields: relation.config.fields,
+      references: relation.config.references
+    };
+  }
+  const referencedTableTsName = tableNamesMap[getTableUniqueName(relation.referencedTable)];
+  if (!referencedTableTsName) {
+    throw new Error(`Table "${relation.referencedTable[Table.Symbol.Name]}" not found in schema`);
+  }
+  const referencedTableConfig = schema[referencedTableTsName];
+  if (!referencedTableConfig) {
+    throw new Error(`Table "${referencedTableTsName}" not found in schema`);
+  }
+  const sourceTable = relation.sourceTable;
+  const sourceTableTsName = tableNamesMap[getTableUniqueName(sourceTable)];
+  if (!sourceTableTsName) {
+    throw new Error(`Table "${sourceTable[Table.Symbol.Name]}" not found in schema`);
+  }
+  const reverseRelations = [];
+  for (const referencedTableRelation of Object.values(referencedTableConfig.relations)) {
+    if (relation.relationName && relation !== referencedTableRelation && referencedTableRelation.relationName === relation.relationName || !relation.relationName && referencedTableRelation.referencedTable === relation.sourceTable) {
+      reverseRelations.push(referencedTableRelation);
+    }
+  }
+  if (reverseRelations.length > 1) {
+    throw relation.relationName ? new Error(`There are multiple relations with name "${relation.relationName}" in table "${referencedTableTsName}"`) : new Error(`There are multiple relations between "${referencedTableTsName}" and "${relation.sourceTable[Table.Symbol.Name]}". Please specify relation name`);
+  }
+  if (reverseRelations[0] && is(reverseRelations[0], One) && reverseRelations[0].config) {
+    return {
+      fields: reverseRelations[0].config.references,
+      references: reverseRelations[0].config.fields
+    };
+  }
+  throw new Error(`There is not enough information to infer relation "${sourceTableTsName}.${relation.fieldName}"`);
+}
+function createTableRelationsHelpers(sourceTable) {
+  return {
+    one: createOne(sourceTable),
+    many: createMany(sourceTable)
+  };
+}
+function mapRelationalRow(tablesConfig, tableConfig, row, buildQueryResultSelection, mapColumnValue = (value) => value) {
+  const result = {};
+  for (const [
+    selectionItemIndex,
+    selectionItem
+  ] of buildQueryResultSelection.entries()) {
+    if (selectionItem.isJson) {
+      const relation = tableConfig.relations[selectionItem.tsKey];
+      const rawSubRows = row[selectionItemIndex];
+      const subRows = typeof rawSubRows === "string" ? JSON.parse(rawSubRows) : rawSubRows;
+      result[selectionItem.tsKey] = is(relation, One) ? subRows && mapRelationalRow(tablesConfig, tablesConfig[selectionItem.relationTableTsKey], subRows, selectionItem.selection, mapColumnValue) : subRows.map((subRow) => mapRelationalRow(tablesConfig, tablesConfig[selectionItem.relationTableTsKey], subRow, selectionItem.selection, mapColumnValue));
+    } else {
+      const value = mapColumnValue(row[selectionItemIndex]);
+      const field = selectionItem.field;
+      let decoder;
+      if (is(field, Column)) {
+        decoder = field;
+      } else if (is(field, SQL)) {
+        decoder = field.decoder;
+      } else {
+        decoder = field.sql.decoder;
+      }
+      result[selectionItem.tsKey] = value === null ? null : decoder.mapFromDriverValue(value);
+    }
+  }
+  return result;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/view-base.js
+class PgViewBase extends View {
+  static [entityKind] = "PgViewBase";
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/dialect.js
+class PgDialect {
+  static [entityKind] = "PgDialect";
+  casing;
+  constructor(config) {
+    this.casing = new CasingCache(config?.casing);
+  }
+  async migrate(migrations, session, config) {
+    const migrationsTable = typeof config === "string" ? "__drizzle_migrations" : config.migrationsTable ?? "__drizzle_migrations";
+    const migrationsSchema = typeof config === "string" ? "drizzle" : config.migrationsSchema ?? "drizzle";
+    const migrationTableCreate = sql`
+			CREATE TABLE IF NOT EXISTS ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} (
+				id SERIAL PRIMARY KEY,
+				hash text NOT NULL,
+				created_at bigint
+			)
+		`;
+    await session.execute(sql`CREATE SCHEMA IF NOT EXISTS ${sql.identifier(migrationsSchema)}`);
+    await session.execute(migrationTableCreate);
+    const dbMigrations = await session.all(sql`select id, hash, created_at from ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} order by created_at desc limit 1`);
+    const lastDbMigration = dbMigrations[0];
+    await session.transaction(async (tx) => {
+      for await (const migration of migrations) {
+        if (!lastDbMigration || Number(lastDbMigration.created_at) < migration.folderMillis) {
+          for (const stmt of migration.sql) {
+            await tx.execute(sql.raw(stmt));
+          }
+          await tx.execute(sql`insert into ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} ("hash", "created_at") values(${migration.hash}, ${migration.folderMillis})`);
+        }
+      }
+    });
+  }
+  escapeName(name) {
+    return `"${name.replace(/"/g, '""')}"`;
+  }
+  escapeParam(num) {
+    return `$${num + 1}`;
+  }
+  escapeString(str) {
+    return `'${str.replace(/'/g, "''")}'`;
+  }
+  buildWithCTE(queries) {
+    if (!queries?.length)
+      return;
+    const withSqlChunks = [sql`with `];
+    for (const [i, w] of queries.entries()) {
+      withSqlChunks.push(sql`${sql.identifier(w._.alias)} as (${w._.sql})`);
+      if (i < queries.length - 1) {
+        withSqlChunks.push(sql`, `);
+      }
+    }
+    withSqlChunks.push(sql` `);
+    return sql.join(withSqlChunks);
+  }
+  buildDeleteQuery({ table, where, returning, withList }) {
+    const withSql = this.buildWithCTE(withList);
+    const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : undefined;
+    const whereSql = where ? sql` where ${where}` : undefined;
+    return sql`${withSql}delete from ${table}${whereSql}${returningSql}`;
+  }
+  buildUpdateSet(table, set) {
+    const tableColumns = table[Table.Symbol.Columns];
+    const columnNames = Object.keys(tableColumns).filter((colName) => set[colName] !== undefined || tableColumns[colName]?.onUpdateFn !== undefined);
+    const setSize = columnNames.length;
+    return sql.join(columnNames.flatMap((colName, i) => {
+      const col = tableColumns[colName];
+      const onUpdateFnResult = col.onUpdateFn?.();
+      const value = set[colName] ?? (is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col));
+      const res = sql`${sql.identifier(this.casing.getColumnCasing(col))} = ${value}`;
+      if (i < setSize - 1) {
+        return [res, sql.raw(", ")];
+      }
+      return [res];
+    }));
+  }
+  buildUpdateQuery({ table, set, where, returning, withList, from, joins }) {
+    const withSql = this.buildWithCTE(withList);
+    const tableName = table[PgTable.Symbol.Name];
+    const tableSchema = table[PgTable.Symbol.Schema];
+    const origTableName = table[PgTable.Symbol.OriginalName];
+    const alias = tableName === origTableName ? undefined : tableName;
+    const tableSql = sql`${tableSchema ? sql`${sql.identifier(tableSchema)}.` : undefined}${sql.identifier(origTableName)}${alias && sql` ${sql.identifier(alias)}`}`;
+    const setSql = this.buildUpdateSet(table, set);
+    const fromSql = from && sql.join([sql.raw(" from "), this.buildFromTable(from)]);
+    const joinsSql = this.buildJoins(joins);
+    const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: !from })}` : undefined;
+    const whereSql = where ? sql` where ${where}` : undefined;
+    return sql`${withSql}update ${tableSql} set ${setSql}${fromSql}${joinsSql}${whereSql}${returningSql}`;
+  }
+  buildSelection(fields, { isSingleTable = false } = {}) {
+    const columnsLen = fields.length;
+    const chunks = fields.flatMap(({ field }, i) => {
+      const chunk = [];
+      if (is(field, SQL.Aliased) && field.isSelectionField) {
+        chunk.push(sql.identifier(field.fieldAlias));
+      } else if (is(field, SQL.Aliased) || is(field, SQL)) {
+        const query = is(field, SQL.Aliased) ? field.sql : field;
+        if (isSingleTable) {
+          chunk.push(new SQL(query.queryChunks.map((c) => {
+            if (is(c, PgColumn)) {
+              return sql.identifier(this.casing.getColumnCasing(c));
+            }
+            return c;
+          })));
+        } else {
+          chunk.push(query);
+        }
+        if (is(field, SQL.Aliased)) {
+          chunk.push(sql` as ${sql.identifier(field.fieldAlias)}`);
+        }
+      } else if (is(field, Column)) {
+        if (isSingleTable) {
+          chunk.push(sql.identifier(this.casing.getColumnCasing(field)));
+        } else {
+          chunk.push(field);
+        }
+      } else if (is(field, Subquery)) {
+        const entries = Object.entries(field._.selectedFields);
+        if (entries.length === 1) {
+          const entry = entries[0][1];
+          const fieldDecoder = is(entry, SQL) ? entry.decoder : is(entry, Column) ? { mapFromDriverValue: (v) => entry.mapFromDriverValue(v) } : entry.sql.decoder;
+          if (fieldDecoder) {
+            field._.sql.decoder = fieldDecoder;
+          }
+        }
+        chunk.push(field);
+      }
+      if (i < columnsLen - 1) {
+        chunk.push(sql`, `);
+      }
+      return chunk;
+    });
+    return sql.join(chunks);
+  }
+  buildJoins(joins) {
+    if (!joins || joins.length === 0) {
+      return;
+    }
+    const joinsArray = [];
+    for (const [index, joinMeta] of joins.entries()) {
+      if (index === 0) {
+        joinsArray.push(sql` `);
+      }
+      const table = joinMeta.table;
+      const lateralSql = joinMeta.lateral ? sql` lateral` : undefined;
+      const onSql = joinMeta.on ? sql` on ${joinMeta.on}` : undefined;
+      if (is(table, PgTable)) {
+        const tableName = table[PgTable.Symbol.Name];
+        const tableSchema = table[PgTable.Symbol.Schema];
+        const origTableName = table[PgTable.Symbol.OriginalName];
+        const alias = tableName === origTableName ? undefined : joinMeta.alias;
+        joinsArray.push(sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql`${sql.identifier(tableSchema)}.` : undefined}${sql.identifier(origTableName)}${alias && sql` ${sql.identifier(alias)}`}${onSql}`);
+      } else if (is(table, View)) {
+        const viewName = table[ViewBaseConfig].name;
+        const viewSchema = table[ViewBaseConfig].schema;
+        const origViewName = table[ViewBaseConfig].originalName;
+        const alias = viewName === origViewName ? undefined : joinMeta.alias;
+        joinsArray.push(sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql`${sql.identifier(viewSchema)}.` : undefined}${sql.identifier(origViewName)}${alias && sql` ${sql.identifier(alias)}`}${onSql}`);
+      } else {
+        joinsArray.push(sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${table}${onSql}`);
+      }
+      if (index < joins.length - 1) {
+        joinsArray.push(sql` `);
+      }
+    }
+    return sql.join(joinsArray);
+  }
+  buildFromTable(table) {
+    if (is(table, Table) && table[Table.Symbol.IsAlias]) {
+      let fullName = sql`${sql.identifier(table[Table.Symbol.OriginalName])}`;
+      if (table[Table.Symbol.Schema]) {
+        fullName = sql`${sql.identifier(table[Table.Symbol.Schema])}.${fullName}`;
+      }
+      return sql`${fullName} ${sql.identifier(table[Table.Symbol.Name])}`;
+    }
+    return table;
+  }
+  buildSelectQuery({
+    withList,
+    fields,
+    fieldsFlat,
+    where,
+    having,
+    table,
+    joins,
+    orderBy,
+    groupBy,
+    limit,
+    offset,
+    lockingClause,
+    distinct,
+    setOperators
+  }) {
+    const fieldsList = fieldsFlat ?? orderSelectedFields(fields);
+    for (const f of fieldsList) {
+      if (is(f.field, Column) && getTableName(f.field.table) !== (is(table, Subquery) ? table._.alias : is(table, PgViewBase) ? table[ViewBaseConfig].name : is(table, SQL) ? undefined : getTableName(table)) && !((table2) => joins?.some(({ alias }) => alias === (table2[Table.Symbol.IsAlias] ? getTableName(table2) : table2[Table.Symbol.BaseName])))(f.field.table)) {
+        const tableName = getTableName(f.field.table);
+        throw new Error(`Your "${f.path.join("->")}" field references a column "${tableName}"."${f.field.name}", but the table "${tableName}" is not part of the query! Did you forget to join it?`);
+      }
+    }
+    const isSingleTable = !joins || joins.length === 0;
+    const withSql = this.buildWithCTE(withList);
+    let distinctSql;
+    if (distinct) {
+      distinctSql = distinct === true ? sql` distinct` : sql` distinct on (${sql.join(distinct.on, sql`, `)})`;
+    }
+    const selection = this.buildSelection(fieldsList, { isSingleTable });
+    const tableSql = this.buildFromTable(table);
+    const joinsSql = this.buildJoins(joins);
+    const whereSql = where ? sql` where ${where}` : undefined;
+    const havingSql = having ? sql` having ${having}` : undefined;
+    let orderBySql;
+    if (orderBy && orderBy.length > 0) {
+      orderBySql = sql` order by ${sql.join(orderBy, sql`, `)}`;
+    }
+    let groupBySql;
+    if (groupBy && groupBy.length > 0) {
+      groupBySql = sql` group by ${sql.join(groupBy, sql`, `)}`;
+    }
+    const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : undefined;
+    const offsetSql = offset ? sql` offset ${offset}` : undefined;
+    const lockingClauseSql = sql.empty();
+    if (lockingClause) {
+      const clauseSql = sql` for ${sql.raw(lockingClause.strength)}`;
+      if (lockingClause.config.of) {
+        clauseSql.append(sql` of ${sql.join(Array.isArray(lockingClause.config.of) ? lockingClause.config.of : [lockingClause.config.of], sql`, `)}`);
+      }
+      if (lockingClause.config.noWait) {
+        clauseSql.append(sql` nowait`);
+      } else if (lockingClause.config.skipLocked) {
+        clauseSql.append(sql` skip locked`);
+      }
+      lockingClauseSql.append(clauseSql);
+    }
+    const finalQuery = sql`${withSql}select${distinctSql} ${selection} from ${tableSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClauseSql}`;
+    if (setOperators.length > 0) {
+      return this.buildSetOperations(finalQuery, setOperators);
+    }
+    return finalQuery;
+  }
+  buildSetOperations(leftSelect, setOperators) {
+    const [setOperator, ...rest] = setOperators;
+    if (!setOperator) {
+      throw new Error("Cannot pass undefined values to any set operator");
+    }
+    if (rest.length === 0) {
+      return this.buildSetOperationQuery({ leftSelect, setOperator });
+    }
+    return this.buildSetOperations(this.buildSetOperationQuery({ leftSelect, setOperator }), rest);
+  }
+  buildSetOperationQuery({
+    leftSelect,
+    setOperator: { type, isAll, rightSelect, limit, orderBy, offset }
+  }) {
+    const leftChunk = sql`(${leftSelect.getSQL()}) `;
+    const rightChunk = sql`(${rightSelect.getSQL()})`;
+    let orderBySql;
+    if (orderBy && orderBy.length > 0) {
+      const orderByValues = [];
+      for (const singleOrderBy of orderBy) {
+        if (is(singleOrderBy, PgColumn)) {
+          orderByValues.push(sql.identifier(singleOrderBy.name));
+        } else if (is(singleOrderBy, SQL)) {
+          for (let i = 0;i < singleOrderBy.queryChunks.length; i++) {
+            const chunk = singleOrderBy.queryChunks[i];
+            if (is(chunk, PgColumn)) {
+              singleOrderBy.queryChunks[i] = sql.identifier(chunk.name);
+            }
+          }
+          orderByValues.push(sql`${singleOrderBy}`);
+        } else {
+          orderByValues.push(sql`${singleOrderBy}`);
+        }
+      }
+      orderBySql = sql` order by ${sql.join(orderByValues, sql`, `)} `;
+    }
+    const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : undefined;
+    const operatorChunk = sql.raw(`${type} ${isAll ? "all " : ""}`);
+    const offsetSql = offset ? sql` offset ${offset}` : undefined;
+    return sql`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
+  }
+  buildInsertQuery({ table, values: valuesOrSelect, onConflict, returning, withList, select: select2, overridingSystemValue_ }) {
+    const valuesSqlList = [];
+    const columns = table[Table.Symbol.Columns];
+    const colEntries = Object.entries(columns).filter(([_, col]) => !col.shouldDisableInsert());
+    const insertOrder = colEntries.map(([, column]) => sql.identifier(this.casing.getColumnCasing(column)));
+    if (select2) {
+      const select22 = valuesOrSelect;
+      if (is(select22, SQL)) {
+        valuesSqlList.push(select22);
+      } else {
+        valuesSqlList.push(select22.getSQL());
+      }
+    } else {
+      const values2 = valuesOrSelect;
+      valuesSqlList.push(sql.raw("values "));
+      for (const [valueIndex, value] of values2.entries()) {
+        const valueList = [];
+        for (const [fieldName, col] of colEntries) {
+          const colValue = value[fieldName];
+          if (colValue === undefined || is(colValue, Param) && colValue.value === undefined) {
+            if (col.defaultFn !== undefined) {
+              const defaultFnResult = col.defaultFn();
+              const defaultValue = is(defaultFnResult, SQL) ? defaultFnResult : sql.param(defaultFnResult, col);
+              valueList.push(defaultValue);
+            } else if (!col.default && col.onUpdateFn !== undefined) {
+              const onUpdateFnResult = col.onUpdateFn();
+              const newValue = is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col);
+              valueList.push(newValue);
+            } else {
+              valueList.push(sql`default`);
+            }
+          } else {
+            valueList.push(colValue);
+          }
+        }
+        valuesSqlList.push(valueList);
+        if (valueIndex < values2.length - 1) {
+          valuesSqlList.push(sql`, `);
+        }
+      }
+    }
+    const withSql = this.buildWithCTE(withList);
+    const valuesSql = sql.join(valuesSqlList);
+    const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : undefined;
+    const onConflictSql = onConflict ? sql` on conflict ${onConflict}` : undefined;
+    const overridingSql = overridingSystemValue_ === true ? sql`overriding system value ` : undefined;
+    return sql`${withSql}insert into ${table} ${insertOrder} ${overridingSql}${valuesSql}${onConflictSql}${returningSql}`;
+  }
+  buildRefreshMaterializedViewQuery({ view, concurrently, withNoData }) {
+    const concurrentlySql = concurrently ? sql` concurrently` : undefined;
+    const withNoDataSql = withNoData ? sql` with no data` : undefined;
+    return sql`refresh materialized view${concurrentlySql} ${view}${withNoDataSql}`;
+  }
+  prepareTyping(encoder) {
+    if (is(encoder, PgJsonb) || is(encoder, PgJson)) {
+      return "json";
+    } else if (is(encoder, PgNumeric)) {
+      return "decimal";
+    } else if (is(encoder, PgTime)) {
+      return "time";
+    } else if (is(encoder, PgTimestamp) || is(encoder, PgTimestampString)) {
+      return "timestamp";
+    } else if (is(encoder, PgDate) || is(encoder, PgDateString)) {
+      return "date";
+    } else if (is(encoder, PgUUID)) {
+      return "uuid";
+    } else {
+      return "none";
+    }
+  }
+  sqlToQuery(sql2, invokeSource) {
+    return sql2.toQuery({
+      casing: this.casing,
+      escapeName: this.escapeName,
+      escapeParam: this.escapeParam,
+      escapeString: this.escapeString,
+      prepareTyping: this.prepareTyping,
+      invokeSource
+    });
+  }
+  buildRelationalQueryWithoutPK({
+    fullSchema,
+    schema,
+    tableNamesMap,
+    table,
+    tableConfig,
+    queryConfig: config,
+    tableAlias,
+    nestedQueryRelation,
+    joinOn
+  }) {
+    let selection = [];
+    let limit, offset, orderBy = [], where;
+    const joins = [];
+    if (config === true) {
+      const selectionEntries = Object.entries(tableConfig.columns);
+      selection = selectionEntries.map(([key, value]) => ({
+        dbKey: value.name,
+        tsKey: key,
+        field: aliasedTableColumn(value, tableAlias),
+        relationTableTsKey: undefined,
+        isJson: false,
+        selection: []
+      }));
+    } else {
+      const aliasedColumns = Object.fromEntries(Object.entries(tableConfig.columns).map(([key, value]) => [key, aliasedTableColumn(value, tableAlias)]));
+      if (config.where) {
+        const whereSql = typeof config.where === "function" ? config.where(aliasedColumns, getOperators()) : config.where;
+        where = whereSql && mapColumnsInSQLToAlias(whereSql, tableAlias);
+      }
+      const fieldsSelection = [];
+      let selectedColumns = [];
+      if (config.columns) {
+        let isIncludeMode = false;
+        for (const [field, value] of Object.entries(config.columns)) {
+          if (value === undefined) {
+            continue;
+          }
+          if (field in tableConfig.columns) {
+            if (!isIncludeMode && value === true) {
+              isIncludeMode = true;
+            }
+            selectedColumns.push(field);
+          }
+        }
+        if (selectedColumns.length > 0) {
+          selectedColumns = isIncludeMode ? selectedColumns.filter((c) => config.columns?.[c] === true) : Object.keys(tableConfig.columns).filter((key) => !selectedColumns.includes(key));
+        }
+      } else {
+        selectedColumns = Object.keys(tableConfig.columns);
+      }
+      for (const field of selectedColumns) {
+        const column = tableConfig.columns[field];
+        fieldsSelection.push({ tsKey: field, value: column });
+      }
+      let selectedRelations = [];
+      if (config.with) {
+        selectedRelations = Object.entries(config.with).filter((entry) => !!entry[1]).map(([tsKey, queryConfig]) => ({ tsKey, queryConfig, relation: tableConfig.relations[tsKey] }));
+      }
+      let extras;
+      if (config.extras) {
+        extras = typeof config.extras === "function" ? config.extras(aliasedColumns, { sql }) : config.extras;
+        for (const [tsKey, value] of Object.entries(extras)) {
+          fieldsSelection.push({
+            tsKey,
+            value: mapColumnsInAliasedSQLToAlias(value, tableAlias)
+          });
+        }
+      }
+      for (const { tsKey, value } of fieldsSelection) {
+        selection.push({
+          dbKey: is(value, SQL.Aliased) ? value.fieldAlias : tableConfig.columns[tsKey].name,
+          tsKey,
+          field: is(value, Column) ? aliasedTableColumn(value, tableAlias) : value,
+          relationTableTsKey: undefined,
+          isJson: false,
+          selection: []
+        });
+      }
+      let orderByOrig = typeof config.orderBy === "function" ? config.orderBy(aliasedColumns, getOrderByOperators()) : config.orderBy ?? [];
+      if (!Array.isArray(orderByOrig)) {
+        orderByOrig = [orderByOrig];
+      }
+      orderBy = orderByOrig.map((orderByValue) => {
+        if (is(orderByValue, Column)) {
+          return aliasedTableColumn(orderByValue, tableAlias);
+        }
+        return mapColumnsInSQLToAlias(orderByValue, tableAlias);
+      });
+      limit = config.limit;
+      offset = config.offset;
+      for (const {
+        tsKey: selectedRelationTsKey,
+        queryConfig: selectedRelationConfigValue,
+        relation
+      } of selectedRelations) {
+        const normalizedRelation = normalizeRelation(schema, tableNamesMap, relation);
+        const relationTableName = getTableUniqueName(relation.referencedTable);
+        const relationTableTsName = tableNamesMap[relationTableName];
+        const relationTableAlias = `${tableAlias}_${selectedRelationTsKey}`;
+        const joinOn2 = and(...normalizedRelation.fields.map((field2, i) => eq(aliasedTableColumn(normalizedRelation.references[i], relationTableAlias), aliasedTableColumn(field2, tableAlias))));
+        const builtRelation = this.buildRelationalQueryWithoutPK({
+          fullSchema,
+          schema,
+          tableNamesMap,
+          table: fullSchema[relationTableTsName],
+          tableConfig: schema[relationTableTsName],
+          queryConfig: is(relation, One) ? selectedRelationConfigValue === true ? { limit: 1 } : { ...selectedRelationConfigValue, limit: 1 } : selectedRelationConfigValue,
+          tableAlias: relationTableAlias,
+          joinOn: joinOn2,
+          nestedQueryRelation: relation
+        });
+        const field = sql`${sql.identifier(relationTableAlias)}.${sql.identifier("data")}`.as(selectedRelationTsKey);
+        joins.push({
+          on: sql`true`,
+          table: new Subquery(builtRelation.sql, {}, relationTableAlias),
+          alias: relationTableAlias,
+          joinType: "left",
+          lateral: true
+        });
+        selection.push({
+          dbKey: selectedRelationTsKey,
+          tsKey: selectedRelationTsKey,
+          field,
+          relationTableTsKey: relationTableTsName,
+          isJson: true,
+          selection: builtRelation.selection
+        });
+      }
+    }
+    if (selection.length === 0) {
+      throw new DrizzleError({ message: `No fields selected for table "${tableConfig.tsName}" ("${tableAlias}")` });
+    }
+    let result;
+    where = and(joinOn, where);
+    if (nestedQueryRelation) {
+      let field = sql`json_build_array(${sql.join(selection.map(({ field: field2, tsKey, isJson }) => isJson ? sql`${sql.identifier(`${tableAlias}_${tsKey}`)}.${sql.identifier("data")}` : is(field2, SQL.Aliased) ? field2.sql : field2), sql`, `)})`;
+      if (is(nestedQueryRelation, Many)) {
+        field = sql`coalesce(json_agg(${field}${orderBy.length > 0 ? sql` order by ${sql.join(orderBy, sql`, `)}` : undefined}), '[]'::json)`;
+      }
+      const nestedSelection = [{
+        dbKey: "data",
+        tsKey: "data",
+        field: field.as("data"),
+        isJson: true,
+        relationTableTsKey: tableConfig.tsName,
+        selection
+      }];
+      const needsSubquery = limit !== undefined || offset !== undefined || orderBy.length > 0;
+      if (needsSubquery) {
+        result = this.buildSelectQuery({
+          table: aliasedTable(table, tableAlias),
+          fields: {},
+          fieldsFlat: [{
+            path: [],
+            field: sql.raw("*")
+          }],
+          where,
+          limit,
+          offset,
+          orderBy,
+          setOperators: []
+        });
+        where = undefined;
+        limit = undefined;
+        offset = undefined;
+        orderBy = [];
+      } else {
+        result = aliasedTable(table, tableAlias);
+      }
+      result = this.buildSelectQuery({
+        table: is(result, PgTable) ? result : new Subquery(result, {}, tableAlias),
+        fields: {},
+        fieldsFlat: nestedSelection.map(({ field: field2 }) => ({
+          path: [],
+          field: is(field2, Column) ? aliasedTableColumn(field2, tableAlias) : field2
+        })),
+        joins,
+        where,
+        limit,
+        offset,
+        orderBy,
+        setOperators: []
+      });
+    } else {
+      result = this.buildSelectQuery({
+        table: aliasedTable(table, tableAlias),
+        fields: {},
+        fieldsFlat: selection.map(({ field }) => ({
+          path: [],
+          field: is(field, Column) ? aliasedTableColumn(field, tableAlias) : field
+        })),
+        joins,
+        where,
+        limit,
+        offset,
+        orderBy,
+        setOperators: []
+      });
+    }
+    return {
+      tableTsKey: tableConfig.tsName,
+      sql: result,
+      selection
+    };
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/query-builders/query-builder.js
+class TypedQueryBuilder {
+  static [entityKind] = "TypedQueryBuilder";
+  getSelectedFields() {
+    return this._.selectedFields;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/select.js
+class PgSelectBuilder {
+  static [entityKind] = "PgSelectBuilder";
+  fields;
+  session;
+  dialect;
+  withList = [];
+  distinct;
+  constructor(config) {
+    this.fields = config.fields;
+    this.session = config.session;
+    this.dialect = config.dialect;
+    if (config.withList) {
+      this.withList = config.withList;
+    }
+    this.distinct = config.distinct;
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  from(source) {
+    const isPartialSelect = !!this.fields;
+    const src = source;
+    let fields;
+    if (this.fields) {
+      fields = this.fields;
+    } else if (is(src, Subquery)) {
+      fields = Object.fromEntries(Object.keys(src._.selectedFields).map((key) => [key, src[key]]));
+    } else if (is(src, PgViewBase)) {
+      fields = src[ViewBaseConfig].selectedFields;
+    } else if (is(src, SQL)) {
+      fields = {};
+    } else {
+      fields = getTableColumns(src);
+    }
+    return new PgSelectBase({
+      table: src,
+      fields,
+      isPartialSelect,
+      session: this.session,
+      dialect: this.dialect,
+      withList: this.withList,
+      distinct: this.distinct
+    }).setToken(this.authToken);
+  }
+}
+
+class PgSelectQueryBuilderBase extends TypedQueryBuilder {
+  static [entityKind] = "PgSelectQueryBuilder";
+  _;
+  config;
+  joinsNotNullableMap;
+  tableName;
+  isPartialSelect;
+  session;
+  dialect;
+  cacheConfig = undefined;
+  usedTables = /* @__PURE__ */ new Set;
+  constructor({ table, fields, isPartialSelect, session, dialect, withList, distinct }) {
+    super();
+    this.config = {
+      withList,
+      table,
+      fields: { ...fields },
+      distinct,
+      setOperators: []
+    };
+    this.isPartialSelect = isPartialSelect;
+    this.session = session;
+    this.dialect = dialect;
+    this._ = {
+      selectedFields: fields,
+      config: this.config
+    };
+    this.tableName = getTableLikeName(table);
+    this.joinsNotNullableMap = typeof this.tableName === "string" ? { [this.tableName]: true } : {};
+    for (const item of extractUsedTable(table))
+      this.usedTables.add(item);
+  }
+  getUsedTables() {
+    return [...this.usedTables];
+  }
+  createJoin(joinType, lateral) {
+    return (table, on) => {
+      const baseTableName = this.tableName;
+      const tableName = getTableLikeName(table);
+      for (const item of extractUsedTable(table))
+        this.usedTables.add(item);
+      if (typeof tableName === "string" && this.config.joins?.some((join) => join.alias === tableName)) {
+        throw new Error(`Alias "${tableName}" is already used in this query`);
+      }
+      if (!this.isPartialSelect) {
+        if (Object.keys(this.joinsNotNullableMap).length === 1 && typeof baseTableName === "string") {
+          this.config.fields = {
+            [baseTableName]: this.config.fields
+          };
+        }
+        if (typeof tableName === "string" && !is(table, SQL)) {
+          const selection = is(table, Subquery) ? table._.selectedFields : is(table, View) ? table[ViewBaseConfig].selectedFields : table[Table.Symbol.Columns];
+          this.config.fields[tableName] = selection;
+        }
+      }
+      if (typeof on === "function") {
+        on = on(new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })));
+      }
+      if (!this.config.joins) {
+        this.config.joins = [];
+      }
+      this.config.joins.push({ on, table, joinType, alias: tableName, lateral });
+      if (typeof tableName === "string") {
+        switch (joinType) {
+          case "left": {
+            this.joinsNotNullableMap[tableName] = false;
+            break;
+          }
+          case "right": {
+            this.joinsNotNullableMap = Object.fromEntries(Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false]));
+            this.joinsNotNullableMap[tableName] = true;
+            break;
+          }
+          case "cross":
+          case "inner": {
+            this.joinsNotNullableMap[tableName] = true;
+            break;
+          }
+          case "full": {
+            this.joinsNotNullableMap = Object.fromEntries(Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false]));
+            this.joinsNotNullableMap[tableName] = false;
+            break;
+          }
+        }
+      }
+      return this;
+    };
+  }
+  leftJoin = this.createJoin("left", false);
+  leftJoinLateral = this.createJoin("left", true);
+  rightJoin = this.createJoin("right", false);
+  innerJoin = this.createJoin("inner", false);
+  innerJoinLateral = this.createJoin("inner", true);
+  fullJoin = this.createJoin("full", false);
+  crossJoin = this.createJoin("cross", false);
+  crossJoinLateral = this.createJoin("cross", true);
+  createSetOperator(type, isAll) {
+    return (rightSelection) => {
+      const rightSelect = typeof rightSelection === "function" ? rightSelection(getPgSetOperators()) : rightSelection;
+      if (!haveSameKeys(this.getSelectedFields(), rightSelect.getSelectedFields())) {
+        throw new Error("Set operator error (union / intersect / except): selected fields are not the same or are in a different order");
+      }
+      this.config.setOperators.push({ type, isAll, rightSelect });
+      return this;
+    };
+  }
+  union = this.createSetOperator("union", false);
+  unionAll = this.createSetOperator("union", true);
+  intersect = this.createSetOperator("intersect", false);
+  intersectAll = this.createSetOperator("intersect", true);
+  except = this.createSetOperator("except", false);
+  exceptAll = this.createSetOperator("except", true);
+  addSetOperators(setOperators) {
+    this.config.setOperators.push(...setOperators);
+    return this;
+  }
+  where(where) {
+    if (typeof where === "function") {
+      where = where(new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })));
+    }
+    this.config.where = where;
+    return this;
+  }
+  having(having) {
+    if (typeof having === "function") {
+      having = having(new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })));
+    }
+    this.config.having = having;
+    return this;
+  }
+  groupBy(...columns) {
+    if (typeof columns[0] === "function") {
+      const groupBy = columns[0](new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })));
+      this.config.groupBy = Array.isArray(groupBy) ? groupBy : [groupBy];
+    } else {
+      this.config.groupBy = columns;
+    }
+    return this;
+  }
+  orderBy(...columns) {
+    if (typeof columns[0] === "function") {
+      const orderBy = columns[0](new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })));
+      const orderByArray = Array.isArray(orderBy) ? orderBy : [orderBy];
+      if (this.config.setOperators.length > 0) {
+        this.config.setOperators.at(-1).orderBy = orderByArray;
+      } else {
+        this.config.orderBy = orderByArray;
+      }
+    } else {
+      const orderByArray = columns;
+      if (this.config.setOperators.length > 0) {
+        this.config.setOperators.at(-1).orderBy = orderByArray;
+      } else {
+        this.config.orderBy = orderByArray;
+      }
+    }
+    return this;
+  }
+  limit(limit) {
+    if (this.config.setOperators.length > 0) {
+      this.config.setOperators.at(-1).limit = limit;
+    } else {
+      this.config.limit = limit;
+    }
+    return this;
+  }
+  offset(offset) {
+    if (this.config.setOperators.length > 0) {
+      this.config.setOperators.at(-1).offset = offset;
+    } else {
+      this.config.offset = offset;
+    }
+    return this;
+  }
+  for(strength, config = {}) {
+    this.config.lockingClause = { strength, config };
+    return this;
+  }
+  getSQL() {
+    return this.dialect.buildSelectQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  as(alias) {
+    const usedTables = [];
+    usedTables.push(...extractUsedTable(this.config.table));
+    if (this.config.joins) {
+      for (const it of this.config.joins)
+        usedTables.push(...extractUsedTable(it.table));
+    }
+    return new Proxy(new Subquery(this.getSQL(), this.config.fields, alias, false, [...new Set(usedTables)]), new SelectionProxyHandler({ alias, sqlAliasedBehavior: "alias", sqlBehavior: "error" }));
+  }
+  getSelectedFields() {
+    return new Proxy(this.config.fields, new SelectionProxyHandler({ alias: this.tableName, sqlAliasedBehavior: "alias", sqlBehavior: "error" }));
+  }
+  $dynamic() {
+    return this;
+  }
+  $withCache(config) {
+    this.cacheConfig = config === undefined ? { config: {}, enable: true, autoInvalidate: true } : config === false ? { enable: false } : { enable: true, autoInvalidate: true, ...config };
+    return this;
+  }
+}
+
+class PgSelectBase extends PgSelectQueryBuilderBase {
+  static [entityKind] = "PgSelect";
+  _prepare(name) {
+    const { session, config, dialect, joinsNotNullableMap, authToken, cacheConfig, usedTables } = this;
+    if (!session) {
+      throw new Error("Cannot execute a query on a query builder. Please use a database instance instead.");
+    }
+    const { fields } = config;
+    return tracer.startActiveSpan("drizzle.prepareQuery", () => {
+      const fieldsList = orderSelectedFields(fields);
+      const query = session.prepareQuery(dialect.sqlToQuery(this.getSQL()), fieldsList, name, true, undefined, {
+        type: "select",
+        tables: [...usedTables]
+      }, cacheConfig);
+      query.joinsNotNullableMap = joinsNotNullableMap;
+      return query.setToken(authToken);
+    });
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute = (placeholderValues) => {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      return this._prepare().execute(placeholderValues, this.authToken);
+    });
+  };
+}
+applyMixins(PgSelectBase, [QueryPromise]);
+function createSetOperator(type, isAll) {
+  return (leftSelect, rightSelect, ...restSelects) => {
+    const setOperators = [rightSelect, ...restSelects].map((select2) => ({
+      type,
+      isAll,
+      rightSelect: select2
+    }));
+    for (const setOperator of setOperators) {
+      if (!haveSameKeys(leftSelect.getSelectedFields(), setOperator.rightSelect.getSelectedFields())) {
+        throw new Error("Set operator error (union / intersect / except): selected fields are not the same or are in a different order");
+      }
+    }
+    return leftSelect.addSetOperators(setOperators);
+  };
+}
+var getPgSetOperators = () => ({
+  union,
+  unionAll,
+  intersect,
+  intersectAll,
+  except,
+  exceptAll
+});
+var union = createSetOperator("union", false);
+var unionAll = createSetOperator("union", true);
+var intersect = createSetOperator("intersect", false);
+var intersectAll = createSetOperator("intersect", true);
+var except = createSetOperator("except", false);
+var exceptAll = createSetOperator("except", true);
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/query-builder.js
+class QueryBuilder {
+  static [entityKind] = "PgQueryBuilder";
+  dialect;
+  dialectConfig;
+  constructor(dialect) {
+    this.dialect = is(dialect, PgDialect) ? dialect : undefined;
+    this.dialectConfig = is(dialect, PgDialect) ? undefined : dialect;
+  }
+  $with = (alias, selection) => {
+    const queryBuilder = this;
+    const as = (qb) => {
+      if (typeof qb === "function") {
+        qb = qb(queryBuilder);
+      }
+      return new Proxy(new WithSubquery(qb.getSQL(), selection ?? ("getSelectedFields" in qb ? qb.getSelectedFields() ?? {} : {}), alias, true), new SelectionProxyHandler({ alias, sqlAliasedBehavior: "alias", sqlBehavior: "error" }));
+    };
+    return { as };
+  };
+  with(...queries) {
+    const self2 = this;
+    function select2(fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: undefined,
+        dialect: self2.getDialect(),
+        withList: queries
+      });
+    }
+    function selectDistinct(fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: undefined,
+        dialect: self2.getDialect(),
+        distinct: true
+      });
+    }
+    function selectDistinctOn(on, fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: undefined,
+        dialect: self2.getDialect(),
+        distinct: { on }
+      });
+    }
+    return { select: select2, selectDistinct, selectDistinctOn };
+  }
+  select(fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: undefined,
+      dialect: this.getDialect()
+    });
+  }
+  selectDistinct(fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: undefined,
+      dialect: this.getDialect(),
+      distinct: true
+    });
+  }
+  selectDistinctOn(on, fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: undefined,
+      dialect: this.getDialect(),
+      distinct: { on }
+    });
+  }
+  getDialect() {
+    if (!this.dialect) {
+      this.dialect = new PgDialect(this.dialectConfig);
+    }
+    return this.dialect;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/utils.js
+function extractUsedTable(table) {
+  if (is(table, PgTable)) {
+    return [table[Schema] ? `${table[Schema]}.${table[Table.Symbol.BaseName]}` : table[Table.Symbol.BaseName]];
+  }
+  if (is(table, Subquery)) {
+    return table._.usedTables ?? [];
+  }
+  if (is(table, SQL)) {
+    return table.usedTables ?? [];
+  }
+  return [];
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/delete.js
+class PgDeleteBase extends QueryPromise {
+  constructor(table, session, dialect, withList) {
+    super();
+    this.session = session;
+    this.dialect = dialect;
+    this.config = { table, withList };
+  }
+  static [entityKind] = "PgDelete";
+  config;
+  cacheConfig;
+  where(where) {
+    this.config.where = where;
+    return this;
+  }
+  returning(fields = this.config.table[Table.Symbol.Columns]) {
+    this.config.returningFields = fields;
+    this.config.returning = orderSelectedFields(fields);
+    return this;
+  }
+  getSQL() {
+    return this.dialect.buildDeleteQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  _prepare(name) {
+    return tracer.startActiveSpan("drizzle.prepareQuery", () => {
+      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, undefined, {
+        type: "delete",
+        tables: extractUsedTable(this.config.table)
+      }, this.cacheConfig);
+    });
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute = (placeholderValues) => {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      return this._prepare().execute(placeholderValues, this.authToken);
+    });
+  };
+  getSelectedFields() {
+    return this.config.returningFields ? new Proxy(this.config.returningFields, new SelectionProxyHandler({
+      alias: getTableName(this.config.table),
+      sqlAliasedBehavior: "alias",
+      sqlBehavior: "error"
+    })) : undefined;
+  }
+  $dynamic() {
+    return this;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/insert.js
+class PgInsertBuilder {
+  constructor(table, session, dialect, withList, overridingSystemValue_) {
+    this.table = table;
+    this.session = session;
+    this.dialect = dialect;
+    this.withList = withList;
+    this.overridingSystemValue_ = overridingSystemValue_;
+  }
+  static [entityKind] = "PgInsertBuilder";
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  overridingSystemValue() {
+    this.overridingSystemValue_ = true;
+    return this;
+  }
+  values(values2) {
+    values2 = Array.isArray(values2) ? values2 : [values2];
+    if (values2.length === 0) {
+      throw new Error("values() must be called with at least one value");
+    }
+    const mappedValues = values2.map((entry) => {
+      const result = {};
+      const cols = this.table[Table.Symbol.Columns];
+      for (const colKey of Object.keys(entry)) {
+        const colValue = entry[colKey];
+        result[colKey] = is(colValue, SQL) ? colValue : new Param(colValue, cols[colKey]);
+      }
+      return result;
+    });
+    return new PgInsertBase(this.table, mappedValues, this.session, this.dialect, this.withList, false, this.overridingSystemValue_).setToken(this.authToken);
+  }
+  select(selectQuery) {
+    const select2 = typeof selectQuery === "function" ? selectQuery(new QueryBuilder) : selectQuery;
+    if (!is(select2, SQL) && !haveSameKeys(this.table[Columns], select2._.selectedFields)) {
+      throw new Error("Insert select error: selected fields are not the same or are in a different order compared to the table definition");
+    }
+    return new PgInsertBase(this.table, select2, this.session, this.dialect, this.withList, true);
+  }
+}
+
+class PgInsertBase extends QueryPromise {
+  constructor(table, values2, session, dialect, withList, select2, overridingSystemValue_) {
+    super();
+    this.session = session;
+    this.dialect = dialect;
+    this.config = { table, values: values2, withList, select: select2, overridingSystemValue_ };
+  }
+  static [entityKind] = "PgInsert";
+  config;
+  cacheConfig;
+  returning(fields = this.config.table[Table.Symbol.Columns]) {
+    this.config.returningFields = fields;
+    this.config.returning = orderSelectedFields(fields);
+    return this;
+  }
+  onConflictDoNothing(config = {}) {
+    if (config.target === undefined) {
+      this.config.onConflict = sql`do nothing`;
+    } else {
+      let targetColumn = "";
+      targetColumn = Array.isArray(config.target) ? config.target.map((it) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config.target));
+      const whereSql = config.where ? sql` where ${config.where}` : undefined;
+      this.config.onConflict = sql`(${sql.raw(targetColumn)})${whereSql} do nothing`;
+    }
+    return this;
+  }
+  onConflictDoUpdate(config) {
+    if (config.where && (config.targetWhere || config.setWhere)) {
+      throw new Error('You cannot use both "where" and "targetWhere"/"setWhere" at the same time - "where" is deprecated, use "targetWhere" or "setWhere" instead.');
+    }
+    const whereSql = config.where ? sql` where ${config.where}` : undefined;
+    const targetWhereSql = config.targetWhere ? sql` where ${config.targetWhere}` : undefined;
+    const setWhereSql = config.setWhere ? sql` where ${config.setWhere}` : undefined;
+    const setSql = this.dialect.buildUpdateSet(this.config.table, mapUpdateSet(this.config.table, config.set));
+    let targetColumn = "";
+    targetColumn = Array.isArray(config.target) ? config.target.map((it) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config.target));
+    this.config.onConflict = sql`(${sql.raw(targetColumn)})${targetWhereSql} do update set ${setSql}${whereSql}${setWhereSql}`;
+    return this;
+  }
+  getSQL() {
+    return this.dialect.buildInsertQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  _prepare(name) {
+    return tracer.startActiveSpan("drizzle.prepareQuery", () => {
+      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, undefined, {
+        type: "insert",
+        tables: extractUsedTable(this.config.table)
+      }, this.cacheConfig);
+    });
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute = (placeholderValues) => {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      return this._prepare().execute(placeholderValues, this.authToken);
+    });
+  };
+  getSelectedFields() {
+    return this.config.returningFields ? new Proxy(this.config.returningFields, new SelectionProxyHandler({
+      alias: getTableName(this.config.table),
+      sqlAliasedBehavior: "alias",
+      sqlBehavior: "error"
+    })) : undefined;
+  }
+  $dynamic() {
+    return this;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/refresh-materialized-view.js
+class PgRefreshMaterializedView extends QueryPromise {
+  constructor(view, session, dialect) {
+    super();
+    this.session = session;
+    this.dialect = dialect;
+    this.config = { view };
+  }
+  static [entityKind] = "PgRefreshMaterializedView";
+  config;
+  concurrently() {
+    if (this.config.withNoData !== undefined) {
+      throw new Error("Cannot use concurrently and withNoData together");
+    }
+    this.config.concurrently = true;
+    return this;
+  }
+  withNoData() {
+    if (this.config.concurrently !== undefined) {
+      throw new Error("Cannot use concurrently and withNoData together");
+    }
+    this.config.withNoData = true;
+    return this;
+  }
+  getSQL() {
+    return this.dialect.buildRefreshMaterializedViewQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  _prepare(name) {
+    return tracer.startActiveSpan("drizzle.prepareQuery", () => {
+      return this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), undefined, name, true);
+    });
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute = (placeholderValues) => {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      return this._prepare().execute(placeholderValues, this.authToken);
+    });
+  };
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/update.js
+class PgUpdateBuilder {
+  constructor(table, session, dialect, withList) {
+    this.table = table;
+    this.session = session;
+    this.dialect = dialect;
+    this.withList = withList;
+  }
+  static [entityKind] = "PgUpdateBuilder";
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  set(values2) {
+    return new PgUpdateBase(this.table, mapUpdateSet(this.table, values2), this.session, this.dialect, this.withList).setToken(this.authToken);
+  }
+}
+
+class PgUpdateBase extends QueryPromise {
+  constructor(table, set, session, dialect, withList) {
+    super();
+    this.session = session;
+    this.dialect = dialect;
+    this.config = { set, table, withList, joins: [] };
+    this.tableName = getTableLikeName(table);
+    this.joinsNotNullableMap = typeof this.tableName === "string" ? { [this.tableName]: true } : {};
+  }
+  static [entityKind] = "PgUpdate";
+  config;
+  tableName;
+  joinsNotNullableMap;
+  cacheConfig;
+  from(source) {
+    const src = source;
+    const tableName = getTableLikeName(src);
+    if (typeof tableName === "string") {
+      this.joinsNotNullableMap[tableName] = true;
+    }
+    this.config.from = src;
+    return this;
+  }
+  getTableLikeFields(table) {
+    if (is(table, PgTable)) {
+      return table[Table.Symbol.Columns];
+    } else if (is(table, Subquery)) {
+      return table._.selectedFields;
+    }
+    return table[ViewBaseConfig].selectedFields;
+  }
+  createJoin(joinType) {
+    return (table, on) => {
+      const tableName = getTableLikeName(table);
+      if (typeof tableName === "string" && this.config.joins.some((join) => join.alias === tableName)) {
+        throw new Error(`Alias "${tableName}" is already used in this query`);
+      }
+      if (typeof on === "function") {
+        const from = this.config.from && !is(this.config.from, SQL) ? this.getTableLikeFields(this.config.from) : undefined;
+        on = on(new Proxy(this.config.table[Table.Symbol.Columns], new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })), from && new Proxy(from, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })));
+      }
+      this.config.joins.push({ on, table, joinType, alias: tableName });
+      if (typeof tableName === "string") {
+        switch (joinType) {
+          case "left": {
+            this.joinsNotNullableMap[tableName] = false;
+            break;
+          }
+          case "right": {
+            this.joinsNotNullableMap = Object.fromEntries(Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false]));
+            this.joinsNotNullableMap[tableName] = true;
+            break;
+          }
+          case "inner": {
+            this.joinsNotNullableMap[tableName] = true;
+            break;
+          }
+          case "full": {
+            this.joinsNotNullableMap = Object.fromEntries(Object.entries(this.joinsNotNullableMap).map(([key]) => [key, false]));
+            this.joinsNotNullableMap[tableName] = false;
+            break;
+          }
+        }
+      }
+      return this;
+    };
+  }
+  leftJoin = this.createJoin("left");
+  rightJoin = this.createJoin("right");
+  innerJoin = this.createJoin("inner");
+  fullJoin = this.createJoin("full");
+  where(where) {
+    this.config.where = where;
+    return this;
+  }
+  returning(fields) {
+    if (!fields) {
+      fields = Object.assign({}, this.config.table[Table.Symbol.Columns]);
+      if (this.config.from) {
+        const tableName = getTableLikeName(this.config.from);
+        if (typeof tableName === "string" && this.config.from && !is(this.config.from, SQL)) {
+          const fromFields = this.getTableLikeFields(this.config.from);
+          fields[tableName] = fromFields;
+        }
+        for (const join of this.config.joins) {
+          const tableName2 = getTableLikeName(join.table);
+          if (typeof tableName2 === "string" && !is(join.table, SQL)) {
+            const fromFields = this.getTableLikeFields(join.table);
+            fields[tableName2] = fromFields;
+          }
+        }
+      }
+    }
+    this.config.returningFields = fields;
+    this.config.returning = orderSelectedFields(fields);
+    return this;
+  }
+  getSQL() {
+    return this.dialect.buildUpdateQuery(this.config);
+  }
+  toSQL() {
+    const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
+    return rest;
+  }
+  _prepare(name) {
+    const query = this.session.prepareQuery(this.dialect.sqlToQuery(this.getSQL()), this.config.returning, name, true, undefined, {
+      type: "insert",
+      tables: extractUsedTable(this.config.table)
+    }, this.cacheConfig);
+    query.joinsNotNullableMap = this.joinsNotNullableMap;
+    return query;
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute = (placeholderValues) => {
+    return this._prepare().execute(placeholderValues, this.authToken);
+  };
+  getSelectedFields() {
+    return this.config.returningFields ? new Proxy(this.config.returningFields, new SelectionProxyHandler({
+      alias: getTableName(this.config.table),
+      sqlAliasedBehavior: "alias",
+      sqlBehavior: "error"
+    })) : undefined;
+  }
+  $dynamic() {
+    return this;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/count.js
+class PgCountBuilder extends SQL {
+  constructor(params) {
+    super(PgCountBuilder.buildEmbeddedCount(params.source, params.filters).queryChunks);
+    this.params = params;
+    this.mapWith(Number);
+    this.session = params.session;
+    this.sql = PgCountBuilder.buildCount(params.source, params.filters);
+  }
+  sql;
+  token;
+  static [entityKind] = "PgCountBuilder";
+  [Symbol.toStringTag] = "PgCountBuilder";
+  session;
+  static buildEmbeddedCount(source, filters) {
+    return sql`(select count(*) from ${source}${sql.raw(" where ").if(filters)}${filters})`;
+  }
+  static buildCount(source, filters) {
+    return sql`select count(*) as count from ${source}${sql.raw(" where ").if(filters)}${filters};`;
+  }
+  setToken(token) {
+    this.token = token;
+    return this;
+  }
+  then(onfulfilled, onrejected) {
+    return Promise.resolve(this.session.count(this.sql, this.token)).then(onfulfilled, onrejected);
+  }
+  catch(onRejected) {
+    return this.then(undefined, onRejected);
+  }
+  finally(onFinally) {
+    return this.then((value) => {
+      onFinally?.();
+      return value;
+    }, (reason) => {
+      onFinally?.();
+      throw reason;
+    });
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/query.js
+class RelationalQueryBuilder {
+  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session) {
+    this.fullSchema = fullSchema;
+    this.schema = schema;
+    this.tableNamesMap = tableNamesMap;
+    this.table = table;
+    this.tableConfig = tableConfig;
+    this.dialect = dialect;
+    this.session = session;
+  }
+  static [entityKind] = "PgRelationalQueryBuilder";
+  findMany(config) {
+    return new PgRelationalQuery(this.fullSchema, this.schema, this.tableNamesMap, this.table, this.tableConfig, this.dialect, this.session, config ? config : {}, "many");
+  }
+  findFirst(config) {
+    return new PgRelationalQuery(this.fullSchema, this.schema, this.tableNamesMap, this.table, this.tableConfig, this.dialect, this.session, config ? { ...config, limit: 1 } : { limit: 1 }, "first");
+  }
+}
+
+class PgRelationalQuery extends QueryPromise {
+  constructor(fullSchema, schema, tableNamesMap, table, tableConfig, dialect, session, config, mode) {
+    super();
+    this.fullSchema = fullSchema;
+    this.schema = schema;
+    this.tableNamesMap = tableNamesMap;
+    this.table = table;
+    this.tableConfig = tableConfig;
+    this.dialect = dialect;
+    this.session = session;
+    this.config = config;
+    this.mode = mode;
+  }
+  static [entityKind] = "PgRelationalQuery";
+  _prepare(name) {
+    return tracer.startActiveSpan("drizzle.prepareQuery", () => {
+      const { query, builtQuery } = this._toSQL();
+      return this.session.prepareQuery(builtQuery, undefined, name, true, (rawRows, mapColumnValue) => {
+        const rows = rawRows.map((row) => mapRelationalRow(this.schema, this.tableConfig, row, query.selection, mapColumnValue));
+        if (this.mode === "first") {
+          return rows[0];
+        }
+        return rows;
+      });
+    });
+  }
+  prepare(name) {
+    return this._prepare(name);
+  }
+  _getQuery() {
+    return this.dialect.buildRelationalQueryWithoutPK({
+      fullSchema: this.fullSchema,
+      schema: this.schema,
+      tableNamesMap: this.tableNamesMap,
+      table: this.table,
+      tableConfig: this.tableConfig,
+      queryConfig: this.config,
+      tableAlias: this.tableConfig.tsName
+    });
+  }
+  getSQL() {
+    return this._getQuery().sql;
+  }
+  _toSQL() {
+    const query = this._getQuery();
+    const builtQuery = this.dialect.sqlToQuery(query.sql);
+    return { query, builtQuery };
+  }
+  toSQL() {
+    return this._toSQL().builtQuery;
+  }
+  authToken;
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  execute() {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      return this._prepare().execute(undefined, this.authToken);
+    });
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/query-builders/raw.js
+class PgRaw extends QueryPromise {
+  constructor(execute, sql2, query, mapBatchResult) {
+    super();
+    this.execute = execute;
+    this.sql = sql2;
+    this.query = query;
+    this.mapBatchResult = mapBatchResult;
+  }
+  static [entityKind] = "PgRaw";
+  getSQL() {
+    return this.sql;
+  }
+  getQuery() {
+    return this.query;
+  }
+  mapResult(result, isFromBatch) {
+    return isFromBatch ? this.mapBatchResult(result) : result;
+  }
+  _prepare() {
+    return this;
+  }
+  isResponseInArrayMode() {
+    return false;
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/db.js
+class PgDatabase {
+  constructor(dialect, session, schema) {
+    this.dialect = dialect;
+    this.session = session;
+    this._ = schema ? {
+      schema: schema.schema,
+      fullSchema: schema.fullSchema,
+      tableNamesMap: schema.tableNamesMap,
+      session
+    } : {
+      schema: undefined,
+      fullSchema: {},
+      tableNamesMap: {},
+      session
+    };
+    this.query = {};
+    if (this._.schema) {
+      for (const [tableName, columns] of Object.entries(this._.schema)) {
+        this.query[tableName] = new RelationalQueryBuilder(schema.fullSchema, this._.schema, this._.tableNamesMap, schema.fullSchema[tableName], columns, dialect, session);
+      }
+    }
+    this.$cache = { invalidate: async (_params) => {} };
+  }
+  static [entityKind] = "PgDatabase";
+  query;
+  $with = (alias, selection) => {
+    const self2 = this;
+    const as = (qb) => {
+      if (typeof qb === "function") {
+        qb = qb(new QueryBuilder(self2.dialect));
+      }
+      return new Proxy(new WithSubquery(qb.getSQL(), selection ?? ("getSelectedFields" in qb ? qb.getSelectedFields() ?? {} : {}), alias, true), new SelectionProxyHandler({ alias, sqlAliasedBehavior: "alias", sqlBehavior: "error" }));
+    };
+    return { as };
+  };
+  $count(source, filters) {
+    return new PgCountBuilder({ source, filters, session: this.session });
+  }
+  $cache;
+  with(...queries) {
+    const self2 = this;
+    function select2(fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: self2.session,
+        dialect: self2.dialect,
+        withList: queries
+      });
+    }
+    function selectDistinct(fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: self2.session,
+        dialect: self2.dialect,
+        withList: queries,
+        distinct: true
+      });
+    }
+    function selectDistinctOn(on, fields) {
+      return new PgSelectBuilder({
+        fields: fields ?? undefined,
+        session: self2.session,
+        dialect: self2.dialect,
+        withList: queries,
+        distinct: { on }
+      });
+    }
+    function update(table) {
+      return new PgUpdateBuilder(table, self2.session, self2.dialect, queries);
+    }
+    function insert(table) {
+      return new PgInsertBuilder(table, self2.session, self2.dialect, queries);
+    }
+    function delete_(table) {
+      return new PgDeleteBase(table, self2.session, self2.dialect, queries);
+    }
+    return { select: select2, selectDistinct, selectDistinctOn, update, insert, delete: delete_ };
+  }
+  select(fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: this.session,
+      dialect: this.dialect
+    });
+  }
+  selectDistinct(fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: this.session,
+      dialect: this.dialect,
+      distinct: true
+    });
+  }
+  selectDistinctOn(on, fields) {
+    return new PgSelectBuilder({
+      fields: fields ?? undefined,
+      session: this.session,
+      dialect: this.dialect,
+      distinct: { on }
+    });
+  }
+  update(table) {
+    return new PgUpdateBuilder(table, this.session, this.dialect);
+  }
+  insert(table) {
+    return new PgInsertBuilder(table, this.session, this.dialect);
+  }
+  delete(table) {
+    return new PgDeleteBase(table, this.session, this.dialect);
+  }
+  refreshMaterializedView(view) {
+    return new PgRefreshMaterializedView(view, this.session, this.dialect);
+  }
+  authToken;
+  execute(query) {
+    const sequel = typeof query === "string" ? sql.raw(query) : query.getSQL();
+    const builtQuery = this.dialect.sqlToQuery(sequel);
+    const prepared = this.session.prepareQuery(builtQuery, undefined, undefined, false);
+    return new PgRaw(() => prepared.execute(undefined, this.authToken), sequel, builtQuery, (result) => prepared.mapResult(result, true));
+  }
+  transaction(transaction, config) {
+    return this.session.transaction(transaction, config);
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/cache/core/cache.js
+class Cache {
+  static [entityKind] = "Cache";
+}
+
+class NoopCache extends Cache {
+  strategy() {
+    return "all";
+  }
+  static [entityKind] = "NoopCache";
+  async get(_key) {
+    return;
+  }
+  async put(_hashedQuery, _response, _tables, _config) {}
+  async onMutate(_params) {}
+}
+async function hashQuery(sql2, params) {
+  const dataToHash = `${sql2}-${JSON.stringify(params)}`;
+  const encoder = new TextEncoder;
+  const data = encoder.encode(dataToHash);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = [...new Uint8Array(hashBuffer)];
+  const hashHex = hashArray.map((b2) => b2.toString(16).padStart(2, "0")).join("");
+  return hashHex;
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/pg-core/session.js
+class PgPreparedQuery {
+  constructor(query, cache, queryMetadata, cacheConfig) {
+    this.query = query;
+    this.cache = cache;
+    this.queryMetadata = queryMetadata;
+    this.cacheConfig = cacheConfig;
+    if (cache && cache.strategy() === "all" && cacheConfig === undefined) {
+      this.cacheConfig = { enable: true, autoInvalidate: true };
+    }
+    if (!this.cacheConfig?.enable) {
+      this.cacheConfig = undefined;
+    }
+  }
+  authToken;
+  getQuery() {
+    return this.query;
+  }
+  mapResult(response, _isFromBatch) {
+    return response;
+  }
+  setToken(token) {
+    this.authToken = token;
+    return this;
+  }
+  static [entityKind] = "PgPreparedQuery";
+  joinsNotNullableMap;
+  async queryWithCache(queryString, params, query) {
+    if (this.cache === undefined || is(this.cache, NoopCache) || this.queryMetadata === undefined) {
+      try {
+        return await query();
+      } catch (e) {
+        throw new DrizzleQueryError(queryString, params, e);
+      }
+    }
+    if (this.cacheConfig && !this.cacheConfig.enable) {
+      try {
+        return await query();
+      } catch (e) {
+        throw new DrizzleQueryError(queryString, params, e);
+      }
+    }
+    if ((this.queryMetadata.type === "insert" || this.queryMetadata.type === "update" || this.queryMetadata.type === "delete") && this.queryMetadata.tables.length > 0) {
+      try {
+        const [res] = await Promise.all([
+          query(),
+          this.cache.onMutate({ tables: this.queryMetadata.tables })
+        ]);
+        return res;
+      } catch (e) {
+        throw new DrizzleQueryError(queryString, params, e);
+      }
+    }
+    if (!this.cacheConfig) {
+      try {
+        return await query();
+      } catch (e) {
+        throw new DrizzleQueryError(queryString, params, e);
+      }
+    }
+    if (this.queryMetadata.type === "select") {
+      const fromCache = await this.cache.get(this.cacheConfig.tag ?? await hashQuery(queryString, params), this.queryMetadata.tables, this.cacheConfig.tag !== undefined, this.cacheConfig.autoInvalidate);
+      if (fromCache === undefined) {
+        let result;
+        try {
+          result = await query();
+        } catch (e) {
+          throw new DrizzleQueryError(queryString, params, e);
+        }
+        await this.cache.put(this.cacheConfig.tag ?? await hashQuery(queryString, params), result, this.cacheConfig.autoInvalidate ? this.queryMetadata.tables : [], this.cacheConfig.tag !== undefined, this.cacheConfig.config);
+        return result;
+      }
+      return fromCache;
+    }
+    try {
+      return await query();
+    } catch (e) {
+      throw new DrizzleQueryError(queryString, params, e);
+    }
+  }
+}
+
+class PgSession {
+  constructor(dialect) {
+    this.dialect = dialect;
+  }
+  static [entityKind] = "PgSession";
+  execute(query, token) {
+    return tracer.startActiveSpan("drizzle.operation", () => {
+      const prepared = tracer.startActiveSpan("drizzle.prepareQuery", () => {
+        return this.prepareQuery(this.dialect.sqlToQuery(query), undefined, undefined, false);
+      });
+      return prepared.setToken(token).execute(undefined, token);
+    });
+  }
+  all(query) {
+    return this.prepareQuery(this.dialect.sqlToQuery(query), undefined, undefined, false).all();
+  }
+  async count(sql2, token) {
+    const res = await this.execute(sql2, token);
+    return Number(res[0]["count"]);
+  }
+}
+
+class PgTransaction extends PgDatabase {
+  constructor(dialect, session, schema, nestedIndex = 0) {
+    super(dialect, session, schema);
+    this.schema = schema;
+    this.nestedIndex = nestedIndex;
+  }
+  static [entityKind] = "PgTransaction";
+  rollback() {
+    throw new TransactionRollbackError;
+  }
+  getTransactionConfigSQL(config) {
+    const chunks = [];
+    if (config.isolationLevel) {
+      chunks.push(`isolation level ${config.isolationLevel}`);
+    }
+    if (config.accessMode) {
+      chunks.push(config.accessMode);
+    }
+    if (typeof config.deferrable === "boolean") {
+      chunks.push(config.deferrable ? "deferrable" : "not deferrable");
+    }
+    return sql.raw(chunks.join(" "));
+  }
+  setTransaction(config) {
+    return this.session.execute(sql`set transaction ${this.getTransactionConfigSQL(config)}`);
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/postgres-js/session.js
+class PostgresJsPreparedQuery extends PgPreparedQuery {
+  constructor(client, queryString, params, logger, cache, queryMetadata, cacheConfig, fields, _isResponseInArrayMode, customResultMapper) {
+    super({ sql: queryString, params }, cache, queryMetadata, cacheConfig);
+    this.client = client;
+    this.queryString = queryString;
+    this.params = params;
+    this.logger = logger;
+    this.fields = fields;
+    this._isResponseInArrayMode = _isResponseInArrayMode;
+    this.customResultMapper = customResultMapper;
+  }
+  static [entityKind] = "PostgresJsPreparedQuery";
+  async execute(placeholderValues = {}) {
+    return tracer.startActiveSpan("drizzle.execute", async (span) => {
+      const params = fillPlaceholders(this.params, placeholderValues);
+      span?.setAttributes({
+        "drizzle.query.text": this.queryString,
+        "drizzle.query.params": JSON.stringify(params)
+      });
+      this.logger.logQuery(this.queryString, params);
+      const { fields, queryString: query, client, joinsNotNullableMap, customResultMapper } = this;
+      if (!fields && !customResultMapper) {
+        return tracer.startActiveSpan("drizzle.driver.execute", () => {
+          return this.queryWithCache(query, params, async () => {
+            return await client.unsafe(query, params);
+          });
+        });
+      }
+      const rows = await tracer.startActiveSpan("drizzle.driver.execute", () => {
+        span?.setAttributes({
+          "drizzle.query.text": query,
+          "drizzle.query.params": JSON.stringify(params)
+        });
+        return this.queryWithCache(query, params, async () => {
+          return await client.unsafe(query, params).values();
+        });
+      });
+      return tracer.startActiveSpan("drizzle.mapResponse", () => {
+        return customResultMapper ? customResultMapper(rows) : rows.map((row) => mapResultRow(fields, row, joinsNotNullableMap));
+      });
+    });
+  }
+  all(placeholderValues = {}) {
+    return tracer.startActiveSpan("drizzle.execute", async (span) => {
+      const params = fillPlaceholders(this.params, placeholderValues);
+      span?.setAttributes({
+        "drizzle.query.text": this.queryString,
+        "drizzle.query.params": JSON.stringify(params)
+      });
+      this.logger.logQuery(this.queryString, params);
+      return tracer.startActiveSpan("drizzle.driver.execute", () => {
+        span?.setAttributes({
+          "drizzle.query.text": this.queryString,
+          "drizzle.query.params": JSON.stringify(params)
+        });
+        return this.queryWithCache(this.queryString, params, async () => {
+          return this.client.unsafe(this.queryString, params);
+        });
+      });
+    });
+  }
+  isResponseInArrayMode() {
+    return this._isResponseInArrayMode;
+  }
+}
+
+class PostgresJsSession extends PgSession {
+  constructor(client, dialect, schema, options = {}) {
+    super(dialect);
+    this.client = client;
+    this.schema = schema;
+    this.options = options;
+    this.logger = options.logger ?? new NoopLogger;
+    this.cache = options.cache ?? new NoopCache;
+  }
+  static [entityKind] = "PostgresJsSession";
+  logger;
+  cache;
+  prepareQuery(query, fields, name, isResponseInArrayMode, customResultMapper, queryMetadata, cacheConfig) {
+    return new PostgresJsPreparedQuery(this.client, query.sql, query.params, this.logger, this.cache, queryMetadata, cacheConfig, fields, isResponseInArrayMode, customResultMapper);
+  }
+  query(query, params) {
+    this.logger.logQuery(query, params);
+    return this.client.unsafe(query, params).values();
+  }
+  queryObjects(query, params) {
+    return this.client.unsafe(query, params);
+  }
+  transaction(transaction, config) {
+    return this.client.begin(async (client) => {
+      const session = new PostgresJsSession(client, this.dialect, this.schema, this.options);
+      const tx = new PostgresJsTransaction(this.dialect, session, this.schema);
+      if (config) {
+        await tx.setTransaction(config);
+      }
+      return transaction(tx);
+    });
+  }
+}
+
+class PostgresJsTransaction extends PgTransaction {
+  constructor(dialect, session, schema, nestedIndex = 0) {
+    super(dialect, session, schema, nestedIndex);
+    this.session = session;
+  }
+  static [entityKind] = "PostgresJsTransaction";
+  transaction(transaction) {
+    return this.session.client.savepoint((client) => {
+      const session = new PostgresJsSession(client, this.dialect, this.schema, this.session.options);
+      const tx = new PostgresJsTransaction(this.dialect, session, this.schema);
+      return transaction(tx);
+    });
+  }
+}
+
+// ../../node_modules/.bun/drizzle-orm@0.45.2+c7294ea0f0c54ed0/node_modules/drizzle-orm/postgres-js/driver.js
+class PostgresJsDatabase extends PgDatabase {
+  static [entityKind] = "PostgresJsDatabase";
+}
+function construct(client, config = {}) {
+  const transparentParser = (val) => val;
+  for (const type of ["1184", "1082", "1083", "1114", "1182", "1185", "1115", "1231"]) {
+    client.options.parsers[type] = transparentParser;
+    client.options.serializers[type] = transparentParser;
+  }
+  client.options.serializers["114"] = transparentParser;
+  client.options.serializers["3802"] = transparentParser;
+  const dialect = new PgDialect({ casing: config.casing });
+  let logger;
+  if (config.logger === true) {
+    logger = new DefaultLogger;
+  } else if (config.logger !== false) {
+    logger = config.logger;
+  }
+  let schema;
+  if (config.schema) {
+    const tablesConfig = extractTablesRelationalConfig(config.schema, createTableRelationsHelpers);
+    schema = {
+      fullSchema: config.schema,
+      schema: tablesConfig.tables,
+      tableNamesMap: tablesConfig.tableNamesMap
+    };
+  }
+  const session = new PostgresJsSession(client, dialect, schema, { logger, cache: config.cache });
+  const db = new PostgresJsDatabase(dialect, session, schema);
+  db.$client = client;
+  db.$cache = config.cache;
+  if (db.$cache) {
+    db.$cache["invalidate"] = config.cache?.onMutate;
+  }
+  return db;
+}
+function drizzle(...params) {
+  if (typeof params[0] === "string") {
+    const instance = src_default(params[0]);
+    return construct(instance, params[1]);
+  }
+  if (isConfig(params[0])) {
+    const { connection: connection4, client, ...drizzleConfig } = params[0];
+    if (client)
+      return construct(client, drizzleConfig);
+    if (typeof connection4 === "object" && connection4.url !== undefined) {
+      const { url, ...config } = connection4;
+      const instance2 = src_default(url, config);
+      return construct(instance2, drizzleConfig);
+    }
+    const instance = src_default(connection4);
+    return construct(instance, drizzleConfig);
+  }
+  return construct(params[0], params[1]);
+}
+((drizzle2) => {
+  function mock(config) {
+    return construct({
+      options: {
+        parsers: {},
+        serializers: {}
+      }
+    }, config);
+  }
+  drizzle2.mock = mock;
+})(drizzle || (drizzle = {}));
+
+// ../../packages/drizzle/src/client.ts
+function createDbClient(schema, options = {}) {
+  const url = process.env.DATABASE_URL;
+  if (!url)
+    throw new Error("DATABASE_URL is not set");
+  const { max = 10, idleTimeout = 30, pgBouncer = true } = options;
+  const client = src_default(url, {
+    max,
+    idle_timeout: idleTimeout,
+    prepare: !pgBouncer
+  });
+  return drizzle(client, { schema });
+}
+
+// src/database/schema/authentication.ts
+var exports_authentication = {};
+__export(exports_authentication, {
+  loginAttempts: () => loginAttempts
+});
+var loginAttempts = pgTable("login_attempts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  user_id: uuid("user_id"),
+  email: text("email"),
+  ip_address: inet("ip_address"),
+  success: boolean("success"),
+  reason: text("reason"),
+  created_at: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
+});
+
+// src/database/client.ts
+var db = createDbClient(exports_authentication);
+
+// src/controllers/v1/mutate.ts
+var ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "changeme-access-secret-at-least-32-characters!!";
+function generateOTP() {
+  return Math.floor(1e5 + Math.random() * 900000).toString();
+}
+var mutateFunctions = {
+  signup: async (req, res) => {
+    try {
+      const { email, password, first_name, last_name } = req.body;
+      const password_hash = await import_argon2.default.hash(password);
+      await usersServiceClient.createUser({
+        email,
+        password: password_hash,
+        first_name: first_name || "New",
+        last_name: last_name || "User",
+        is_verified: false
+      });
+      const otp = generateOTP();
+      await authStore.storeOTP(email, otp);
+      console.log(`[DEV] OTP for ${email} is ${otp}`);
+      res.status(201).json({ message: "User created. Please verify your email with the OTP." });
+    } catch (error) {
+      console.error("[Auth] Signup error:", error);
+      res.status(400).json({ error: error.message || "Signup failed" });
+    }
+  },
+  verifyOtp: async (req, res) => {
+    try {
+      const { email, code } = req.body;
+      const status = await authStore.validateOTP(email, code);
+      if (status === "success") {
+        const user = await usersServiceClient.getUserByEmail(email);
+        if (!user) {
+          res.status(404).json({ error: "User not found" });
+          return;
+        }
+        await usersServiceClient.verifyUser(user.id);
+        res.status(200).json({ message: "Email verified successfully." });
+        return;
+      }
+      res.status(400).json({ error: `OTP Verification failed: ${status}` });
+    } catch (error) {
+      console.error("[Auth] Verify OTP error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+  resendOtp: async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await usersServiceClient.getUserByEmail(email);
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+      const otp = generateOTP();
+      await authStore.storeOTP(email, otp);
+      console.log(`[DEV] New OTP for ${email} is ${otp}`);
+      res.status(200).json({ message: "OTP resent." });
+    } catch (error) {
+      console.error("[Auth] Resend OTP error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+  login: async (req, res) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    try {
+      const { email, password } = req.body;
+      const user = await usersServiceClient.getUserByEmail(email);
+      if (!user) {
+        await authStore.recordLoginFailure(ip);
+        await db.insert(loginAttempts).values({ email, ip_address: ip, success: false, reason: "invalid_credentials" });
+        res.status(401).json({ error: "Invalid credentials" });
+        return;
+      }
+      if (!user.is_verified) {
+        await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: "not_verified" });
+        res.status(403).json({ error: "Please verify your email first." });
+        return;
+      }
+      const isValid = await import_argon2.default.verify(user.password, password);
+      if (!isValid) {
+        const failures = await authStore.recordLoginFailure(ip);
+        if (failures >= 5) {
+          await authStore.blockIP(ip);
+        }
+        await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: "invalid_credentials" });
+        res.status(401).json({ error: "Invalid credentials" });
+        return;
+      }
+      await authStore.resetLoginFailures(ip);
+      await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: true });
+      const sessionId = crypto6.randomUUID();
+      const accessToken = import_jsonwebtoken.default.sign({ sub: user.id, email: user.email, jti: crypto6.randomUUID() }, ACCESS_SECRET, { expiresIn: "15m" });
+      const rawRefreshToken = crypto6.randomBytes(32).toString("hex");
+      await authStore.storeRefreshToken(user.id, sessionId, rawRefreshToken);
+      const cookieValue = `${rawRefreshToken}.${sessionId}.${user.id}`;
+      res.cookie("refreshToken", cookieValue, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        path: "/api/v1/authenticate/refresh",
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
+      res.status(200).json({ accessToken });
+    } catch (error) {
+      console.error("[Auth] Login error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+  refresh: async (req, res) => {
+    try {
+      const cookie = req.cookies?.refreshToken;
+      if (!cookie) {
+        res.status(401).json({ error: "No refresh token" });
+        return;
+      }
+      const parts = cookie.split(".");
+      if (parts.length !== 3) {
+        res.status(401).json({ error: "Invalid token format" });
+        return;
+      }
+      const [rawToken, sessionId, userId] = parts;
+      const isValid = await authStore.validateRefreshToken(userId, sessionId, rawToken);
+      if (!isValid) {
+        res.clearCookie("refreshToken", { path: "/api/v1/authenticate/refresh" });
+        res.status(401).json({ error: "Invalid or expired refresh token" });
+        return;
+      }
+      await authStore.revokeSession(userId, sessionId);
+      const newSessionId = crypto6.randomUUID();
+      const newAccessToken = import_jsonwebtoken.default.sign({ sub: userId, jti: crypto6.randomUUID() }, ACCESS_SECRET, { expiresIn: "15m" });
+      const newRawRefreshToken = crypto6.randomBytes(32).toString("hex");
+      await authStore.storeRefreshToken(userId, newSessionId, newRawRefreshToken);
+      const newCookieValue = `${newRawRefreshToken}.${newSessionId}.${userId}`;
+      res.cookie("refreshToken", newCookieValue, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        path: "/api/v1/authenticate/refresh",
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
+      res.status(200).json({ accessToken: newAccessToken });
+    } catch (error) {
+      console.error("[Auth] Refresh error:", error);
+      res.status(500).json({ error: "Internal error" });
+    }
+  },
+  logout: async (req, res) => {
+    try {
+      const user = req.user;
+      const cookie = req.cookies?.refreshToken;
+      if (cookie) {
+        const parts = cookie.split(".");
+        if (parts.length === 3) {
+          await authStore.revokeSession(user.sub, parts[1]);
+        }
+      }
+      res.clearCookie("refreshToken", { path: "/api/v1/authenticate/refresh" });
+      res.status(200).json({ message: "Logged out" });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  },
+  logoutAll: async (req, res) => {
+    try {
+      const user = req.user;
+      await authStore.revokeAllSessions(user.sub);
+      res.clearCookie("refreshToken", { path: "/api/v1/authenticate/refresh" });
+      res.status(200).json({ message: "Logged out of all sessions" });
+    } catch (error) {
+      res.status(500).json({ error: "Internal error" });
+    }
+  }
+};
+
+// src/controllers/index.ts
+var authControllerV1 = {
+  ...queryFunctions,
+  ...mutateFunctions
+};
+
+// src/middlewares/auth-middleware.ts
+var import_jsonwebtoken2 = __toESM(require_jsonwebtoken(), 1);
+var ACCESS_SECRET2 = process.env.JWT_ACCESS_SECRET || "changeme-access-secret-at-least-32-characters!!";
+var authMiddleware = {
+  ipBlockCheck: async (req, res, next) => {
+    try {
+      const ip = req.ip || req.socket.remoteAddress || "unknown";
+      const isBlocked = await authStore.isIPBlocked(ip);
+      if (isBlocked) {
+        res.status(429).json({ error: "Too many failed login attempts. IP blocked." });
+        return;
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+  otpRateLimiter: async (req, res, next) => {
+    try {
+      const email = req.body.email;
+      if (!email) {
+        res.status(400).json({ error: "Email is required." });
+        return;
+      }
+      const inCooldown = await authStore.checkOTPCooldown(email);
+      if (inCooldown) {
+        res.status(429).json({ error: "Please wait 60 seconds before requesting another OTP." });
+        return;
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+  verifyAccessToken: async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        res.status(401).json({ error: "Unauthorized: Missing or invalid Bearer token." });
+        return;
+      }
+      const token = authHeader.split(" ")[1];
+      try {
+        const decoded = import_jsonwebtoken2.default.verify(token, ACCESS_SECRET2);
+        if (decoded.jti) {
+          const isBlacklisted = await authStore.isTokenBlacklisted(decoded.jti);
+          if (isBlacklisted) {
+            res.status(401).json({ error: "Unauthorized: Token has been revoked." });
+            return;
+          }
+        }
+        req.user = decoded;
+        next();
+      } catch (err) {
+        if (err.name === "TokenExpiredError") {
+          res.status(401).json({ error: "Unauthorized: Token expired." });
+          return;
+        }
+        res.status(401).json({ error: "Unauthorized: Invalid token." });
+        return;
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+};
+// ../../packages/utils/src/constants/endpoints.ts
+var API_BASE = "/api";
+var SERVICES = {
+  AUTHENTICATION: "/authenticate",
+  USERS: "/users"
+};
+var AUTHENTICATION_ENDPOINTS = {
+  SIGN_IN: "/login",
+  SIGN_UP: "/signup",
+  VERIFY_OTP: "/verify-otp",
+  RESEND_OTP: "/resend-otp",
+  REFRESH: "/refresh",
+  LOGOUT: "/logout",
+  LOGOUT_ALL: "/logout-all",
+  SESSIONS: "/sessions"
+};
+var VERSION = {
+  V1: "/v1",
+  V2: "/v2"
+};
+var USERS_ENDPOINTS = {
+  REGISTER_USER: "/register-user"
+};
+var ENDPOINTS = {
+  AUTHENTICATION: AUTHENTICATION_ENDPOINTS,
+  USERS: USERS_ENDPOINTS
+};
+
+// src/routes/v1/mutate.ts
+var router = import_express3.Router();
+router.post(ENDPOINTS.AUTHENTICATION.SIGN_UP, authMiddleware.ipBlockCheck, authControllerV1.signup);
+router.post(ENDPOINTS.AUTHENTICATION.SIGN_IN, authMiddleware.ipBlockCheck, authControllerV1.login);
+router.post(ENDPOINTS.AUTHENTICATION.VERIFY_OTP, authControllerV1.verifyOtp);
+router.post(ENDPOINTS.AUTHENTICATION.RESEND_OTP, authMiddleware.otpRateLimiter, authControllerV1.resendOtp);
+router.post(ENDPOINTS.AUTHENTICATION.REFRESH, authControllerV1.refresh);
+router.use(authMiddleware.verifyAccessToken);
+router.post(ENDPOINTS.AUTHENTICATION.LOGOUT, authControllerV1.logout);
+router.post(ENDPOINTS.AUTHENTICATION.LOGOUT_ALL, authControllerV1.logoutAll);
+var mutate_default = router;
+
+// src/routes/v1/query.ts
+var import_express4 = __toESM(require_express(), 1);
+var router2 = import_express4.Router();
+router2.use(authMiddleware.verifyAccessToken);
+router2.get(ENDPOINTS.AUTHENTICATION.SESSIONS, authControllerV1.getSessions);
+var query_default = router2;
+
+// src/routes/index.ts
+var authRouter = import_express5.Router();
+authRouter.use(`${VERSION.V1}${SERVICES.AUTHENTICATION}`, query_default);
+authRouter.use(`${VERSION.V1}${SERVICES.AUTHENTICATION}`, mutate_default);
+var routes_default = authRouter;
+
+// src/index.ts
+var import_cookie_parser = __toESM(require_cookie_parser(), 1);
+var PORT = process.env.PORT ?? 6061;
+var app = createApp({
+  serviceName: "authentication",
+  mountPath: API_BASE,
+  router: routes_default,
+  port: PORT,
+  customMiddlewares: [import_cookie_parser.default()]
+});
+var src_default2 = app;
 export {
-  src_default as default
+  src_default2 as default
 };

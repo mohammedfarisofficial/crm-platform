@@ -47,3 +47,4 @@ RabbitMQ
 brew install rabbitmq         - Installing
 brew services start rabbitmq  - Starting
 http://localhost:15672/#/connections - URL for connection checking
+

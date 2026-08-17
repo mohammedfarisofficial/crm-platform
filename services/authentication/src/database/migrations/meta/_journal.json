@@ -8,6 +8,13 @@
       "when": 1786990255622,
       "tag": "0000_omniscient_ultron",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786992761144,
+      "tag": "0001_normal_husk",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@crm/redis": "workspace:*",
     "express": "^4.19.2",
     "express-rate-limit": "^8.6.1",
     "http-proxy-middleware": "^4.2.0",

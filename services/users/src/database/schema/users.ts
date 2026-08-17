@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, integer, timestamp, boolean } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id:            uuid('id').primaryKey().defaultRandom(),
@@ -10,6 +10,7 @@ export const users = pgTable('users', {
   profile_url:   text('profile_url'),
   phone:         text('phone'),
   user_status:   integer('user_status').default(0).notNull(),
+  is_verified:   boolean('is_verified').default(false).notNull(),
   created_at:    timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at:    timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
