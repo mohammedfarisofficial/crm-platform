@@ -76,5 +76,5 @@ export type { ProxyOptions, ServiceRoute } from './proxy';
 export { asyncHandler, ok, fail } from './async-handler';
 export type { ApiError, ApiResponse, AsyncRequestHandler } from './async-handler';
 
-export { JSON200, JSON400 } from './respond';
+export { JSON200, JSON400, JSON401, JSON403, JSON404, JSON500 } from './respond';
 export { parseBody } from './parse-body';

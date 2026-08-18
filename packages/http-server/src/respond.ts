@@ -28,3 +28,20 @@ export function JSON400(res: Response, errors: ApiError[] | string): void {
 
   res.status(400).json(fail(normalized));
 }
+
+export function JSON401(res: Response, message: string): void {
+  res.status(401).json(fail([{ message }]));
+}
+
+export function JSON403(res: Response, message: string): void {
+  res.status(403).json(fail([{ message }]));
+}
+
+export function JSON404(res: Response, message: string): void {
+  res.status(404).json(fail([{ message }]));
+}
+
+export function JSON500(res: Response, message: string = 'Internal server error'): void {
+  res.status(500).json(fail([{ message }]));
+}
+

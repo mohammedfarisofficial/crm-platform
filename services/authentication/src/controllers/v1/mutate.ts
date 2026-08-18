@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { SignupSchema, LoginSchema, VerifyOtpSchema, ResendOtpSchema } from '../../validations/v1/mutate';
-import { parseBody } from '@crm/http-server';
+import { parseBody, JSON200, JSON400, JSON401, JSON403, JSON404, JSON500 } from '@crm/http-server';
 import { authStore } from '../../redis/auth-store';
 import { usersServiceClient } from '../../services/users-service-client';
 import { db } from '../../database/client';
@@ -25,7 +25,7 @@ export const mutateFunctions = {
 
       const existingUser = await usersServiceClient.getUserByEmail(email);
       if (existingUser) {
-        res.status(400).json({ error: 'Email already registered' });
+        JSON400(res, 'Email already registered');
         return;
       }
 
@@ -45,10 +45,10 @@ export const mutateFunctions = {
       // In a real app, send OTP via email/SMS here.
       console.log(`[DEV] OTP for ${email} is ${otp}`);
 
-      res.status(201).json({ message: 'User created. Please verify your email with the OTP.' });
+      JSON200(res, { message: 'User created. Please verify your email with the OTP.' });
     } catch (error: any) {
       console.error('[Auth] Signup error:', error);
-      res.status(400).json({ error: error.message || 'Signup failed' });
+      JSON400(res, error.message || 'Signup failed');
     }
   },
 
@@ -64,19 +64,19 @@ export const mutateFunctions = {
       if (status === 'success') {
         const user = await usersServiceClient.getUserByEmail(email);
         if (!user) {
-          res.status(404).json({ error: 'User not found' });
+          JSON404(res, 'User not found');
           return;
         }
 
         await usersServiceClient.verifyUser(user.id);
-        res.status(200).json({ message: 'Email verified successfully.' });
+        JSON200(res, { message: 'Email verified successfully.' });
         return;
       }
 
-      res.status(400).json({ error: `OTP Verification failed: ${status}` });
+      JSON400(res, `OTP Verification failed: ${status}`);
     } catch (error: any) {
       console.error('[Auth] Verify OTP error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      JSON500(res, 'Internal server error');
     }
   },
 
@@ -89,7 +89,7 @@ export const mutateFunctions = {
 
       const user = await usersServiceClient.getUserByEmail(email);
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        JSON404(res, 'User not found');
         return;
       }
 
@@ -97,10 +97,10 @@ export const mutateFunctions = {
       await authStore.storeOTP(email, otp);
 
       console.log(`[DEV] New OTP for ${email} is ${otp}`);
-      res.status(200).json({ message: 'OTP resent.' });
+      JSON200(res, { message: 'OTP resent.' });
     } catch (error) {
       console.error('[Auth] Resend OTP error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      JSON500(res, 'Internal server error');
     }
   },
 
@@ -116,13 +116,13 @@ export const mutateFunctions = {
       if (!user) {
         await authStore.recordLoginFailure(ip);
         await db.insert(loginAttempts).values({ email, ip_address: ip, success: false, reason: 'invalid_credentials' });
-        res.status(401).json({ error: 'Invalid credentials' });
+        JSON401(res, 'Invalid credentials');
         return;
       }
 
       if (!user.is_verified) {
         await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'not_verified' });
-        res.status(403).json({ error: 'Please verify your email first.' });
+        JSON403(res, 'Please verify your email first.');
         return;
       }
 
@@ -133,7 +133,7 @@ export const mutateFunctions = {
           await authStore.blockIP(ip);
         }
         await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'invalid_credentials' });
-        res.status(401).json({ error: 'Invalid credentials' });
+        JSON401(res, 'Invalid credentials');
         return;
       }
 
@@ -155,10 +155,10 @@ export const mutateFunctions = {
         maxAge: 30 * 24 * 60 * 60 * 1000
       });
 
-      res.status(200).json({ accessToken });
+      JSON200(res, { accessToken });
     } catch (error) {
       console.error('[Auth] Login error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      JSON500(res, 'Internal server error');
     }
   },
 
@@ -166,13 +166,13 @@ export const mutateFunctions = {
     try {
       const cookie = req.cookies?.refreshToken;
       if (!cookie) {
-        res.status(401).json({ error: 'No refresh token' });
+        JSON401(res, 'No refresh token');
         return;
       }
 
       const parts = cookie.split('.');
       if (parts.length !== 3) {
-        res.status(401).json({ error: 'Invalid token format' });
+        JSON401(res, 'Invalid token format');
         return;
       }
 
@@ -181,7 +181,7 @@ export const mutateFunctions = {
       const isValid = await authStore.validateRefreshToken(userId, sessionId, rawToken);
       if (!isValid) {
         res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-        res.status(401).json({ error: 'Invalid or expired refresh token' });
+        JSON401(res, 'Invalid or expired refresh token');
         return;
       }
 
@@ -202,10 +202,10 @@ export const mutateFunctions = {
         maxAge: 30 * 24 * 60 * 60 * 1000
       });
 
-      res.status(200).json({ accessToken: newAccessToken });
+      JSON200(res, { accessToken: newAccessToken });
     } catch (error) {
       console.error('[Auth] Refresh error:', error);
-      res.status(500).json({ error: 'Internal error' });
+      JSON500(res, 'Internal error');
     }
   },
 
@@ -220,9 +220,9 @@ export const mutateFunctions = {
         }
       }
       res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-      res.status(200).json({ message: 'Logged out' });
+      JSON200(res, { message: 'Logged out' });
     } catch (error) {
-      res.status(500).json({ error: 'Internal error' });
+      JSON500(res, 'Internal error');
     }
   },
 
@@ -231,9 +231,9 @@ export const mutateFunctions = {
       const user = (req as any).user;
       await authStore.revokeAllSessions(user.sub);
       res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-      res.status(200).json({ message: 'Logged out of all sessions' });
+      JSON200(res, { message: 'Logged out of all sessions' });
     } catch (error) {
-      res.status(500).json({ error: 'Internal error' });
+      JSON500(res, 'Internal error');
     }
   }
 };
