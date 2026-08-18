@@ -3,7 +3,7 @@ import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { SignupSchema, LoginSchema, VerifyOtpSchema, ResendOtpSchema } from '../../validations/v1/mutate';
-import { parseBody, JSON200, JSON400, JSON401, JSON403, JSON404, JSON500 } from '@crm/http-server';
+import { asyncHandler, parseBody, JSON200, JSON400, JSON401, JSON403, JSON404 } from '@crm/http-server';
 import { authStore } from '../../redis/auth-store';
 import { usersServiceClient } from '../../services/users-service-client';
 import { db } from '../../database/client';
@@ -16,27 +16,30 @@ function generateOTP() {
 }
 
 export const mutateFunctions = {
-  signup: async (req: Request, res: Response): Promise<void> => {
-    try {
-      const body = parseBody(SignupSchema, req, res);
-      if (!body) return;
+  signup: asyncHandler(async (req: Request, res: Response) => {
+      const postData = parseBody(SignupSchema, req, res);
+      if (!postData) return;
 
-      const { email, password, first_name, last_name } = body;
+      const {
+        email = "",
+        password = "",
+        first_name = "",
+        last_name = ""
+      } = postData;
 
       const existingUser = await usersServiceClient.getUserByEmail(email);
       if (existingUser) {
         JSON400(res, 'Email already registered');
         return;
       }
-
-      // Call Users Service to create user
-      await usersServiceClient.createUser({
+      const createUserData = {
         email,
-        password: password,
+        password,
         first_name,
         last_name,
         is_verified: false
-      });
+      }
+      await usersServiceClient.createUser(createUserData);
 
       // Generate and store OTP
       const otp = generateOTP();
@@ -46,14 +49,9 @@ export const mutateFunctions = {
       console.log(`[DEV] OTP for ${email} is ${otp}`);
 
       JSON200(res, { message: 'User created. Please verify your email with the OTP.' });
-    } catch (error: any) {
-      console.error('[Auth] Signup error:', error);
-      JSON400(res, error.message || 'Signup failed');
-    }
-  },
+  }),
 
-  verifyOtp: async (req: Request, res: Response): Promise<void> => {
-    try {
+  verifyOtp: asyncHandler(async (req: Request, res: Response) => {
       const body = parseBody(VerifyOtpSchema, req, res);
       if (!body) return;
 
@@ -74,14 +72,9 @@ export const mutateFunctions = {
       }
 
       JSON400(res, `OTP Verification failed: ${status}`);
-    } catch (error: any) {
-      console.error('[Auth] Verify OTP error:', error);
-      JSON500(res, 'Internal server error');
-    }
-  },
+  }),
 
-  resendOtp: async (req: Request, res: Response): Promise<void> => {
-    try {
+  resendOtp: asyncHandler(async (req: Request, res: Response) => {
       const body = parseBody(ResendOtpSchema, req, res);
       if (!body) return;
 
@@ -98,15 +91,10 @@ export const mutateFunctions = {
 
       console.log(`[DEV] New OTP for ${email} is ${otp}`);
       JSON200(res, { message: 'OTP resent.' });
-    } catch (error) {
-      console.error('[Auth] Resend OTP error:', error);
-      JSON500(res, 'Internal server error');
-    }
-  },
+  }),
 
-  login: async (req: Request, res: Response): Promise<void> => {
+  login: asyncHandler(async (req: Request, res: Response) => {
     const ip = req.ip || req.socket.remoteAddress || 'unknown';
-    try {
       const body = parseBody(LoginSchema, req, res);
       if (!body) return;
 
@@ -156,14 +144,9 @@ export const mutateFunctions = {
       });
 
       JSON200(res, { accessToken });
-    } catch (error) {
-      console.error('[Auth] Login error:', error);
-      JSON500(res, 'Internal server error');
-    }
-  },
+  }),
 
-  refresh: async (req: Request, res: Response): Promise<void> => {
-    try {
+  refresh: asyncHandler(async (req: Request, res: Response) => {
       const cookie = req.cookies?.refreshToken;
       if (!cookie) {
         JSON401(res, 'No refresh token');
@@ -203,14 +186,9 @@ export const mutateFunctions = {
       });
 
       JSON200(res, { accessToken: newAccessToken });
-    } catch (error) {
-      console.error('[Auth] Refresh error:', error);
-      JSON500(res, 'Internal error');
-    }
-  },
+  }),
 
-  logout: async (req: Request, res: Response): Promise<void> => {
-    try {
+  logout: asyncHandler(async (req: Request, res: Response) => {
       const user = (req as any).user;
       const cookie = req.cookies?.refreshToken;
       if (cookie) {
@@ -221,19 +199,12 @@ export const mutateFunctions = {
       }
       res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
       JSON200(res, { message: 'Logged out' });
-    } catch (error) {
-      JSON500(res, 'Internal error');
-    }
-  },
+  }),
 
-  logoutAll: async (req: Request, res: Response): Promise<void> => {
-    try {
+  logoutAll: asyncHandler(async (req: Request, res: Response) => {
       const user = (req as any).user;
       await authStore.revokeAllSessions(user.sub);
       res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
       JSON200(res, { message: 'Logged out of all sessions' });
-    } catch (error) {
-      JSON500(res, 'Internal error');
-    }
-  }
+  })
 };
