@@ -6,8 +6,6 @@ import { ENDPOINTS } from '@crm/utils/constants/endpoints';
 const router = Router();
 
 // Protected routes
-router.use(authMiddleware.verifyAccessToken);
-
-router.get(ENDPOINTS.AUTHENTICATION.SESSIONS, authControllerV1.getSessions);
+router.get(ENDPOINTS.AUTHENTICATION.SESSIONS, authMiddleware.verifyAccessToken, authControllerV1.getSessions);
 
 export default router;

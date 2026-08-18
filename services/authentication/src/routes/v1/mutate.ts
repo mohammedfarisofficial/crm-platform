@@ -17,9 +17,7 @@ router.post(ENDPOINTS.AUTHENTICATION.RESEND_OTP, authMiddleware.otpRateLimiter, 
 router.post(ENDPOINTS.AUTHENTICATION.REFRESH, authControllerV1.refresh);
 
 // Protected routes (require valid access token)
-router.use(authMiddleware.verifyAccessToken);
-
-router.post(ENDPOINTS.AUTHENTICATION.LOGOUT, authControllerV1.logout);
-router.post(ENDPOINTS.AUTHENTICATION.LOGOUT_ALL, authControllerV1.logoutAll);
+router.post(ENDPOINTS.AUTHENTICATION.LOGOUT, authMiddleware.verifyAccessToken, authControllerV1.logout);
+router.post(ENDPOINTS.AUTHENTICATION.LOGOUT_ALL, authMiddleware.verifyAccessToken, authControllerV1.logoutAll);
 
 export default router;

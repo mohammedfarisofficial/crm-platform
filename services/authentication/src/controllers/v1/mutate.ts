@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { SignupSchema, LoginSchema, VerifyOtpSchema, ResendOtpSchema } from '../../validations/v1/mutate';
+import { parseBody } from '@crm/http-server';
 import { authStore } from '../../redis/auth-store';
 import { usersServiceClient } from '../../services/users-service-client';
 import { db } from '../../database/client';
@@ -15,208 +17,223 @@ function generateOTP() {
 
 export const mutateFunctions = {
   signup: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, password, first_name, last_name } = req.body;
-    
-    // Hash password
-    const password_hash = await argon2.hash(password);
+    try {
+      const body = parseBody(SignupSchema, req, res);
+      if (!body) return;
 
-    // Call Users Service to create user
-    await usersServiceClient.createUser({
-      email,
-      password: password_hash,
-      first_name: first_name || 'New',
-      last_name: last_name || 'User',
-      is_verified: false
-    });
+      const { email, password, first_name, last_name } = body;
 
-    // Generate and store OTP
-    const otp = generateOTP();
-    await authStore.storeOTP(email, otp);
+      const existingUser = await usersServiceClient.getUserByEmail(email);
+      if (existingUser) {
+        res.status(400).json({ error: 'Email already registered' });
+        return;
+      }
 
-    // In a real app, send OTP via email/SMS here.
-    console.log(`[DEV] OTP for ${email} is ${otp}`);
+      // Call Users Service to create user
+      await usersServiceClient.createUser({
+        email,
+        password: password,
+        first_name,
+        last_name,
+        is_verified: false
+      });
 
-    res.status(201).json({ message: 'User created. Please verify your email with the OTP.' });
-  } catch (error: any) {
-    console.error('[Auth] Signup error:', error);
-    res.status(400).json({ error: error.message || 'Signup failed' });
-  }
+      // Generate and store OTP
+      const otp = generateOTP();
+      await authStore.storeOTP(email, otp);
+
+      // In a real app, send OTP via email/SMS here.
+      console.log(`[DEV] OTP for ${email} is ${otp}`);
+
+      res.status(201).json({ message: 'User created. Please verify your email with the OTP.' });
+    } catch (error: any) {
+      console.error('[Auth] Signup error:', error);
+      res.status(400).json({ error: error.message || 'Signup failed' });
+    }
   },
 
   verifyOtp: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, code } = req.body;
+    try {
+      const body = parseBody(VerifyOtpSchema, req, res);
+      if (!body) return;
 
-    const status = await authStore.validateOTP(email, code);
+      const { email, code } = body;
 
-    if (status === 'success') {
+      const status = await authStore.validateOTP(email, code);
+
+      if (status === 'success') {
+        const user = await usersServiceClient.getUserByEmail(email);
+        if (!user) {
+          res.status(404).json({ error: 'User not found' });
+          return;
+        }
+
+        await usersServiceClient.verifyUser(user.id);
+        res.status(200).json({ message: 'Email verified successfully.' });
+        return;
+      }
+
+      res.status(400).json({ error: `OTP Verification failed: ${status}` });
+    } catch (error: any) {
+      console.error('[Auth] Verify OTP error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  },
+
+  resendOtp: async (req: Request, res: Response): Promise<void> => {
+    try {
+      const body = parseBody(ResendOtpSchema, req, res);
+      if (!body) return;
+
+      const { email } = body;
+
       const user = await usersServiceClient.getUserByEmail(email);
       if (!user) {
         res.status(404).json({ error: 'User not found' });
         return;
       }
 
-      await usersServiceClient.verifyUser(user.id);
-      res.status(200).json({ message: 'Email verified successfully.' });
-      return;
+      const otp = generateOTP();
+      await authStore.storeOTP(email, otp);
+
+      console.log(`[DEV] New OTP for ${email} is ${otp}`);
+      res.status(200).json({ message: 'OTP resent.' });
+    } catch (error) {
+      console.error('[Auth] Resend OTP error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    res.status(400).json({ error: `OTP Verification failed: ${status}` });
-  } catch (error: any) {
-    console.error('[Auth] Verify OTP error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-  },
-
-  resendOtp: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email } = req.body;
-    
-    const user = await usersServiceClient.getUserByEmail(email);
-    if (!user) {
-      res.status(404).json({ error: 'User not found' });
-      return;
-    }
-
-    const otp = generateOTP();
-    await authStore.storeOTP(email, otp);
-    
-    console.log(`[DEV] New OTP for ${email} is ${otp}`);
-    res.status(200).json({ message: 'OTP resent.' });
-  } catch (error) {
-    console.error('[Auth] Resend OTP error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
   },
 
   login: async (req: Request, res: Response): Promise<void> => {
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
-  try {
-    const { email, password } = req.body;
-    
-    const user = await usersServiceClient.getUserByEmail(email);
-    if (!user) {
-      await authStore.recordLoginFailure(ip);
-      await db.insert(loginAttempts).values({ email, ip_address: ip, success: false, reason: 'invalid_credentials' });
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
-    }
+    const ip = req.ip || req.socket.remoteAddress || 'unknown';
+    try {
+      const body = parseBody(LoginSchema, req, res);
+      if (!body) return;
 
-    if (!user.is_verified) {
-      await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'not_verified' });
-      res.status(403).json({ error: 'Please verify your email first.' });
-      return;
-    }
+      const { email, password } = body;
 
-    const isValid = await argon2.verify(user.password, password);
-    if (!isValid) {
-      const failures = await authStore.recordLoginFailure(ip);
-      if (failures >= 5) {
-        await authStore.blockIP(ip);
+      const user = await usersServiceClient.getUserByEmail(email);
+      if (!user) {
+        await authStore.recordLoginFailure(ip);
+        await db.insert(loginAttempts).values({ email, ip_address: ip, success: false, reason: 'invalid_credentials' });
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
       }
-      await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'invalid_credentials' });
-      res.status(401).json({ error: 'Invalid credentials' });
-      return;
+
+      if (!user.is_verified) {
+        await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'not_verified' });
+        res.status(403).json({ error: 'Please verify your email first.' });
+        return;
+      }
+
+      const isValid = await argon2.verify(user.password, password);
+      if (!isValid) {
+        const failures = await authStore.recordLoginFailure(ip);
+        if (failures >= 5) {
+          await authStore.blockIP(ip);
+        }
+        await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: false, reason: 'invalid_credentials' });
+        res.status(401).json({ error: 'Invalid credentials' });
+        return;
+      }
+
+      await authStore.resetLoginFailures(ip);
+      await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: true });
+
+      const sessionId = crypto.randomUUID();
+      const accessToken = jwt.sign({ sub: user.id, email: user.email, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
+      const rawRefreshToken = crypto.randomBytes(32).toString('hex');
+
+      await authStore.storeRefreshToken(user.id, sessionId, rawRefreshToken);
+
+      const cookieValue = `${rawRefreshToken}.${sessionId}.${user.id}`;
+      res.cookie('refreshToken', cookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/v1/authenticate/refresh',
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
+
+      res.status(200).json({ accessToken });
+    } catch (error) {
+      console.error('[Auth] Login error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-
-    await authStore.resetLoginFailures(ip);
-    await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: true });
-
-    const sessionId = crypto.randomUUID();
-    const accessToken = jwt.sign({ sub: user.id, email: user.email, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
-    const rawRefreshToken = crypto.randomBytes(32).toString('hex');
-    
-    await authStore.storeRefreshToken(user.id, sessionId, rawRefreshToken);
-
-    const cookieValue = `${rawRefreshToken}.${sessionId}.${user.id}`;
-    res.cookie('refreshToken', cookieValue, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/v1/authenticate/refresh',
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    });
-
-    res.status(200).json({ accessToken });
-  } catch (error) {
-    console.error('[Auth] Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
   },
 
   refresh: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const cookie = req.cookies?.refreshToken;
-    if (!cookie) {
-      res.status(401).json({ error: 'No refresh token' });
-      return;
+    try {
+      const cookie = req.cookies?.refreshToken;
+      if (!cookie) {
+        res.status(401).json({ error: 'No refresh token' });
+        return;
+      }
+
+      const parts = cookie.split('.');
+      if (parts.length !== 3) {
+        res.status(401).json({ error: 'Invalid token format' });
+        return;
+      }
+
+      const [rawToken, sessionId, userId] = parts;
+
+      const isValid = await authStore.validateRefreshToken(userId, sessionId, rawToken);
+      if (!isValid) {
+        res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+        res.status(401).json({ error: 'Invalid or expired refresh token' });
+        return;
+      }
+
+      await authStore.revokeSession(userId, sessionId);
+
+      const newSessionId = crypto.randomUUID();
+      const newAccessToken = jwt.sign({ sub: userId, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
+      const newRawRefreshToken = crypto.randomBytes(32).toString('hex');
+
+      await authStore.storeRefreshToken(userId, newSessionId, newRawRefreshToken);
+
+      const newCookieValue = `${newRawRefreshToken}.${newSessionId}.${userId}`;
+      res.cookie('refreshToken', newCookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/api/v1/authenticate/refresh',
+        maxAge: 30 * 24 * 60 * 60 * 1000
+      });
+
+      res.status(200).json({ accessToken: newAccessToken });
+    } catch (error) {
+      console.error('[Auth] Refresh error:', error);
+      res.status(500).json({ error: 'Internal error' });
     }
-
-    const parts = cookie.split('.');
-    if (parts.length !== 3) {
-      res.status(401).json({ error: 'Invalid token format' });
-      return;
-    }
-
-    const [rawToken, sessionId, userId] = parts;
-    
-    const isValid = await authStore.validateRefreshToken(userId, sessionId, rawToken);
-    if (!isValid) {
-      res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-      res.status(401).json({ error: 'Invalid or expired refresh token' });
-      return;
-    }
-    
-    await authStore.revokeSession(userId, sessionId);
-    
-    const newSessionId = crypto.randomUUID();
-    const newAccessToken = jwt.sign({ sub: userId, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
-    const newRawRefreshToken = crypto.randomBytes(32).toString('hex');
-    
-    await authStore.storeRefreshToken(userId, newSessionId, newRawRefreshToken);
-
-    const newCookieValue = `${newRawRefreshToken}.${newSessionId}.${userId}`;
-    res.cookie('refreshToken', newCookieValue, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/v1/authenticate/refresh',
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    });
-
-    res.status(200).json({ accessToken: newAccessToken });
-  } catch (error) {
-    console.error('[Auth] Refresh error:', error);
-    res.status(500).json({ error: 'Internal error' });
-  }
   },
 
   logout: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const user = (req as any).user;
-    const cookie = req.cookies?.refreshToken;
-    if (cookie) {
-      const parts = cookie.split('.');
-      if (parts.length === 3) {
-        await authStore.revokeSession(user.sub, parts[1]);
+    try {
+      const user = (req as any).user;
+      const cookie = req.cookies?.refreshToken;
+      if (cookie) {
+        const parts = cookie.split('.');
+        if (parts.length === 3) {
+          await authStore.revokeSession(user.sub, parts[1]);
+        }
       }
+      res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+      res.status(200).json({ message: 'Logged out' });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal error' });
     }
-    res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-    res.status(200).json({ message: 'Logged out' });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal error' });
-  }
   },
 
   logoutAll: async (req: Request, res: Response): Promise<void> => {
-  try {
-    const user = (req as any).user;
-    await authStore.revokeAllSessions(user.sub);
-    res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
-    res.status(200).json({ message: 'Logged out of all sessions' });
-  } catch (error) {
-    res.status(500).json({ error: 'Internal error' });
-  }
+    try {
+      const user = (req as any).user;
+      await authStore.revokeAllSessions(user.sub);
+      res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+      res.status(200).json({ message: 'Logged out of all sessions' });
+    } catch (error) {
+      res.status(500).json({ error: 'Internal error' });
+    }
   }
 };
