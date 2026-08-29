@@ -1,5 +1,6 @@
 export const URLS = {
     LEGACY_BASE_URL: process.env.NEXT_PUBLIC_LEGACY_BASE_URL ?? process.env.LEGACY_BASE_URL ?? "",
+    AUTH_DOMAIN_BASE_URL: process.env.NEXT_PUBLIC_AUTH_DOMAIN_BASE_URL ?? process.env.AUTH_DOMAIN_BASE_URL ?? "",
     PLATFORM_BASE_URL: process.env.NEXT_PUBLIC_PLATFORM_BASE_URL ?? process.env.PLATFORM_BASE_URL ?? "",
     
     GATEWAY_BASE_URL: process.env.NEXT_PUBLIC_GATEWAY_BASE_URL ?? process.env.GATEWAY_BASE_URL ?? "",

@@ -9,12 +9,16 @@
     "lint": "bunx eslint"
   },
   "dependencies": {
+    "@crm/composables": "workspace:*",
     "@crm/interface": "workspace:*",
     "@crm/utils": "workspace:*",
+    "@heroui/react": "^3.2.4",
+    "@heroui/styles": "^3.2.4",
     "@module-federation/nextjs-mf": "^8.8.71",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "tailwind-variants": "^3.3.1",
     "webpack": "^5.109.0"
   },
   "devDependencies": {

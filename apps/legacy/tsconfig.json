@@ -20,6 +20,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@crm/composables": ["../../packages/composables/index.ts"],
+      "@crm/composables/authenticate/*": ["../../packages/composables/authentication/*"],
       "@crm/interface": ["../../packages/interface/src/index.ts"],
       "@crm/interface/form-elements": ["../../packages/interface/src/form-elements/index.ts"],
       "@crm/utils": ["../../packages/utils/src/index.ts"],
