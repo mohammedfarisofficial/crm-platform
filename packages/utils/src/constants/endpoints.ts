@@ -14,6 +14,7 @@ const AUTHENTICATION_ENDPOINTS = {
   LOGOUT: "/logout",
   LOGOUT_ALL: "/logout-all",
   SESSIONS: "/sessions",
+  ME: "/me",
 };
 
 export const VERSION = {

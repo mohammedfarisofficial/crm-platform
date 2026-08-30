@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import express, { Request, Response, NextFunction } from 'express';
 import { rateLimit, Options as RateLimitOptions } from 'express-rate-limit';
@@ -18,7 +19,7 @@ export interface ProxyOptions {
 export function createProxy({ name = 'proxy', services, globalRateLimit }: ProxyOptions) {
   const app = express();
 
-
+  app.use(cors({ origin: true, credentials: true }));
 
   app.use((req: Request, _res: Response, next: NextFunction) => {
     req.headers['x-correlation-id'] ??= crypto.randomUUID();

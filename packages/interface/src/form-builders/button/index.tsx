@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Button as HeroButton, ButtonProps as HeroButtonProps } from '@heroui/react';
 

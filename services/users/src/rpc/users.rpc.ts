@@ -34,6 +34,22 @@ export const startRpcConsumers = () => {
     }
   );
 
+  handleRpcRequest<{ id: string }, any>(
+    QUEUES.USERS.RPC_GET_BY_ID,
+    ROUTING_KEYS.RPC.USERS.GET_BY_ID,
+    async (payload) => {
+      try {
+        const user = await usersRepository.getUserById(payload.id);
+        if (!user) {
+          return { error: 'User not found', status: 404 };
+        }
+        return { data: user };
+      } catch (error: any) {
+        return { error: error.message };
+      }
+    }
+  );
+
   handleRpcRequest<{ userId: string }, any>(
     QUEUES.USERS.RPC_VERIFY,
     ROUTING_KEYS.RPC.USERS.VERIFY,

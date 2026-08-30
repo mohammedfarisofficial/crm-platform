@@ -7,14 +7,16 @@
   },
   "dependencies": {
     "@crm/redis": "workspace:*",
+    "cors": "^2.8.6",
     "express": "^4.19.2",
     "express-rate-limit": "^8.6.1",
     "http-proxy-middleware": "^4.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
     "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
     "typescript": "^5"
   }
 }

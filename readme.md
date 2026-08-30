@@ -38,11 +38,13 @@ bun run db:studio     # Open Drizzle Studio (visual DB browser)
 bun run db:drop       # Drop a migration
 ```
 
-Redis 
+### Redis
+
+```bash
 brew services start redis
 brew services stop redis
 brew services restart redis
-
+```
 RabbitMQ
 brew install rabbitmq         - Installing
 brew services start rabbitmq  - Starting

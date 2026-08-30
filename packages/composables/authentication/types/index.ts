@@ -64,3 +64,12 @@ export interface LoginResponse {
 export interface RefreshResponse {
   accessToken: string;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  profile_url: string | null;
+  role: number;
+}

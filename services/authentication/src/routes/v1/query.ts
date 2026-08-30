@@ -7,5 +7,6 @@ const router = Router();
 
 // Protected routes
 router.get(ENDPOINTS.AUTHENTICATION.SESSIONS, authMiddleware.verifyAccessToken, authControllerV1.getSessions);
+router.get(ENDPOINTS.AUTHENTICATION.ME, authMiddleware.verifyAccessToken, authControllerV1.getMe);
 
 export default router;

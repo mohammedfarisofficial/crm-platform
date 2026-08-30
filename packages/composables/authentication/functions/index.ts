@@ -30,15 +30,14 @@ export interface FetchClientOptions extends Omit<RequestInit, "body"> {
 // Base URL resolution
 // ---------------------------------------------------------------------------
 
+import { URLS } from "@crm/utils/constants/urls";
+
 /**
- * On the server (SSR / Route Handlers) we need an absolute URL to the gateway.
- * On the client, Next.js rewrites proxy `/api/*` → gateway, so relative paths work.
+ * Returns the absolute URL to the gateway for both client and server,
+ * bypassing the need for Next.js rewrites.
  */
 function getBaseUrl(): string {
-  if (typeof window === "undefined") {
-    return process.env.GATEWAY_BASE_URL ?? "http://localhost:6060";
-  }
-  return "";
+  return URLS.GATEWAY_BASE_URL || "http://localhost:6060";
 }
 
 // ---------------------------------------------------------------------------
@@ -80,13 +79,23 @@ export async function fetchClient<T = unknown>(
     return {} as T;
   }
 
-  const json = (await response.json()) as ApiResponse<T>;
+  const json = (await response.json()) as any;
 
   if (json.success) {
-    return json.data;
+    return json.data as T;
   }
 
-  throw new ApiError(response.status, json.errors);
+  // Handle standard ApiResponse errors
+  let errors = json.errors;
+
+  // Fallback for legacy/malformed error responses
+  if (!errors && json.error) {
+    errors = [{ message: json.error }];
+  } else if (!errors) {
+    errors = [{ message: response.statusText || `Request failed with status ${response.status}` }];
+  }
+
+  throw new ApiError(response.status, errors);
 }
 
 // ---------------------------------------------------------------------------
@@ -142,5 +151,14 @@ export async function logoutAll(accessToken: string): Promise<MessageResponse> {
     method: "POST",
     accessToken,
     credentials: "include",
+  });
+}
+
+import type { User } from "../types";
+
+export async function getMe(accessToken: string): Promise<User> {
+  return fetchClient<User>(authUrl(ENDPOINTS.AUTHENTICATION.ME), {
+    method: "GET",
+    accessToken,
   });
 }

@@ -23,6 +23,17 @@ export const usersRepository = {
         return user;
     },
 
+    getUserById: async (id: string) => {
+        const [user] = await db.select({
+            email: users.email,
+            first_name: users.first_name,
+            last_name: users.last_name,
+            profile_url: users.profile_url,
+            is_verified: users.is_verified
+        }).from(users).where(eq(users.id, id as any));
+        return user;
+    },
+
     verifyUser: async (id: string) => {
         const [user] = await db.update(users).set({ is_verified: true }).where(eq(users.id, id as any)).returning();
         return user;

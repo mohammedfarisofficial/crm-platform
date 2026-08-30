@@ -1,3 +1,5 @@
+"use client";
+
 import React, { InputHTMLAttributes } from 'react';
 import { TextField, Label, Input as HeroInput, FieldError } from '@heroui/react';
 

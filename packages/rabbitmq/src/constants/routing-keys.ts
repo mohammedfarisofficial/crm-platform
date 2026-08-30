@@ -16,6 +16,7 @@ export const ROUTING_KEYS = {
     USERS: {
       CREATE: 'rpc.users.create',
       GET_BY_EMAIL: 'rpc.users.get_by_email',
+      GET_BY_ID: 'rpc.users.get_by_id',
       VERIFY: 'rpc.users.verify',
     }
   }

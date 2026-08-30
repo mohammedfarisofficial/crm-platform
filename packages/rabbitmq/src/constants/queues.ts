@@ -9,6 +9,7 @@ export const QUEUES = {
   USERS: {
     RPC_CREATE: 'users_rpc_create',
     RPC_GET_BY_EMAIL: 'users_rpc_get_by_email',
+    RPC_GET_BY_ID: 'users_rpc_get_by_id',
     RPC_VERIFY: 'users_rpc_verify',
   },
 } as const;

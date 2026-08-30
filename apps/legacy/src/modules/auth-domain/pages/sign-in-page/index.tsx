@@ -7,6 +7,7 @@ import { URLS } from '@crm/utils/constants/urls';
 import { ApiError } from '@crm/composables/authenticate/types';
 import { useSignIn } from '@crm/composables/authenticate/hooks';
 import { SIGN_IN_FORM_CONFIG, FormFieldConfig } from '../../config/forms';
+import { setTokenCookie } from '../../actions';
 
 export function SignInPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -22,8 +23,10 @@ export function SignInPage() {
     e.preventDefault();
     try {
       const result = await signIn(formData);
-      // TODO: store result.accessToken and redirect
-      console.log('Login successful:', result);
+      if (result?.accessToken) {
+        await setTokenCookie(result.accessToken);
+      }
+      window.location.href = URLS.PLATFORM_BASE_URL;
     } catch {
       // Error is captured in the hook's error state
     }

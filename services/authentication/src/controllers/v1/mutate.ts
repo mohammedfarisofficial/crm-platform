@@ -1,4 +1,4 @@
-import argon2 from 'argon2';
+import { passwordUtils } from '@crm/utils';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { db } from '@/database/client';
@@ -110,7 +110,7 @@ export const mutateFunctions = {
       return;
     }
 
-    const isValid = await argon2.verify(user.password, password);
+    const isValid = await passwordUtils.verify(password, user.password);
     if (!isValid) {
       const failures = await authStore.recordLoginFailure(ip);
       if (failures >= 5) {
