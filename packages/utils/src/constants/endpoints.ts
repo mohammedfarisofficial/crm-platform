@@ -3,6 +3,7 @@ export const API_BASE = "/api";
 export const SERVICES = {
   AUTHENTICATION: "/authenticate",
   USERS: "/users",
+  BRANDS: "/brands",
 };
 
 const AUTHENTICATION_ENDPOINTS = {
@@ -26,7 +27,16 @@ const USERS_ENDPOINTS = {
   REGISTER_USER: "/register-user",
 };
 
+const BRANDS_ENDPOINTS = {
+  CREATE: "/",
+  GET_ALL: "/",
+  GET_BY_ID: "/:id",
+  UPDATE: "/:id",
+  DELETE: "/:id",
+};
+
 export const ENDPOINTS = {
   AUTHENTICATION: AUTHENTICATION_ENDPOINTS,
   USERS: USERS_ENDPOINTS,
+  BRANDS: BRANDS_ENDPOINTS,
 };

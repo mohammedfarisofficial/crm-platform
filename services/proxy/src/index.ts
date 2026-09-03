@@ -21,9 +21,14 @@ const usersService = {
   target: URLS.USERS_SERVICE_URL,
 }
 
+const brandsService = {
+  path: `${API_BASE}${VERSION.V1}${SERVICES.BRANDS}`,
+  target: URLS.BRANDS_SERVICE_URL,
+}
+
 const app = createProxy({
   name: 'proxy',
-  services: [authenticationService, usersService],
+  services: [authenticationService, usersService, brandsService],
 });
 
 app.listen(PORT, () => {

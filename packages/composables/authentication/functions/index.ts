@@ -41,10 +41,39 @@ function getBaseUrl(): string {
 }
 
 // ---------------------------------------------------------------------------
+// Silent token refresh with deduplication
+// ---------------------------------------------------------------------------
+
+let activeRefreshPromise: Promise<string> | null = null;
+
+function setAccessTokenCookie(token: string): void {
+  if (typeof document === "undefined") return;
+  // 14 minutes — slightly under the 15-min JWT lifetime so we refresh early
+  document.cookie = `accessToken=${encodeURIComponent(token)}; path=/; max-age=840; SameSite=Lax`;
+}
+
+async function refreshAccessToken(): Promise<string> {
+  // Deduplicate: if a refresh is already in-flight, piggyback on it
+  if (activeRefreshPromise) return activeRefreshPromise;
+
+  activeRefreshPromise = (async () => {
+    try {
+      const { accessToken } = await refresh();
+      setAccessTokenCookie(accessToken);
+      return accessToken;
+    } finally {
+      activeRefreshPromise = null;
+    }
+  })();
+
+  return activeRefreshPromise;
+}
+
+// ---------------------------------------------------------------------------
 // Generic fetch client
 // ---------------------------------------------------------------------------
 
-export async function fetchClient<T = unknown>(
+async function doFetch<T = unknown>(
   url: string,
   options: FetchClientOptions = {},
 ): Promise<T> {
@@ -96,6 +125,32 @@ export async function fetchClient<T = unknown>(
   }
 
   throw new ApiError(response.status, errors);
+}
+
+/**
+ * Fetch client with automatic token refresh.
+ *
+ * When an authenticated request receives a 401, the client silently refreshes
+ * the access token via the refresh-token cookie and retries the request once.
+ */
+export async function fetchClient<T = unknown>(
+  url: string,
+  options: FetchClientOptions = {},
+): Promise<T> {
+  try {
+    return await doFetch<T>(url, options);
+  } catch (error) {
+    // Only auto-refresh for authenticated requests (ones that carried an accessToken)
+    if (
+      error instanceof ApiError &&
+      error.status === 401 &&
+      options.accessToken
+    ) {
+      const newToken = await refreshAccessToken();
+      return doFetch<T>(url, { ...options, accessToken: newToken });
+    }
+    throw error;
+  }
 }
 
 // ---------------------------------------------------------------------------

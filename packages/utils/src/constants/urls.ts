@@ -6,4 +6,5 @@ export const URLS = {
     GATEWAY_BASE_URL: process.env.NEXT_PUBLIC_GATEWAY_BASE_URL ?? process.env.GATEWAY_BASE_URL ?? "",
     AUTHENTICATION_SERVICE_URL: process.env.AUTHENTICATION_SERVICE_URL ?? "",
     USERS_SERVICE_URL: process.env.USERS_SERVICE_URL ?? "",
+    BRANDS_SERVICE_URL: process.env.BRANDS_SERVICE_URL ?? "",
 } as const;

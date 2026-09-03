@@ -1,0 +1,32 @@
+{
+  "name": "service-brands",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "start": "bun dist/index.js",
+    "lint": "bunx eslint src",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun src/database/migrate.ts",
+    "db:push": "bunx drizzle-kit push",
+    "db:studio": "bunx drizzle-kit studio",
+    "db:drop": "bunx drizzle-kit drop"
+  },
+  "dependencies": {
+    "@crm/drizzle": "workspace:*",
+    "@crm/http-server": "workspace:*",
+    "@crm/rabbitmq": "workspace:*",
+    "@crm/utils": "workspace:*",
+    "drizzle-orm": "latest",
+    "express": "^4.19.2",
+    "postgres": "latest",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/bun": "latest",
+    "typescript": "^5",
+    "drizzle-kit": "latest"
+  }
+}

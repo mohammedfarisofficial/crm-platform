@@ -12,8 +12,14 @@ export const QUEUES = {
     RPC_GET_BY_ID: 'users_rpc_get_by_id',
     RPC_VERIFY: 'users_rpc_verify',
   },
+  BRANDS: {
+    RPC_CREATE: 'brands_rpc_create',
+    RPC_GET_BY_USER: 'brands_rpc_get_by_user',
+    RPC_GET_BY_ID: 'brands_rpc_get_by_id',
+  },
 } as const;
 
 export type QueueName =
   | typeof QUEUES.AUTHENTICATION[keyof typeof QUEUES.AUTHENTICATION]
-  | typeof QUEUES.USERS[keyof typeof QUEUES.USERS];
+  | typeof QUEUES.USERS[keyof typeof QUEUES.USERS]
+  | typeof QUEUES.BRANDS[keyof typeof QUEUES.BRANDS];

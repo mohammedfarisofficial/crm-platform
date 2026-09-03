@@ -79,8 +79,8 @@ export function Sidebar() {
             <div className="w-8 h-8 bg-orange-500 rounded-lg shrink-0"></div>
             {isExpanded && (
               <div className="flex flex-col whitespace-nowrap">
-                <span className="text-xs text-zinc-500 font-medium">Sales</span>
-                <span className="text-sm font-semibold">Mohammed Faris</span>
+                <span className="text-xs text-zinc-500 font-medium">Organization</span>
+                <span className="text-sm font-semibold">eClinical Solutions</span>
               </div>
             )}
           </div>
