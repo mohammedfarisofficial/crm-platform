@@ -8,7 +8,7 @@ export default function AppDomainLayout({
 }) {
   return (
     <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 overflow-hidden">
-      <div className="p-2 pr-0 flex-shrink-0 h-screen flex">
+      <div className="p-2 pr-0 shrink-0 h-screen flex">
         <div className="rounded-3xl bg-zinc-50 dark:bg-zinc-950 flex flex-col overflow-hidden">
           <Sidebar />
         </div>
