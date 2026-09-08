@@ -25,6 +25,8 @@ export const usersRepository = {
 
     getUserById: async (id: string) => {
         const [user] = await db.select({
+            id: users.id,
+            role: users.role,
             email: users.email,
             first_name: users.first_name,
             last_name: users.last_name,

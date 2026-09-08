@@ -4,7 +4,6 @@ declare var process: { env: Record<string, string | undefined> };
 import { ENDPOINTS } from "@crm/utils/constants/endpoints";
 import { authUrl } from "../config";
 import type {
-  ApiResponse,
   SignupParams,
   LoginParams,
   VerifyOtpParams,
@@ -24,6 +23,8 @@ export interface FetchClientOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
   /** Bearer token to attach to the Authorization header. */
   accessToken?: string;
+  /** If true, automatically extracts and attaches the accessToken from cookies. */
+  secure?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -38,6 +39,13 @@ import { URLS } from "@crm/utils/constants/urls";
  */
 function getBaseUrl(): string {
   return URLS.GATEWAY_BASE_URL || "http://localhost:6060";
+}
+
+export function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  if (match) return decodeURIComponent(match[2]);
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -137,6 +145,11 @@ export async function fetchClient<T = unknown>(
   url: string,
   options: FetchClientOptions = {},
 ): Promise<T> {
+  if (options.secure && !options.accessToken) {
+    const token = getCookie("accessToken");
+    if (token) options.accessToken = token;
+  }
+
   try {
     return await doFetch<T>(url, options);
   } catch (error) {

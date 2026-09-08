@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { brandsControllerV1 } from '../../controllers';
 import { ENDPOINTS } from '@crm/utils/constants/endpoints';
+import { verifyToken } from '@crm/http-server';
 
 const router = Router();
 
-router.get(ENDPOINTS.BRANDS.GET_BY_ID, brandsControllerV1.getBrandById);
+router.use(verifyToken);
+
+router.get(ENDPOINTS.BRANDS.GET_ALL, brandsControllerV1.getBrands);
 
 export default router;

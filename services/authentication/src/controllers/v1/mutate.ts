@@ -8,6 +8,7 @@ import { loginAttempts } from '@/database/schema/authentication';
 import { usersServiceClient } from '@/services/users-service-client';
 import { SignupSchema, LoginSchema, VerifyOtpSchema, ResendOtpSchema } from '@/validations/v1/mutate';
 import { asyncHandler, parseBody, JSON200, JSON400, JSON401, JSON403, JSON404 } from '@crm/http-server';
+import { cryptoUtils } from '@crm/utils';
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'changeme-access-secret-at-least-32-characters!!';
 
@@ -125,7 +126,8 @@ export const mutateFunctions = {
     await db.insert(loginAttempts).values({ user_id: user.id, email, ip_address: ip, success: true });
 
     const sessionId = crypto.randomUUID();
-    const accessToken = jwt.sign({ sub: user.id, email: user.email, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
+    const encId = cryptoUtils.encryptID(user.id);
+    const accessToken = jwt.sign({ sub: user.id, encId, email: user.email, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
     const rawRefreshToken = crypto.randomBytes(32).toString('hex');
 
     await authStore.storeRefreshToken(user.id, sessionId, rawRefreshToken);
@@ -134,8 +136,8 @@ export const mutateFunctions = {
     res.cookie('refreshToken', cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/v1/authenticate/refresh',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 30 * 24 * 60 * 60 * 1000
     });
 
@@ -159,7 +161,7 @@ export const mutateFunctions = {
 
     const isValid = await authStore.validateRefreshToken(userId, sessionId, rawToken);
     if (!isValid) {
-      res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+      res.clearCookie('refreshToken', { path: '/' });
       JSON401(res, 'Invalid or expired refresh token');
       return;
     }
@@ -167,7 +169,8 @@ export const mutateFunctions = {
     await authStore.revokeSession(userId, sessionId);
 
     const newSessionId = crypto.randomUUID();
-    const newAccessToken = jwt.sign({ sub: userId, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
+    const encId = cryptoUtils.encryptID(userId);
+    const newAccessToken = jwt.sign({ sub: userId, encId, jti: crypto.randomUUID() }, ACCESS_SECRET, { expiresIn: '15m' });
     const newRawRefreshToken = crypto.randomBytes(32).toString('hex');
 
     await authStore.storeRefreshToken(userId, newSessionId, newRawRefreshToken);
@@ -176,8 +179,8 @@ export const mutateFunctions = {
     res.cookie('refreshToken', newCookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      path: '/api/v1/authenticate/refresh',
+      sameSite: 'lax',
+      path: '/',
       maxAge: 30 * 24 * 60 * 60 * 1000
     });
 
@@ -193,14 +196,14 @@ export const mutateFunctions = {
         await authStore.revokeSession(user.sub, parts[1]);
       }
     }
-    res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+    res.clearCookie('refreshToken', { path: '/' });
     JSON200(res, { message: 'Logged out' });
   }),
 
   logoutAll: asyncHandler(async (req: Request, res: Response) => {
     const user = (req as any).user;
     await authStore.revokeAllSessions(user.sub);
-    res.clearCookie('refreshToken', { path: '/api/v1/authenticate/refresh' });
+    res.clearCookie('refreshToken', { path: '/' });
     JSON200(res, { message: 'Logged out of all sessions' });
   })
 };

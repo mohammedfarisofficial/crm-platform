@@ -56,6 +56,26 @@ function ChevronDownIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function LeadsIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
 function SidebarIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" {...props}>
@@ -69,6 +89,7 @@ function SidebarIcon(props: React.SVGProps<SVGSVGElement>) {
 export function Sidebar() {
   const pathname = usePathname();
   const isSettingsActive = pathname.startsWith("/settings");
+  const isLeadsActive = pathname.startsWith("/leads");
   const [isExpanded, setIsExpanded] = React.useState(true);
 
   return (
@@ -119,8 +140,54 @@ export function Sidebar() {
         </Link>
         <Accordion
           className="px-0 w-full"
-          defaultExpandedKeys={isSettingsActive ? ["settings"] : []}
+          defaultExpandedKeys={[
+            ...(isSettingsActive ? ["settings"] : []),
+            ...(isLeadsActive ? ["leads"] : [])
+          ]}
         >
+          <Accordion.Item id="leads">
+            <Accordion.Heading>
+              <Accordion.Trigger className={`w-full flex items-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg ${isExpanded ? "justify-between px-3 py-2.5" : "justify-center px-0 py-3"}`}>
+                <div className={`flex items-center ${isExpanded ? "gap-3" : ""}`}>
+                  <LeadsIcon className="size-4.5 shrink-0" />
+                  {isExpanded && <span>Leads</span>}
+                </div>
+                {isExpanded && (
+                  <Accordion.Indicator className="text-zinc-400">
+                    <ChevronDownIcon className="size-4" />
+                  </Accordion.Indicator>
+                )}
+              </Accordion.Trigger>
+            </Accordion.Heading>
+            <Accordion.Panel>
+              <Accordion.Body className="px-0 pb-1 pt-0">
+                <div className={`flex flex-col gap-1 pr-2 pt-1 transition-all ${isExpanded ? "pl-5.5" : "pl-0"}`}>
+                  <Link
+                    href="/leads/all"
+                    className={`text-sm py-2 flex items-center rounded-xl transition-all ${isExpanded ? "px-3 gap-3" : "justify-center px-0"} ${
+                      pathname === "/leads/all"
+                        ? "bg-white dark:bg-zinc-800 font-medium text-zinc-900 dark:text-zinc-100 border border-zinc-200/50 dark:border-zinc-700/50"
+                        : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200 border border-transparent"
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 shrink-0"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                    {isExpanded && <span>All Leads</span>}
+                  </Link>
+                  <Link
+                    href="/leads/pipeline"
+                    className={`text-sm py-2 flex items-center rounded-xl transition-all ${isExpanded ? "px-3 gap-3" : "justify-center px-0"} ${
+                      pathname === "/leads/pipeline"
+                        ? "bg-white dark:bg-zinc-800 font-medium text-zinc-900 dark:text-zinc-100 border border-zinc-200/50 dark:border-zinc-700/50"
+                        : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200 border border-transparent"
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 shrink-0"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="9" y1="3" x2="9" y2="21" /><path d="M17 3v18" /><path d="M3 9h6" /><path d="M3 15h6" /></svg>
+                    {isExpanded && <span>Pipeline</span>}
+                  </Link>
+                </div>
+              </Accordion.Body>
+            </Accordion.Panel>
+          </Accordion.Item>
           <Accordion.Item id="settings">
             <Accordion.Heading>
               <Accordion.Trigger className={`w-full flex items-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 dark:focus-visible:ring-zinc-100 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 rounded-lg ${isExpanded ? "justify-between px-3 py-2.5" : "justify-center px-0 py-3"}`}>

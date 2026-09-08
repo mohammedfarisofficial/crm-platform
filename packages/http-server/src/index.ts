@@ -78,3 +78,4 @@ export type { ApiError, ApiResponse, AsyncRequestHandler } from './async-handler
 
 export { JSON200, JSON400, JSON401, JSON403, JSON404, JSON500 } from './respond';
 export { parseBody } from './parse-body';
+export { verifyToken } from './jwt-middleware';

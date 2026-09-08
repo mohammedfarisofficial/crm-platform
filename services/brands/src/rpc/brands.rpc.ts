@@ -2,8 +2,6 @@ import { handleRpcRequest, ROUTING_KEYS, QUEUES } from '@crm/rabbitmq';
 import { brandsRepository } from '../repository';
 
 export const startRpcConsumers = () => {
-  console.log('[Brands RPC] Starting RPC consumers...');
-
   handleRpcRequest<any, any>(
     QUEUES.BRANDS.RPC_CREATE,
     ROUTING_KEYS.RPC.BRANDS.CREATE,

@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import { brandsControllerV1 } from '../../controllers';
 import { ENDPOINTS } from '@crm/utils/constants/endpoints';
+import { verifyToken } from '@crm/http-server';
 
 const router = Router();
+
+router.use(verifyToken);
 
 router.post(ENDPOINTS.BRANDS.CREATE, brandsControllerV1.createBrand);
 router.put(ENDPOINTS.BRANDS.UPDATE, brandsControllerV1.updateBrand);

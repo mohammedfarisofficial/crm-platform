@@ -65,7 +65,6 @@ export function createProxy({ name = 'proxy', services, globalRateLimit }: Proxy
           if (correlationId) {
             proxyReq.setHeader('x-correlation-id', correlationId);
           }
-          proxyReq.removeHeader('cookie');
         },
         error: (err, _req, res) => {
           console.error(JSON.stringify({

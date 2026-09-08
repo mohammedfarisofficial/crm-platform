@@ -1,14 +1,17 @@
 import type { Request, Response } from 'express';
 import { asyncHandler, JSON200, JSON400, JSON404 } from '@crm/http-server';
 import { brandsRepository } from '../../repository';
+import { cryptoUtils } from '@crm/utils';
 
 export const queryFunctions = {
   getBrands: asyncHandler(async (req: Request, res: Response) => {
-    const userId = req.query.user_id as string;
-    if (!userId) {
-      JSON400(res, 'user_id query parameter is required');
-      return;
+    const user = (req as any).user;
+    if (!user || !user.encId) {
+      return JSON404(res, 'Unauthorized or missing user context');
     }
+    
+    const userId = cryptoUtils.decryptID(user.encId);
+    
     const brands = await brandsRepository.getBrandsByUser(userId);
     JSON200(res, brands);
   }),
