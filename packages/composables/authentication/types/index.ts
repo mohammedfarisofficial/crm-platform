@@ -72,4 +72,7 @@ export interface User {
   last_name: string;
   profile_url: string | null;
   role: number;
+  brand: {
+    brand_id: string | null;
+  } | null;
 }

@@ -33,6 +33,9 @@ const BRANDS_ENDPOINTS = {
   GET_BY_ID: "/:id",
   UPDATE: "/:id",
   DELETE: "/:id",
+  // Leads
+  CREATE_LEAD: "/lead/create",
+  GET_ALL_LEADS: "/lead",
 };
 
 export const ENDPOINTS = {

@@ -1,8 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { getMe, refresh } from '../functions';
-import type { User, ApiError } from '../types';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef, ReactNode } from 'react';
+import { getMe, fetchClient, getCookie } from '../functions';
+import type { User } from '../types';
+import { ApiError } from '../types';
+import { authUrl } from '../config';
+import { ENDPOINTS } from '@crm/utils/constants/endpoints';
 
 interface AuthContextType {
   user: User | null;
@@ -13,18 +16,48 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper to get cookie on the client side
-function getCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  if (match) return decodeURIComponent(match[2]);
-  return null;
+// ---------------------------------------------------------------------------
+// Deduplicated silent refresh — ensures only one refresh request is in-flight
+// at any given time (guards against React StrictMode double-mount, concurrent
+// tabs, etc.)
+// ---------------------------------------------------------------------------
+
+let activeRefreshPromise: Promise<string> | null = null;
+
+function setAccessTokenCookie(token: string): void {
+  if (typeof document === 'undefined') return;
+  // 14 minutes — slightly under the 15-min JWT lifetime so we refresh early
+  document.cookie = `accessToken=${encodeURIComponent(token)}; path=/; max-age=840; SameSite=Lax`;
 }
+
+async function silentRefresh(): Promise<string> {
+  if (activeRefreshPromise) return activeRefreshPromise;
+
+  activeRefreshPromise = (async () => {
+    try {
+      const { accessToken } = await fetchClient<{ accessToken: string }>(
+        authUrl(ENDPOINTS.AUTHENTICATION.REFRESH),
+        { method: 'POST', credentials: 'include' },
+      );
+      setAccessTokenCookie(accessToken);
+      return accessToken;
+    } finally {
+      activeRefreshPromise = null;
+    }
+  })();
+
+  return activeRefreshPromise;
+}
+
+// ---------------------------------------------------------------------------
+// Provider
+// ---------------------------------------------------------------------------
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const initRef = useRef(false); // guard against StrictMode double-mount
 
   const fetchUser = useCallback(async () => {
     try {
@@ -34,8 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!token) {
         // Attempt to refresh if there's no access token
-        const refreshResponse = await refresh();
-        token = refreshResponse.accessToken;
+        token = await silentRefresh();
       }
 
       if (token) {
@@ -43,10 +75,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const userData = await getMe(token);
           setUser(userData);
         } catch (err: any) {
-          if (err?.status === 401) {
+          if (err instanceof ApiError && err.status === 401) {
             // Token might be expired, try refreshing once
-            const refreshResponse = await refresh();
-            const newUserData = await getMe(refreshResponse.accessToken);
+            const newToken = await silentRefresh();
+            const newUserData = await getMe(newToken);
             setUser(newUserData);
           } else {
             throw err;
@@ -65,6 +97,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Prevent StrictMode double-execution from triggering two refreshes
+    if (initRef.current) return;
+    initRef.current = true;
     fetchUser();
   }, [fetchUser]);
 
