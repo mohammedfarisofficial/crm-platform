@@ -8,7 +8,8 @@ import { API_BASE, VERSION, SERVICES, ENDPOINTS } from '@crm/utils/constants/end
 import {
   Pagination,
   Spinner,
-  Chip
+  Chip,
+  Table
 } from '@heroui/react';
 
 const LEADS_URL = `${API_BASE}${VERSION.V2}${SERVICES.BRANDS}${ENDPOINTS.BRANDS.GET_ALL_LEADS}`;
@@ -96,7 +97,7 @@ export default function AllLeadsPage() {
 
   const bottomContent = useMemo(() => {
     return totalPages > 1 ? (
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center pt-2">
         <Pagination size="sm">
           <Pagination.Content className="gap-1 rounded-xl bg-default p-1">
             <Pagination.Item>
@@ -158,53 +159,46 @@ export default function AllLeadsPage() {
     <div className="p-6 h-full flex flex-col gap-4">
       {topContent}
       
-      <div className="flex-grow">
-        <div className="flex flex-col relative w-full h-full min-h-[400px] overflow-x-auto bg-content1 shadow-small rounded-large p-4">
-          <table className="w-full h-auto text-left min-w-max">
-            <thead>
-              <tr>
+      <div className="grow">
+        <Table>
+          <Table.ScrollContainer className="h-full">
+            <Table.Content 
+              aria-label="All Leads" 
+              className="min-w-max"
+            >
+              <Table.Header>
                 {columns.map((column) => (
-                  <th
-                    key={column.key}
-                    className="bg-default-100 text-default-500 font-semibold text-xs h-10 px-4 first:rounded-l-lg last:rounded-r-lg uppercase tracking-wider"
-                  >
+                  <Table.Column key={column.key} id={column.key} isRowHeader={column.key === "name"}>
                     {column.label}
-                  </th>
+                  </Table.Column>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={columns.length} className="h-40 text-center">
-                    <Spinner />
-                  </td>
-                </tr>
-              ) : leads.length === 0 ? (
-                <tr>
-                  <td colSpan={columns.length} className="h-40 text-center text-default-500 text-sm">
-                    No leads found.
-                  </td>
-                </tr>
-              ) : (
-                leads.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-default-100 hover:bg-default-50 transition-colors"
-                  >
+              </Table.Header>
+              <Table.Body
+                renderEmptyState={() => (
+                  <div className="flex h-40 items-center justify-center text-default-500 text-sm">
+                    {isLoading ? <Spinner /> : "No leads found."}
+                  </div>
+                )}
+              >
+                {!isLoading ? leads.map((item) => (
+                  <Table.Row key={item.id} id={item.id}>
                     {columns.map((column) => (
-                      <td key={column.key} className="px-4 py-3 text-sm">
+                      <Table.Cell key={column.key}>
                         {renderCell(item, column.key)}
-                      </td>
+                      </Table.Cell>
                     ))}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                  </Table.Row>
+                )) : []}
+              </Table.Body>
+            </Table.Content>
+          </Table.ScrollContainer>
+          {totalPages > 1 && (
+            <Table.Footer>
+              {bottomContent}
+            </Table.Footer>
+          )}
+        </Table>
       </div>
-      {bottomContent}
     </div>
   );
 }

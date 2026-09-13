@@ -140,6 +140,7 @@ export function Sidebar() {
         </Link>
         <Accordion
           className="px-0 w-full"
+          hideSeparator
           defaultExpandedKeys={[
             ...(isSettingsActive ? ["settings"] : []),
             ...(isLeadsActive ? ["leads"] : [])
